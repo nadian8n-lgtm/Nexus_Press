@@ -1,152 +1,148 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اتصل بنا - نكسوس بريس | Nexus Press</title>
-    <meta name="robots" content="index, follow">
-    <link rel="preconnect" href="https://googleapis.com">
-    <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --main-color: #0b3c7a;
-            --dark-color: #071c35;
-            --light-bg: #f4f6f9;
-            --white: #ffffff;
-        }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body { 
-            font-family: 'Cairo', sans-serif; 
-            background-color: var(--light-bg); 
-            color: #333; 
-            line-height: 1.8; 
-            padding: 40px 20px; 
-        }
-        .contact-container { 
-            max-width: 700px; 
-            margin: 0 auto; 
-            background: var(--white); 
-            padding: 40px; 
-            border-radius: 8px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
-            border-top: 4px solid var(--main-color); 
-        }
-        .contact-header { 
-            text-align: center; 
-            margin-bottom: 30px; 
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 20px;
-        }
-        .contact-header img { 
-            height: 90px; 
-            width: auto; 
-            margin-bottom: 15px; 
-        }
-        h1 { 
-            color: var(--main-color); 
-            font-size: 26px; 
-            font-weight: 900; 
-        }
-        p { 
-            color: #555; 
-            font-size: 15px; 
-            margin-bottom: 25px;
-            text-align: center;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 700;
-            color: var(--dark-color);
-            font-size: 14px;
-        }
-        input[type="text"], input[type="email"], textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 4px;
-            font-family: 'Cairo', sans-serif;
-            font-size: 14px;
-            background: #f8fafc;
-            transition: border-color 0.2s;
-        }
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: var(--main-color);
-            background: #fff;
-        }
-        .btn-submit {
-            display: block;
-            width: 100%;
-            background: var(--main-color);
-            color: var(--white);
-            border: none;
-            padding: 14px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            font-family: 'Cairo', sans-serif;
-            transition: background 0.2s;
-        }
-        .btn-submit:hover {
-            background: var(--dark-color);
-        }
-        .btn-home {
-            display: inline-block;
-            margin-top: 20px;
-            color: var(--gray-color);
-            font-size: 14px;
-            text-decoration: underline;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>اتصل بنا | Nexus Press</title>
+  <meta name="description" content="تواصل مع فريق نكسوس بريس للاستفسارات، التعاون، والإعلانات.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #071c35;
+      --blue: #0b3c7a;
+      --page: #f3f6fa;
+      --white: #ffffff;
+      --muted: #5b697a;
+      --line: #e2e8f0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--page);
+      font-family: "Cairo", sans-serif;
+      color: var(--navy);
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-top: 5px solid var(--blue);
+      border-radius: 16px;
+      padding: clamp(24px, 5vw, 42px);
+      box-shadow: 0 10px 30px rgba(7, 28, 53, 0.05);
+    }
+    .brand {
+      text-align: center;
+      padding-bottom: 18px;
+      margin-bottom: 22px;
+      border-bottom: 1px solid var(--line);
+    }
+    .brand img {
+      display: block;
+      width: auto;
+      height: 72px;
+      margin: 0 auto 12px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      color: var(--blue);
+    }
+    p {
+      color: var(--muted);
+      line-height: 1.9;
+      margin: 0 0 20px;
+      text-align: justify;
+    }
+    .form-block {
+      display: grid;
+      gap: 16px;
+    }
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+    label {
+      font-weight: 700;
+      color: var(--navy);
+    }
+    input, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font: inherit;
+      background: #f9fbfd;
+      color: var(--navy);
+    }
+    input:focus, textarea:focus {
+      outline: 2px solid rgba(11, 60, 122, 0.15);
+      border-color: var(--blue);
+      background: var(--white);
+    }
+    textarea { min-height: 140px; resize: vertical; }
+    .btn {
+      border: 0;
+      background: var(--blue);
+      color: var(--white);
+      padding: 12px 18px;
+      border-radius: 10px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn:hover { background: var(--navy); }
+    .link-row {
+      margin-top: 22px;
+      text-align: center;
+    }
+    .link-row a {
+      color: var(--blue);
+      text-decoration: none;
+      font-weight: 700;
+    }
+  </style>
 </head>
 <body>
-
-    <div class="contact-container">
-        <div class="contact-header">
-            <img src="./image_MUwSAA.png" alt="Nexus Press">
-            <h1>اتصل بنا - هيئة التحرير</h1>
-        </div>
-        
-        <p>يسعدنا استقبال استفساراتكم، مقترحاتكم، أو طلبات الإعلان عبر ملء الاستمارة الرسمية أدناه، وسيقوم القسم المعني بالرد عليكم في أقرب وقت.</p>
-
-        <form action="#" method="POST" onsubmit="event.preventDefault(); alert('تم إرسال رسالتكم بنجاح! شكراً لتواصلكم مع نكسوس بريس.'); this.reset();">
-            <div class="form-group">
-                <label for="name">الاسم الكامل</label>
-                <input type="text" id="name" required placeholder="أدخل اسمك الكامل هنا">
-            </div>
-            
-            <div class="form-group">
-                <label for="email">البريد الإلكتروني</label>
-                <input type="email" id="email" required placeholder="username@example.com">
-            </div>
-            
-            <div class="form-group">
-                <label for="subject">موضوع الرسالة</label>
-                <input type="text" id="subject" required placeholder="اكتب عنواناً لرسالتك">
-            </div>
-            
-            <div class="form-group">
-                <label for="message">نص الرسالة</label>
-                <textarea id="message" rows="6" required placeholder="اكتب تفاصيل رسالتك هنا بكل وضوح..."></textarea>
-            </div>
-            
-            <button type="submit" class="btn-submit">إرسال الرسالة الآن</button>
-        </form>
-
-        <div style="text-align: center;">
-            <a href="index.html" class="btn-home">العودة إلى الصفحة الرئيسية</a>
-        </div>
+  <div class="container">
+    <div class="brand">
+      <img src="./image_MUwSAA.png" alt="Nexus Press">
+      <h1>اتصل بنا</h1>
     </div>
 
+    <p>يسعدنا استقبال أسئلتكم ومقترحاتكم، سواء كان ذلك بشأن التعاون، الإعلان، أو أي استفسار متعلق بالمحتوى الذي نقدمـه.</p>
+
+    <form class="form-block" onsubmit="event.preventDefault(); alert('تم إرسال رسالتك بنجاح. سنقوم بالتواصل معك في أقرب وقت.'); this.reset();">
+      <div class="field">
+        <label for="name">الاسم الكامل</label>
+        <input id="name" type="text" placeholder="اكتب اسمك الكامل" required>
+      </div>
+
+      <div class="field">
+        <label for="email">البريد الإلكتروني</label>
+        <input id="email" type="email" placeholder="example@mail.com" required>
+      </div>
+
+      <div class="field">
+        <label for="subject">عنوان الرسالة</label>
+        <input id="subject" type="text" placeholder="موضوع الرسالة" required>
+      </div>
+
+      <div class="field">
+        <label for="message">نص الرسالة</label>
+        <textarea id="message" placeholder="اكتب رسالتك هنا..." required></textarea>
+      </div>
+
+      <button type="submit" class="btn">إرسال الرسالة</button>
+    </form>
+
+    <div class="link-row">
+      <a href="./index.html">العودة إلى الصفحة الرئيسية</a>
+    </div>
+  </div>
 </body>
 </html>
