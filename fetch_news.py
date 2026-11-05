@@ -2,11 +2,11 @@ import feedparser
 import os
 from datetime import datetime
 
-# مصادر الأخبار الموثوقة (يمكنك إضافة أي رابط RSS لجرائد كبرى)
+# مصادر الأخبار الموثوقة
 FEEDS = {
-    'local': 'https://aljazeera.net', # مستجدات المغرب والبرلمان
-    'economy': 'https://aljazeera.net', # المحروقات والغلاء
-    'sports': 'https://aljazeera.net' # الرياضات الأخرى والمنتخب
+    'local': 'https://aljazeera.net', 
+    'economy': 'https://aljazeera.net', 
+    'sports': 'https://aljazeera.net' 
 }
 
 def generate_article_html(title, summary, category, filename):
@@ -39,7 +39,6 @@ def generate_article_html(title, summary, category, filename):
                 <p>{summary}</p>
                 <p>مواكبة مستمرة وتغطية شاملة تقدمها لكم نكسوس بريس من قلب الحدث لضمان صياغة إخبارية دقيقة متوافقة مع تطلعات القراء الفورية.</p>
             </div>
-        </form>
         </article>
     </main>
 </body>
@@ -47,32 +46,19 @@ def generate_article_html(title, summary, category, filename):
     with open(filename, 'w', encoding='utf-8') as f:
         f.write(html_content)
 
-def update_homepage(new_articles):
-    # قراءة الصفحة الرئيسية الحالية وتحديث قائمة الأخبار ديناميكياً
-    if not os.path.exists('index.html'):
-        return
-    
-    # هنا يتم تحديث شريط عاجل أو القائمة الجانبية تلقائياً بأحدث العناوين
-    print("تم تحديث بنية الصفحة الرئيسية بنجاح مع الأخبار الجديدة.")
-
 def main():
-    new_articles = []
+    new_articles = [] # تم تصحيح القوسين هنا بنجax
     for cat_name, url in FEEDS.items():
         feed = feedparser.parse(url)
         if feed.entries:
-            entry = feed.entries[0] # جلب أحدث خبر تريند متوفر الآن
+            entry = feed.entries[0] 
             title = entry.title
             summary = entry.get('summary', entry.title)
             
-            # تنظيف وتجهيز الملف
-            safe_title = "".join([c for c in cat_name if c.isalpha() or c.isdigit()]).rstrip()
-            filename = f"news-{safe_title}.html"
-            
+            filename = f"news-{cat_name}.html"
             generate_article_html(title, summary, cat_name, filename)
             new_articles.append({'title': title, 'file': filename})
             print(f"تم توليد ونشر مقال بنجاح: {title}")
-            
-    update_homepage(new_articles)
 
 if __name__ == "__main__":
     main()
