@@ -1,0 +1,33 @@
+name: Nexus Press Auto Publisher
+
+on:
+  schedule:
+    - cron: '0 */6 * * *' # يعمل تلقائياً كل 6 ساعات لمواكبة الحدث أولاً بأول
+  workflow_dispatch: # يتيح لك تشغيله يدوياً بضغطة زر في أي وقت
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install Dependencies
+      run: |
+        pip install feedparser
+
+    - name: Run Robot Journalist
+      run: python fetch_news.py
+
+    - name: Commit and Push Updates
+      run: |
+        git config --global user.name "NexusPress-Bot"
+        git config --global user.email "bot@nexuspress.com"
+        git add .
+        git diff-index --quiet HEAD || git commit -m "تحديث تلقائي: نشر آخر الأخبار والتريندات الراهنة"
+        git push
