@@ -2,8 +2,8 @@ name: Nexus Press Auto Publisher
 
 on:
   schedule:
-    - cron: '0 * * * *' # يعمل تلقائياً رأس كل ساعة طيلة اليوم لمواكبة الحدث الفوري
-  workflow_dispatch: # يتيح لك تشغيله يدوياً بضغطة زر في أي وقت
+    - cron: '0 * * * *' # Vérification et publication automatique à chaque heure (24h/24)
+  workflow_dispatch: # Permet de lancer le robot manuellement en 1 clic
 
 jobs:
   build:
@@ -12,7 +12,7 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
       with:
-        fetch-depth: 0 # جلب كامل التاريخ لمنع تعارض المزامنة نهائياً
+        fetch-depth: 0 # Récupère tout l'historique pour éviter les erreurs de synchronisation
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -25,7 +25,6 @@ jobs:
 
     - name: Run Robot Journalist
       run: |
-        # البحث الديناميكي عن ملف البوت وتشغيله بكفاءة عالية
         SCRIPT_PATH=$(find . -name "*fetch_news*.py" | head -n 1)
         python "$SCRIPT_PATH"
 
@@ -34,12 +33,12 @@ jobs:
         git config --global user.name "NexusPress-Bot"
         git config --global user.email "bot@nexuspress.com"
         
-        # 1. حفظ المقالات الـ 24 المحدثة والمنظمة بالصور وتفريغ الـ Index
+        # 1. Sauvegarder les 24 articles générés avec leurs images
         git add .
-        git diff-index --quiet HEAD || git commit -m "تحديث تلقائي رأس الساعة: صياغة ونشر آخر الأخبار والتحليلات لجريدة نكسوس بريس"
+        git diff-index --quiet HEAD || git commit -m "Tâche horaire : Publication des analyses et mise à jour de la grille"
         
-        # 2. المزامنة الآمنة بعد الـ Commit لدمج ملفات جوجل والملفات القانونية تلقائياً ومنع التعارض
+        # 2. Fusion sécurisée avec le fichier Google et les pages légales
         git pull --rebase origin main
         
-        # 3. رفع التحديثات النهائية لتظهر مباشرة وبأعلى سرعة على رابط موقعك
+        # 3. Déploiement immédiat du site mis à jour
         git push origin main
