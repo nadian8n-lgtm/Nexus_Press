@@ -33,8 +33,13 @@ jobs:
       run: |
         git config --global user.name "NexusPress-Bot"
         git config --global user.email "bot@nexuspress.com"
+        
+        # 1. عمل حفظ (Commit) للمقالات المحدثة أولاً لتفريغ الـ Index
         git add .
-        # عمل مزامنة آمنة مسبقة لحماية ملف جوجل الإثباتي والصفحات القانونية
-        git pull --rebase origin main
         git diff-index --quiet HEAD || git commit -m "تحديث تلقائي: صياغة ونشر آخر الأخبار المتنوعة من هسبريس والمصادر العالمية"
+        
+        # 2. عمل المزامنة الآمنة بعد الـ Commit لدمج ملفات جوجل والملفات القانونية تلقائياً
+        git pull --rebase origin main
+        
+        # 3. رفع التحديثات النهائية على مستودعك الخاص
         git push origin main
