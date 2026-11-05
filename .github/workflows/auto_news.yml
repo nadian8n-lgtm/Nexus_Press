@@ -2,7 +2,7 @@ name: Publish original news hourly
 
 on:
   schedule:
-    - cron: '5 * * * *' # UTC؛ قد يتأخر التشغيل من GitHub
+    - cron: '5 * * * *' # UTC; GitHub may delay scheduled starts
   workflow_dispatch:
 
 permissions:
@@ -15,14 +15,14 @@ concurrency:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-
+    timeout-minutes: 30
     env:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       OPENAI_MODEL: gpt-4.1-mini
       NEWS_MAX_AGE_HOURS: '24'
       MAX_ARTICLES_PER_CATEGORY: '2'
       MAX_TOTAL_ARTICLES: '40'
+      GENERATE_AI_IMAGES: 'true'
 
     steps:
       - name: Check out main
@@ -41,96 +41,31 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install feedparser requests
 
-      - name: Check API key and editorial script
+      - name: Validate secret and syntax
         shell: bash
         run: |
           set -euo pipefail
-
           if [[ -z "${OPENAI_API_KEY:-}" ]]; then
-            echo "Missing Actions secret: OPENAI_API_KEY" >&2
+            echo "Missing Actions secret OPENAI_API_KEY" >&2
             exit 1
           fi
+          python -m py_compile fetch_news.py
 
-          python - <<'PY'
-          import ast
-          from pathlib import Path
-          import sys
-
-          path = Path("fetch_news.py")
-          if not path.is_file():
-              sys.exit("fetch_news.py is missing")
-
-          source = path.read_text(encoding="utf-8")
-          required = ("OPENAI_API_KEY", "api.openai.com")
-          missing = [marker for marker in required if marker not in source]
-          if missing:
-              sys.exit(
-                  "fetch_news.py is not configured for OpenAI editorial writing; "
-                  "missing: " + ", ".join(missing)
-              )
-
-          ast.parse(source, filename=str(path))
-          print("Editorial script syntax and OpenAI integration checks passed.")
-          PY
-
-      - name: Generate eligible articles
+      - name: Fetch, edit, and publish unique articles
         run: python fetch_news.py
 
-      - name: Stage generated files safely
+      - name: Commit generated article files safely
         shell: bash
         run: |
           set -euo pipefail
-
-          python - <<'PY'
-          import subprocess
-          from pathlib import Path
-          import re
-
-          tracked = subprocess.check_output(
-              ["git", "ls-files", "-z"]
-          ).decode("utf-8").split("\0")
-
-          generated = {
-              path for path in tracked
-              if path in {"news-data.json", "news-state.json"}
-              or path.startswith("news-images/")
-              or re.fullmatch(r"(article|news)-ar_[^/]+\.html", path)
-          }
-
-          for pattern in ("article-ar_*.html", "news-ar_*.html"):
-              generated.update(path.as_posix() for path in Path(".").glob(pattern))
-
-          image_dir = Path("news-images")
-          if image_dir.exists():
-              generated.update(
-                  path.as_posix()
-                  for path in image_dir.rglob("*")
-                  if path.is_file()
-              )
-
-          if generated:
-              subprocess.run(
-                  ["git", "add", "-A", "--", *sorted(generated)],
-                  check=True,
-              )
-          else:
-              print("No generated article files found.")
-          PY
-
-      - name: Commit and push updates
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          if git diff --cached --quiet; then
-            echo "No new eligible articles to publish."
-            exit 0
-          fi
-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Publish original source-linked news"
-
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No new eligible stories; nothing to commit."
+            exit 0
+          fi
+          git commit -m "Publish unique source-linked news"
           git fetch origin main
           git rebase origin/main
           git push origin HEAD:main
