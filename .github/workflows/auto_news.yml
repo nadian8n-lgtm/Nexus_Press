@@ -1,9 +1,6 @@
-name: Nexus Press Auto Publisher
-
-on:
-  schedule:
-    - cron: '0 */6 * * *'
-  workflow_dispatch:
+concurrency:
+  group: nexus-press-auto-publisher-main
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -12,27 +9,19 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
       with:
+        ref: main
         fetch-depth: 0
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.x'
-
-    - name: Install Dependencies
-      run: |
-        pip install feedparser
-
-    - name: Run Robot Journalist
-      run: |
-        SCRIPT_PATH=$(find . -name "*fetch_news*.py" | head -n 1)
-        python "$SCRIPT_PATH"
+    # أبقِ خطوات إعداد Python وتشغيل الصحفي الآلي كما هي
 
     - name: Commit and Push Updates
       run: |
         git config --global user.name "NexusPress-Bot"
         git config --global user.email "bot@nexuspress.com"
         git add .
-        git pull --rebase origin main
-        git diff-index --quiet HEAD || git commit -m "تحديث تلقائي: نشر آخر الأخبار والتريندات الراهنة"
-        git push origin main
+        if ! git diff --cached --quiet; then
+          git commit -m "تحديث تلقائي: نشر آخر الأخبار والتريندات الراهنة"
+        fi
+        git fetch origin main
+        git rebase origin/main
+        git push origin HEAD:main
