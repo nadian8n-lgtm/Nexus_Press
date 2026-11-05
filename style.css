@@ -1,182 +1,102 @@
 ---
 
-### 3. كود ملف التنسيقات الفاخر والمتحرك للألوان (`style.css`)
-قم باستبدال كود ملف `style.css` الحالي بالكامل لتفعيل اللون السماوي الفاتح لرأس الموقع والخطوط البيضاء الواضحة داخل شريط عاجل:
+### 2. الكود الكامل والصحيح لربط ملف الواجهة الرئيسية (`index.html`)
+هذا الملف تم فيه إصلاح مسارات فتح المقالات (استخدام الرابط المباشر والقضاء على الـ 404)، مع سحب وتثبيت روابط سياسة الخصوصية واتصل بنا في التذييل السفلي وتثبيت مشغل الترجمة:
 
-```css
-:root {
-    --main-color: #0b3c7a;
-    --dark-color: #071c35;
-    --sky-blue: #e0f2fe; /* اللون السماوي الفاتح المعتمد للهيدر */
-    --gray-color: #555555;
-    --light-bg: #f4f6f9;
-    --white: #ffffff;
-    --transition: all 0.3s ease;
-}
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نكسوس بريس | Nexus Press - المنصة الإخبارية العالمية</title>
+    <meta name="description" content="بوابة إخبارية دولية تقدم تغطية شاملة للأحداث السياسية، الاقتصادية، والرياضية الراهنة بأعلى مستويات الاحترافية والمهنية على مدار الساعة.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://github.io">
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+    <!-- شريط اللغات العلوي الفاخر بأيقونة العالم المحدثة برمجياً لتفعيل الترجمة الفورية بالكامل لـ fr و en -->
+    <div class="top-bar">
+        <div class="container-flex">
+            <span class="live-ticker-date">تحديث مستمر على مدار الساعة</span>
+            <div class="global-lang-wrapper">
+                <span class="world-icon">🌐</span>
+                <div id="google_translate_element"></div>
+            </div>
+        </div>
+    </div>
 
-body {
-    font-family: 'Cairo', sans-serif;
-    background-color: var(--light-bg);
-    color: #333;
-    line-height: 1.6;
-}
+    <!-- هيدر الجريدة بالخلفية السماوية الفاتحة الجديدة وشعار نكسوس بريس -->
+    <header class="main-header">
+        <div class="container-flex">
+            <div class="logo-area">
+                <a href="index.html">
+                    <img src="./image_MUwSAA.png" alt="Nexus Press" class="main-logo-img">
+                </a>
+            </div>
+            <div class="ad-space-header">مساحة إعلانية مجهزة (Google AdSense 728x90)</div>
+        </div>
+    </header>
 
-a { text-decoration: none; color: inherit; transition: var(--transition); }
+    <!-- شريط الأقسام التفاعلي الفوري (نظام الفلترة الشامل للأقسام) -->
+    <nav class="main-nav">
+        <div class="container main-nav-container">
+            <ul class="nav-menu">
+                <li><a href="#" class="nav-filter active" data-filter="all">الرئيسية</a></li>
+                <li><a href="#" class="nav-filter" data-filter="local">أخبار وطنية</a></li>
+                <li><a href="#" class="nav-filter" data-filter="politics">سياسة دولية</a></li>
+                <li><a href="#" class="nav-filter" data-filter="economy">اقتصاد</a></li>
+                <li><a href="#" class="nav-filter" data-filter="sports">رياضة</a></li>
+            </ul>
+        </div>
+    </nav>
 
-.container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
-.container-flex { max-width: 1200px; margin: 0 auto; padding: 0 15px; display: flex; justify-content: space-between; align-items: center; }
+    <!-- شريط عاجل المصلح بالخط الأبيض المقرؤ تماماً وثابت الحركة -->
+    <div class="breaking-news-bar">
+        <div class="breaking-title">عاجل</div>
+        <div class="breaking-content">
+            <marquee behavior="scroll" direction="right" scrollamount="5">
+                • شبكة نكسوس بريس تطلق منظومتها الرقمية المحدثة لمواكبة الأنباء والتحليلات الدولية والوطنية أولاً بأول وفق أعلى المعايير المهنية والصحفية.
+            </marquee>
+        </div>
+    </div>
 
-/* شريط اللغات العلوي الفاخر */
-.top-bar {
-    background: var(--dark-color);
-    color: #eee;
-    font-size: 13px;
-    padding: 10px 0;
-}
-.global-lang-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(255,255,255,0.1);
-    padding: 4px 12px;
-    border-radius: 20px;
-}
-.world-icon { font-size: 15px; color: #fff; }
-#google_translate_element { display: inline-block; }
-.goog-te-gadget-simple {
-    background-color: transparent !important;
-    border: none !important;
-    cursor: pointer;
-}
-.goog-te-gadget-simple .goog-te-menu-value span {
-    color: #ffffff !important;
-    font-weight: 600;
-}
+    <main class="main-wrapper container">
+        <div class="content-area">
+            
+            <!-- تغطية الفيديوهات المرئية الشاملة للموقع -->
+            <div class="video-news-section card-animate">
+                <h3 class="block-title">تغطية مرئية خاصة</h3>
+                <div class="video-container">
+                    <iframe src="https://youtube.com" title="Nexus Press Video Player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
 
-/* تعديل الهيدر ليصبح بالخلفية السماوية الفاتحة */
-.main-header { 
-    background: var(--sky-blue) !important; 
-    padding: 20px 0; 
-    border-bottom: 2px solid #bae6fd; 
-}
-.main-logo-img { height: 95px; width: auto; display: block; }
-.ad-space-header {
-    width: 728px;
-    height: 90px;
-    background: rgba(255, 255, 255, 0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #666;
-    font-size: 13px;
-    border: 1px dashed #cbd5e1;
-    border-radius: 4px;
-}
+            <h3 class="block-title" id="section-view-title">كافة المستجدات الراهنة</h3>
+            
+            <!-- شبكة الـ 24 مقالاً الموزعة والمنوعة بالكامل لمنع التكرار نهائياً وإصلاح الـ 404 بالكامل -->
+            <section class="grid-stories-hub">
+                <!-- أخبار وطنية (6 مقالات متفردة بنصوصها) -->
+                <div class="news-card filter-item local card-animate"><a href="news-ar_local-0.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="وطنية"></div><div class="card-info"><span class="badge">أخبار وطنية</span><h3>مستجدات الملفات الوطنية والأوضاع الراهنة بالمملكة - التقرير 1</h3></div></a></div>
+                <div class="news-card filter-item local card-animate"><a href="news-ar_local-1.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="وطنية"></div><div class="card-info"><span class="badge">أخبار وطنية</span><h3>مستجدات الملفات الوطنية والأوضاع الراهنة بالمملكة - التقرير 2</h3></div></a></div>
+                <div class="news-card filter-item local card-animate"><a href="news-ar_local-2.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="وطنية"></div><div class="card-info"><span class="badge">أخبار وطنية</span><h3>مستجدات الملفات الوطنية والأوضاع الراهنة بالمملكة - التقرير 3</h3></div></a></div>
+                <div class="news-card filter-item local card-animate"><a href="news-ar_local-3.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="وطنية"></div><div class="card-info"><span class="badge">أخبار وطنية</span><h3>مستجدات الملفات الوطنية والأوضاع الراهنة بالمملكة - التقرير 4</h3></div></a></div>
+                <div class="news-card filter-item local card-animate"><a href="news-ar_local-4.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="وطنية"></div><div class="card-info"><span class="badge">أخبار وطنية</span><h3>مستجدات الملفات الوطنية والأوضاع الراهنة بالمملكة - التقرير 5</h3></div></a></div>
+                <div class="news-card filter-item local card-animate"><a href="news-ar_local-5.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="وطنية"></div><div class="card-info"><span class="badge">أخبار وطنية</span><h3>مستجدات الملفات الوطنية والأوضاع الراهنة بالمملكة - التقرير 6</h3></div></a></div>
 
-/* شريط التنقل */
-.main-nav { background: var(--dark-color); position: sticky; top: 0; z-index: 1000; }
-.nav-menu { list-style: none; display: flex; }
-.nav-menu li a {
-    display: block;
-    padding: 16px 24px;
-    color: var(--white);
-    font-weight: 700;
-    font-size: 16px;
-}
-.nav-menu li a:hover, .nav-menu li a.active {
-    background: var(--main-color);
-}
+                <!-- سياسة دولية (6 مقالات متفردة بنصوصها) -->
+                <div class="news-card filter-item politics card-animate"><a href="news-ar_world-0.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="سياسة"></div><div class="card-info"><span class="badge">سياسة دولية</span><h3>تحليلات الحراك السياسي الدولي والتوازنات العالمية - التقرير 1</h3></div></a></div>
+                <div class="news-card filter-item politics card-animate"><a href="news-ar_world-1.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="سياسة"></div><div class="card-info"><span class="badge">سياسة دولية</span><h3>تحليلات الحراك السياسي الدولي والتوازنات العالمية - التقرير 2</h3></div></a></div>
+                <div class="news-card filter-item politics card-animate"><a href="news-ar_world-2.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="سياسة"></div><div class="card-info"><span class="badge">سياسة دولية</span><h3>تحليلات الحراك السياسي الدولي والتوازنات العالمية - التقرير 3</h3></div></a></div>
+                <div class="news-card filter-item politics card-animate"><a href="news-ar_world-3.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="سياسة"></div><div class="card-info"><span class="badge">سياسة دولية</span><h3>تحليلات الحراك السياسي الدولي والتوازنات العالمية - التقرير 4</h3></div></a></div>
+                <div class="news-card filter-item politics card-animate"><a href="news-ar_world-4.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="سياسة"></div><div class="card-info"><span class="badge">سياسة دولية</span><h3>تحليلات الحراك السياسي الدولي والتوازنات العالمية - التقرير 5</h3></div></a></div>
+                <div class="news-card filter-item politics card-animate"><a href="news-ar_world-5.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="سياسة"></div><div class="card-info"><span class="badge">سياسة دولية</span><h3>تحليلات الحراك السياسي الدولي والتوازنات العالمية - التقرير 6</h3></div></a></div>
 
-/* شريط عاجل ذو نصوص بيضاء بالكامل عالية المقروئية والمصداقية */
-.breaking-news-bar { display: flex; background: #c2185b; color: var(--white) !important; font-weight: bold; }
-.breaking-title { background: #880e4f; padding: 12px 30px; color: var(--white); }
-.breaking-content { align-self: center; width: 100%; font-size: 15px; color: var(--white) !important; }
-.breaking-content marquee { color: var(--white) !important; }
-
-/* هيكلية الشبكة الإخبارية */
-.main-wrapper { display: grid; grid-template-columns: 3fr 1fr; gap: 30px; margin-top: 40px; }
-.content-area { display: flex; flex-direction: column; gap: 35px; }
-.block-title { font-size: 24px; font-weight: 900; color: var(--dark-color); border-right: 6px solid var(--main-color); padding-right: 12px; }
-
-/* الفيديوهات */
-.video-container {
-    position: relative;
-    padding-bottom: 56.25%;
-    height: 0;
-    overflow: hidden;
-    background: #000;
-    border-radius: 8px;
-}
-.video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-
-/* شبكة المقالات وتأثيرات الصور */
-.grid-stories-hub {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 25px;
-}
-.news-card {
-    background: var(--white);
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid #eef2f6;
-    transition: var(--transition);
-}
-.card-img-holder { overflow: hidden; height: 180px; }
-.news-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
-.card-info { padding: 20px; }
-.badge { background: var(--main-color); color: var(--white); padding: 3px 8px; font-size: 11px; font-weight: bold; border-radius: 3px; display: inline-block; margin-bottom: 10px; }
-.news-card h3 { font-size: 16px; font-weight: 700; line-height: 1.5; color: var(--dark-color); }
-
-.news-card:hover { transform: translateY(-6px); border-color: var(--main-color); }
-.news-card:hover img { transform: scale(1.06); }
-
-/* صفحات المقالات الداخلية لفتح روابط السيرفر */
-.post-container { background: var(--white); padding: 40px; border-radius: 8px; }
-.post-title { font-size: 34px; font-weight: 900; color: var(--dark-color); margin-bottom: 20px; }
-.post-meta { font-size: 13px; color: #888; margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
-
-/* الإعلانات الجانبية */
-.sidebar-area { position: relative; }
-.widget-ad-box {
-    background: var(--white);
-    border: 1px dashed #cbd5e1;
-    height: 600px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #aaa;
-    font-size: 13px;
-    border-radius: 6px;
-    position: sticky;
-    top: 90px;
-}
-
-/* فوتر الموقع */
-.main-footer { background: var(--dark-color); color: #abb9c9; padding: 60px 0 30px 0; margin-top: 60px; }
-.grid-footer { display: grid; grid-template-columns: 2fr 1fr; gap: 50px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 40px; }
-.grid-footer h3, .grid-footer h4 { color: var(--white); }
-.footer-legal-links ul { list-style: none; }
-.footer-legal-links ul li { margin-bottom: 12px; }
-.footer-bottom-bar { text-align: center; padding-top: 30px; font-size: 13px; color: #64748b; }
-
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-.card-animate { animation: fadeInUp 0.4s ease forwards; }
-
-@media (max-width: 992px) {
-    .main-wrapper { grid-template-columns: 1fr; }
-    .widget-ad-box { height: 250px; position: static; }
-}
-@media (max-width: 768px) {
-    .grid-stories { grid-template-columns: 1fr; }
-    .nav-menu { flex-wrap: wrap; }
-}
+                <!-- اقتصاد وأسواق مال (6 مقالات متفردة بنصوصها) -->
+                <div class="news-card filter-item economy card-animate"><a href="news-ar_economy-0.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="اقتصاد"></div><div class="card-info"><span class="badge">اقتصاد</span><h3>مؤشرات النمو الاقتصادي، الغلاء وأسعار المحروقات - التقرير 1</h3></div></a></div>
+                <div class="news-card filter-item economy card-animate"><a href="news-ar_economy-1.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="اقتصاد"></div><div class="card-info"><span class="badge">اقتصاد</span><h3>مؤشرات النمو الاقتصادي، الغلاء وأسعار المحروقات - التقرير 2</h3></div></a></div>
