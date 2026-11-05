@@ -2,8 +2,8 @@ name: Nexus Press Auto Publisher
 
 on:
   schedule:
-    - cron: '0 * * * *' # Vérification et publication automatique à chaque heure (24h/24)
-  workflow_dispatch: # Permet de lancer le robot manuellement en 1 clic
+    - cron: '0 * * * *' # يعمل تلقائياً على رأس كل ساعة طيلة الـ 24 ساعة بدون توقف
+  workflow_dispatch: # يتيح لك تشغيل البوت يدوياً بضغطة زر واحدة في أي وقت
 
 jobs:
   build:
@@ -12,7 +12,7 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
       with:
-        fetch-depth: 0 # Récupère tout l'historique pour éviter les erreurs de synchronisation
+        fetch-depth: 0 # جلب كامل التاريخ لمنع تعارض المزامنة نهائياً
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -21,10 +21,12 @@ jobs:
 
     - name: Install Dependencies
       run: |
-        pip install feedparser
+        # تثبيت المكتبات اللازمة لجلب الأخبار وتوليد الصور عبر الذكاء الاصطناعي
+        pip install feedparser requests
 
     - name: Run Robot Journalist
       run: |
+        # البحث الديناميكي وتشغيل البوت المحدث لضضخ المقالات بالصور
         SCRIPT_PATH=$(find . -name "*fetch_news*.py" | head -n 1)
         python "$SCRIPT_PATH"
 
@@ -33,12 +35,12 @@ jobs:
         git config --global user.name "NexusPress-Bot"
         git config --global user.email "bot@nexuspress.com"
         
-        # 1. Sauvegarder les 24 articles générés avec leurs images
+        # 1. حفظ التقارير الـ 24 المحدثة والمنظمة بالصور في مستودعك
         git add .
-        git diff-index --quiet HEAD || git commit -m "Tâche horaire : Publication des analyses et mise à jour de la grille"
+        git diff-index --quiet HEAD || git commit -m "تحديث تلقائي رأس الساعة: صياغة ونشر آخر الأخبار والتحليلات لجريدة نكسوس بريس"
         
-        # 2. Fusion sécurisée avec le fichier Google et les pages légales
+        # 2. المزامنة الآمنة لمنع التعارض مع ملف جوجل والصفحات القانونية بالفوتر
         git pull --rebase origin main
         
-        # 3. Déploiement immédiat du site mis à jour
+        # 3. رفع التحديثات النهائية لتظهر مباشرة وبأعلى سرعة على رابط موقعك
         git push origin main
