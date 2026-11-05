@@ -1,0 +1,34 @@
+<?xml id="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://sitemaps.org">
+  <url>
+    <loc>https://github.io</loc>
+    <lastmod>2026-11-05</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <!-- روابط الأقسام الـ 24 المضمونة برمجياً لمنع خطأ 404 وتوجيه العناكب -->
+  <url><loc>https://github.ionews-ar_local-0.html</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://github.ionews-ar_local-1.html</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://github.ionews-ar_local-2.html</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://github.ionews-ar_local-3.html</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://github.ionews-ar_local-4.html</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://github.ionews-ar_local-5.html</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://github.ionews-ar_world-0.html</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://github.ionews-ar_world-1.html</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://github.ionews-ar_world-2.html</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://github.ionews-ar_world-3.html</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://github.ionews-ar_world-4.html</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://github.ionews-ar_world-5.html</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://github.ionews-ar_economy-0.html</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://github.ionews-ar_economy-1.html</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://github.ionews-ar_economy-2.html</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://github.ionews-ar_economy-3.html</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://github.ionews-ar_economy-4.html</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://github.ionews-ar_economy-5.html</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://github.ionews-ar_sports-0.html</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://github.ionews-ar_sports-1.html</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://github.ionews-ar_sports-2.html</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://github.ionews-ar_sports-3.html</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://github.ionews-ar_sports-4.html</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://github.ionews-ar_sports-5.html</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+</urlset>
