@@ -1,10 +1,17 @@
-/* تنسيق جرافيك وألوان جريدة نكسوس بريس */
+---
+
+### 2. كود ملف التنسيقات الفاخر والمتحرك المحدث (`style.css`)
+قم باستبدال كود ملف `style.css` بالكامل لتفعيل التأثيرات الحركية ومشغل الفيديو وأداة الترجمة:
+
+```css
+/* إعدادات المنظومة البصرية المتقدمة 2026 */
 :root {
-    --main-color: #0b3c7a; /* الأزرق الملكي المتناسق مع اللوغو */
-    --dark-color: #071c35; /* الكحلي الإخباري الموثوق */
+    --main-color: #0b3c7a;
+    --dark-color: #071c35;
     --gray-color: #555555;
-    --light-bg: #f5f7fa;
+    --light-bg: #f4f6f9;
     --white: #ffffff;
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 * {
@@ -18,152 +25,180 @@ body {
     background-color: var(--light-bg);
     color: #333;
     line-height: 1.6;
+    overflow-x: hidden;
 }
 
-a {
-    text-decoration: none;
-    color: inherit;
-    transition: color 0.2s ease;
-}
-a:hover {
-    color: var(--main-color);
-}
+a { text-decoration: none; color: inherit; transition: var(--transition); }
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 15px;
-}
-.container-flex {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+.container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+.container-flex { max-width: 1200px; margin: 0 auto; padding: 0 15px; display: flex; justify-content: space-between; align-items: center; }
 
-/* الشريط العلوي وضبط الترجمة */
+/* الشريط العلوي وإصلاح أداة الترجمة بالكامل */
 .top-bar {
     background: var(--dark-color);
-    color: #ccc;
-    font-size: 12px;
-    padding: 8px 0;
-    border-bottom: 1px solid #102a4e;
+    color: #eee;
+    font-size: 13px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
 }
-.top-links a {
-    color: #ccc;
-    margin: 0 5px;
-}
-.lang-selector-wrapper {
+.global-lang-wrapper {
     display: flex;
     align-items: center;
-    gap: 5px;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 3px 8px;
-    border-radius: 4px;
+    gap: 8px;
+    background: rgba(255,255,255,0.08);
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.15);
 }
-.world-icon { font-size: 14px; }
-#google_translate_element { display: inline-block; vertical-align: middle; }
+.world-icon { font-size: 15px; animation: spin 20s linear infinite; }
+#google_translate_element { display: inline-block; }
 .goog-te-gadget-simple {
-    background-color: #0b3c7a !important;
-    border: 1px solid rgba(255,255,255,0.2) !important;
-    padding: 3px 6px !important;
-    border-radius: 4px !important;
+    background-color: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    cursor: pointer;
 }
 .goog-te-gadget-simple .goog-te-menu-value span {
     color: #ffffff !important;
-    font-size: 12px !important;
-    font-weight: bold;
+    font-weight: 600;
 }
+.goog-te-banner-frame { display: none !important; }
+body { top: 0 !important; }
 
-/* الهيدر والشعار */
-.main-header {
-    background: var(--white);
-    padding: 15px 0;
-    border-bottom: 3px solid var(--main-color);
-}
-.main-logo-img {
-    height: 110px;
-    width: auto;
-    display: block;
-}
+/* الهيدر والشعار النخبي */
+.main-header { background: var(--white); padding: 20px 0; border-bottom: 2px solid #eef2f5; }
+.main-logo-img { height: 95px; width: auto; display: block; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05)); }
 .ad-space-header {
     width: 728px;
     height: 90px;
-    background: #fafafa;
+    background: #fdfdfd;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #999;
-    font-size: 14px;
-    border: 1px dashed #ddd;
+    color: #aaa;
+    font-size: 13px;
+    border: 1px dashed #cbd5e1;
+    border-radius: 4px;
 }
 
-/* قائمة التنقل */
-.main-nav {
-    background: var(--dark-color);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-.main-nav ul {
-    list-style: none;
-    display: flex;
-}
-.main-nav ul li a {
+/* قائمة النافيجيشن التفاعلية الفورية */
+.main-nav { background: var(--dark-color); position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.nav-menu { list-style: none; display: flex; }
+.nav-menu li a {
     display: block;
-    padding: 15px 20px;
+    padding: 16px 24px;
     color: var(--white);
     font-weight: 700;
     font-size: 16px;
 }
-.main-nav ul li a:hover { background: var(--main-color); }
-
-/* شريط عاجل */
-.breaking-news-bar {
-    display: flex;
+.nav-menu li a:hover, .nav-menu li a.active {
     background: var(--main-color);
-    color: var(--white);
-    font-weight: bold;
 }
-.breaking-title { background: var(--dark-color); padding: 10px 25px; }
-.breaking-content { align-self: center; width: 100%; }
 
-/* العناوين والتخطيط الجذري للشبكة */
-.main-wrapper {
+/* شريط عاجل النبضي */
+.breaking-news-bar { display: flex; background: #c2185b; color: var(--white); font-weight: bold; box-shadow: inset 0 -2px 5px rgba(0,0,0,0.1); }
+.breaking-title { background: #880e4f; padding: 12px 30px; letter-spacing: 1px; }
+.breaking-content { align-self: center; width: 100%; font-size: 15px; }
+
+/* هيكلية الشبكة الإخبارية المتطورة */
+.main-wrapper { display: grid; grid-template-columns: 3fr 1fr; gap: 30px; margin-top: 40px; margin-bottom: 40px; }
+.content-area { display: flex; flex-direction: column; gap: 35px; }
+.block-title { font-size: 24px; font-weight: 900; color: var(--dark-color); border-right: 6px solid var(--main-color); padding-right: 12px; margin-bottom: 5px; }
+
+/* مشغل الفيديوهات المدمج الفاخر */
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    max-width: 100%;
+    background: #000;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* شبكة الـ 24 مقالاً المحدثة وتأثيرات الصور المتحركة للويب */
+.grid-stories-hub {
     display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 30px;
-    margin-top: 30px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
 }
-.content-area { background: var(--white); padding: 20px; border-radius: 4px; }
-.section-block-title { margin: 30px 0 15px 0; border-right: 5px solid var(--main-color); padding-right: 10px; color: var(--dark-color); font-size: 22px; font-weight: 700; }
-
-.grid-stories {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-bottom: 25px;
+.news-card {
+    background: var(--white);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    border: 1px solid #eef2f6;
+    transition: var(--transition);
 }
-.sub-story { background: var(--light-bg); padding: 15px; border-radius: 4px; border-bottom: 3px solid #ccc; transition: all 0.2s; }
-.sub-story:hover { border-color: var(--main-color); }
-.sub-story h3 { font-size: 15px; font-weight: 700; line-height: 1.5; }
+.card-img-holder { overflow: hidden; height: 180px; position: relative; }
+.news-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.card-info { padding: 20px; }
+.badge { background: var(--main-color); color: var(--white); padding: 3px 8px; font-size: 11px; font-weight: bold; border-radius: 3px; display: inline-block; margin-bottom: 10px; }
+.news-card h3 { font-size: 16px; font-weight: 700; line-height: 1.5; color: var(--dark-color); }
 
-/* صفحة المقال الداخلي */
-.post-container { padding: 30px; }
-.post-title { font-size: 32px; font-weight: 900; margin-bottom: 15px; }
-.post-image-wrapper img { width: 100%; max-height: 450px; object-fit: cover; border-radius: 4px; }
-.post-body { font-size: 18px; line-height: 1.9; color: #333; margin-top: 20px; }
-.ad-inside-post { background: #fdfdfd; border: 1px dashed #ccc; padding: 20px; text-align: center; margin: 25px 0; color: #999; }
-.widget-ad { background: #fafafa; height: 600px; display: flex; align-items: center; justify-content: center; color: #999; border: 1px dashed #ddd; position: sticky; top: 80px; }
+/* تأثيرات الحركة والتفاعل الفوري المدهش عند مرور الماوس */
+.news-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 20px rgba(7, 28, 53, 0.08);
+    border-color: var(--main-color);
+}
+.news-card:hover img { transform: scale(1.06); }
 
-/* الشاشات الصغيرة */
+/* صفحة المقال الاحترافي الداخلي */
+.post-container { background: var(--white); padding: 40px; border-radius: 8px; border: 1px solid #eef2f6; }
+.post-title { font-size: 34px; font-weight: 900; color: var(--dark-color); margin-bottom: 20px; line-height: 1.4; }
+.post-meta { font-size: 13px; color: #888; margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+
+/* قائمة إعلانات أدسينس الذكية الجانبية الثابتة */
+.sidebar-area { position: relative; }
+.widget-ad-box {
+    background: var(--white);
+    border: 1px dashed #cbd5e1;
+    height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #aaa;
+    font-size: 13px;
+    border-radius: 6px;
+    position: sticky;
+    top: 90px;
+}
+
+/* التذييل المنظم (الحقوق والروابط القانونية في الأسفل تماماً) */
+.main-footer { background: var(--dark-color); color: #abb9c9; padding: 60px 0 30px 0; margin-top: 60px; }
+.grid-footer { display: grid; grid-template-columns: 2fr 1fr; gap: 50px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 40px; }
+.grid-footer h3, .grid-footer h4 { color: var(--white); margin-bottom: 20px; }
+.footer-legal-links ul { list-style: none; }
+.footer-legal-links ul li { margin-bottom: 12px; }
+.footer-legal-links ul li a:hover { color: var(--white); text-decoration: underline; }
+.footer-bottom-bar { text-align: center; padding-top: 30px; font-size: 13px; color: #64748b; }
+
+/* المؤثرات الحركية السلسة لظهور العناصر */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.card-animate { animation: fadeInUp 0.4s ease forwards; }
+
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* التجاوب والتوافق الكامل مع الهواتف الذكية */
 @media (max-width: 992px) {
     .main-wrapper { grid-template-columns: 1fr; }
     .ad-space-header { display: none; }
+    .widget-ad-box { height: 250px; position: static; }
 }
 @media (max-width: 768px) {
-    .grid-stories { grid-template-columns: 1fr; }
-    .main-nav ul { flex-wrap: wrap; }
+    .main-logo-img { height: 75px; }
+    .nav-menu li a { padding: 12px 16px; font-size: 14px; }
+    .grid-footer { grid-template-columns: 1fr; gap: 30px; }
 }
