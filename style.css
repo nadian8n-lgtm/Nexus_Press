@@ -1,187 +1,65 @@
 :root {
-    --main-color: #0b3c7a;
-    --dark-color: #071c35;
-    --sky-blue: #e0f2fe; /* اللون السماوي الفاتح المعتمد للهيدر */
-    --gray-color: #555555;
-    --light-bg: #f4f6f9;
-    --white: #ffffff;
-    --transition: all 0.3s ease;
+  color-scheme: light;
+  --navy: #071c35;
+  --blue: #0b3c7a;
+  --ink: #12243a;
+  --muted: #64748b;
+  --page: #f3f6fa;
+  --line: #e2e8f0;
+  --white: #fff;
+  font-family: "Cairo", Tahoma, Arial, sans-serif;
 }
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+* { box-sizing: border-box; }
+html { min-width: 320px; scroll-behavior: smooth; }
+body { margin: 0; background: var(--page); color: var(--ink); line-height: 1.7; }
+a { color: inherit; text-decoration: none; }
+.container { width: min(1180px, calc(100% - 32px)); margin-inline: auto; }
+.site-header { background: var(--white); border-bottom: 1px solid var(--line); }
+.header-inner { min-height: 112px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.brand { display: inline-flex; align-items: center; gap: 14px; color: var(--navy); font-size: 1.5rem; font-weight: 800; }
+.brand img { display: block; width: auto; max-width: 210px; height: 78px; object-fit: contain; }
+.header-note { margin: 0; color: var(--muted); font-size: .95rem; }
+.site-nav { position: sticky; top: 0; z-index: 5; background: var(--navy); box-shadow: 0 3px 10px #071c351a; }
+.nav-inner { display: flex; align-items: stretch; min-height: 58px; overflow-x: auto; scrollbar-width: thin; }
+.nav-link { flex: 0 0 auto; display: inline-flex; align-items: center; padding: 12px 22px; color: #fff; font-weight: 700; white-space: nowrap; }
+.nav-link:hover, .nav-link:focus-visible, .nav-link.is-active { background: var(--blue); }
+.main-content { min-height: 65vh; padding-block: 34px 60px; }
+.intro { margin-bottom: 24px; }
+.eyebrow { margin: 0 0 4px; color: var(--blue); font-size: .9rem; font-weight: 700; }
+h1 { margin: 0; color: var(--navy); font-size: clamp(1.7rem, 3vw, 2.3rem); line-height: 1.35; }
+.intro > p:last-child { margin: 8px 0 0; color: var(--muted); }
+.news-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+.news-card { min-width: 0; overflow: hidden; background: var(--white); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 4px 14px #0f172a08; transition: transform .2s ease, box-shadow .2s ease; }
+.news-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px #0f172a12; }
+.card-link { display: block; height: 100%; }
+.card-image { display: block; width: 100%; height: 205px; object-fit: cover; background: #e6ebf2; }
+.card-body { padding: 17px 18px 19px; }
+.badge { display: inline-block; margin-bottom: 9px; padding: 2px 10px; border-radius: 5px; background: var(--blue); color: #fff; font-size: .78rem; font-weight: 700; }
+.card-body h2 { margin: 0; color: var(--navy); font-size: 1.13rem; line-height: 1.65; }
+.card-meta { margin: 9px 0 0; color: var(--muted); font-size: .82rem; }
+.status { padding: 24px; border: 1px dashed #b8c5d5; border-radius: 10px; background: var(--white); color: var(--muted); text-align: center; }
+.status[hidden] { display: none; }
+.post { max-width: 850px; margin: 0 auto; padding: clamp(20px, 5vw, 48px); border: 1px solid var(--line); border-radius: 12px; background: var(--white); }
+.post h1 { margin-top: 12px; }
+.article-image { display: block; width: 100%; max-height: 480px; margin: 24px 0; border-radius: 10px; background: #e6ebf2; object-fit: cover; }
+.article-body { color: #27364a; font-size: 1.08rem; line-height: 2; }
+.article-body p { margin: 0 0 1.2em; }
+.source-link { display: inline-block; padding: 10px 16px; border-radius: 6px; background: var(--blue); color: var(--white); font-weight: 700; }
+.source-link:hover { background: var(--navy); }
+.site-footer { background: var(--navy); color: #d7e0eb; }
+.footer-inner { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 26px; min-height: 76px; }
+.footer-inner a:hover { color: #fff; text-decoration: underline; }
+@media (max-width: 900px) { .news-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) {
+  .container { width: min(100% - 24px, 1180px); }
+  .header-inner { min-height: 86px; }
+  .brand { font-size: 1.2rem; }
+  .brand img { max-width: 135px; height: 58px; }
+  .header-note { display: none; }
+  .nav-link { padding-inline: 16px; }
+  .main-content { padding-top: 24px; }
+  .news-grid { grid-template-columns: 1fr; gap: 16px; }
+  .card-image { height: 210px; }
+  .post { padding: 20px 16px; }
 }
-
-body {
-    font-family: 'Cairo', sans-serif;
-    background-color: var(--light-bg);
-    color: #333;
-    line-height: 1.6;
-}
-
-a { text-decoration: none; color: inherit; transition: var(--transition); }
-
-.container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
-.container-flex { max-width: 1200px; margin: 0 auto; padding: 0 15px; display: flex; justify-content: space-between; align-items: center; }
-
-/* شريط اللغات العلوي الفاخر */
-.top-bar {
-    background: var(--dark-color);
-    color: #eee;
-    font-size: 13px;
-    padding: 10px 0;
-}
-.global-lang-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(255,255,255,0.1);
-    padding: 4px 12px;
-    border-radius: 20px;
-}
-.world-icon { font-size: 15px; color: #fff; }
-#google_translate_element { display: inline-block; }
-.goog-te-gadget-simple {
-    background-color: transparent !important;
-    border: none !important;
-    cursor: pointer;
-}
-.goog-te-gadget-simple .goog-te-menu-value span {
-    color: #ffffff !important;
-    font-weight: 600;
-}
-
-/* تعديل الهيدر ليصبح بالخلفية السماوية الفاتحة */
-.main-header { 
-    background: var(--sky-blue) !important; 
-    padding: 20px 0; 
-    border-bottom: 2px solid #bae6fd; 
-}
-.main-logo-img { height: 95px; width: auto; display: block; }
-.ad-space-header {
-    width: 728px;
-    height: 90px;
-    background: rgba(255, 255, 255, 0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #666;
-    font-size: 13px;
-    border: 1px dashed #cbd5e1;
-    border-radius: 4px;
-}
-
-/* شريط التنقل للأقسام */
-.main-nav { background: var(--dark-color); position: sticky; top: 0; z-index: 1000; }
-.nav-menu { list-style: none; display: flex; }
-.nav-menu li a {
-    display: block;
-    padding: 16px 24px;
-    color: var(--white);
-    font-weight: 700;
-    font-size: 16px;
-}
-.nav-menu li a:hover, .nav-menu li a.active {
-    background: var(--main-color);
-}
-
-/* شريط عاجل ذو نصوص بيضاء بالكامل عالية المقروئية والمصداقية */
-.breaking-news-bar { display: flex; background: #c2185b; color: var(--white) !important; font-weight: bold; }
-.breaking-title { background: #880e4f; padding: 12px 30px; color: var(--white); }
-.breaking-content { align-self: center; width: 100%; font-size: 15px; color: var(--white) !important; }
-.breaking-content marquee { color: var(--white) !important; }
-
-/* هيكلية الشبكة الإخبارية */
-.main-wrapper { display: grid; grid-template-columns: 3fr 1fr; gap: 30px; margin-top: 40px; }
-.content-area { display: flex; flex-direction: column; gap: 35px; }
-.block-title { font-size: 24px; font-weight: 900; color: var(--dark-color); border-right: 6px solid var(--main-color); padding-right: 12px; }
-
-/* الفيديوهات المدمجة */
-.video-container {
-    position: relative;
-    padding-bottom: 56.25%;
-    height: 0;
-    overflow: hidden;
-    background: #000;
-    border-radius: 8px;
-}
-.video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-
-/* شبكة المقالات وتأثيرات الصور */
-.grid-stories-hub {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 25px;
-}
-.news-card {
-    background: var(--white);
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid #eef2f6;
-    transition: var(--transition);
-}
-.card-img-holder { overflow: hidden; height: 180px; }
-.news-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
-.card-info { padding: 20px; }
-.badge { background: var(--main-color); color: var(--white); padding: 3px 8px; font-size: 11px; font-weight: bold; border-radius: 3px; display: inline-block; margin-bottom: 10px; }
-.news-card h3 { font-size: 16px; font-weight: 700; line-height: 1.5; color: var(--dark-color); }
-
-.news-card:hover { transform: translateY(-6px); border-color: var(--main-color); }
-.news-card:hover img { transform: scale(1.06); }
-
-/* صفحات المقالات الداخلية وتنسيق فواصل الأسطر ومنع التكديس النصي */
-.post-container { background: var(--white); padding: 40px; border-radius: 8px; }
-.post-title { font-size: 34px; font-weight: 900; color: var(--dark-color); margin-bottom: 20px; }
-.post-meta { font-size: 13px; color: #888; margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
-
-/* تنسيق فصل وعزل الفقرات بمسافة سطر كامل مقروء */
-.post-p {
-    font-size: 18px;
-    line-height: 1.9;
-    color: #2d3748;
-    margin-bottom: 24px !important; /* عزل الفقرات برمجياً بسطر واضح */
-    text-align: justify;
-}
-
-/* الإعلانات الجانبية */
-.sidebar-area { position: relative; }
-.widget-ad-box {
-    background: var(--white);
-    border: 1px dashed #cbd5e1;
-    height: 600px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #aaa;
-    font-size: 13px;
-    border-radius: 6px;
-    position: sticky;
-    top: 90px;
-}
-
-/* فوتر الموقع */
-.main-footer { background: var(--dark-color); color: #abb9c9; padding: 60px 0 30px 0; margin-top: 60px; }
-.grid-footer { display: grid; grid-template-columns: 2fr 1fr; gap: 50px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 40px; }
-.grid-footer h3, .grid-footer h4 { color: var(--white); }
-.footer-legal-links ul { list-style: none; }
-.footer-legal-links ul li { margin-bottom: 12px; }
-.footer-legal-links ul li a { color: #cbd5e1; font-size: 14px; }
-.footer-legal-links ul li a:hover { color: #fff; text-decoration: underline; }
-.footer-bottom-bar { text-align: center; padding-top: 30px; font-size: 13px; color: #64748b; }
-
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-.card-animate { animation: fadeInUp 0.4s ease forwards; }
-
-@media (max-width: 992px) {
-    .main-wrapper { grid-template-columns: 1fr; }
-    .widget-ad-box { height: 250px; position: static; }
-}
-@media (max-width: 768px) {
-    .grid-stories { grid-template-columns: 1fr; }
-    .nav-menu { flex-wrap: wrap; }
-}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; } }
