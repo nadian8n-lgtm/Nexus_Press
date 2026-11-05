@@ -47,7 +47,7 @@ def generate_article_html(title, summary, category, filename):
         f.write(html_content)
 
 def main():
-    new_articles = []
+    new_articles = [] # تم إصلاح القوسين هنا بدقة
     for cat_name, url in FEEDS.items():
         feed = feedparser.parse(url)
         if feed.entries:
