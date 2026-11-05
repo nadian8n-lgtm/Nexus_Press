@@ -1,77 +1,130 @@
+import html
+import json
+import re
+from datetime import datetime, timezone
+from pathlib import Path
+from urllib.parse import urlparse
+
 import feedparser
-import os
 import requests
-import base64
-from datetime import datetime
 
-# روابط التدفق الإخباري مشفرة كلياً بنظام العزل النصي الصارم لحمايتك قانونياً 100%
-SECURE_STREAM_CHANNELS = {
-    'ar_local': {
-        'data': b'aHR0cHM6Ly93d3cuaGVzcHJlc3MuY29tL2ZlZWQ=', 
-        'cat': 'أخبار وطنية', 
-        'topic': 'المستجدات المحلية، نقاشات العمل التشريعي والبرلمان، وتطورات التدابير الاجتماعية الاقتصادية الراهنة بالمملكة'
-    },
-    'ar_world': {
-        'data': b'aHR0cHM6Ly93d3cuYWxqYXplZXJhLm5ldC9yc3MvcnNzYnJpZWYvbmV3cw==', 
-        'cat': 'الأخبار الدولية', 
-        'topic': 'الشؤون الجيوسياسية في الشرق الأوسط، التحركات الدبلوماسية بأوروبا وأمريكا، ومستجدات الفرص التنموية بإفريقيا'
-    },
-    'ar_economy': {
-        'data': b'aHR0cHM6Ly93d3cuYWxqYXplZXJhLm5ldC9yc3MvcnNzYnJpZWYvZWNvbm9teQ==', 
-        'cat': 'اقتصاد', 
-        'topic': 'الأسواق المالية، أسعار المحروقات، والتقلبات الاقتصادية الدولية وتأثير التضخم على القدرة الشرائية للعيش'
-    },
-    'ar_sports': {
-        'data': b'aHR0cHM6Ly93d3cuYWxqYXplZXJhLm5ldC9yc3MvcnNzYnJpZWYvc3BvcnQ=', 
-        'cat': 'رياضة', 
-        'topic': 'المنظومة الرياضية، استعدادات المنتخبات الوطنية، ومستجدات البطولات الفردية والجماعية في المحافل الدولية الكبرى'
-    }
-}
+ROOT = Path(__file__).resolve().parent
+PLACEHOLDER = "./placeholder.svg"
+CATEGORIES = [
+    {"key": "ar_local", "label": "أخبار وطنية", "feed": "https://www.hespress.com/feed"},
+    {"key": "ar_world", "label": "أخبار دولية", "feed": "https://www.aljazeera.net/rss/brief/news"},
+    {"key": "ar_economy", "label": "اقتصاد", "feed": "https://www.aljazeera.net/rss/brief/economy"},
+    {"key": "ar_sports", "label": "رياضة", "feed": "https://www.aljazeera.net/rss/brief/sport"},
+]
 
-ARTICLES_DATA = {
-    'ar_local': [
-        {"title": "مستجدات الملفات الوطنية والأوضاع الراهنة بالمملكة - التقرير 1", "content": "تشهد الساحة الوطنية دينامية مكثفة ترتبط بالتدابير التشريعية والاجتماعية الجديدة، حيث تسعى الرؤية الحالية إلى تعزيز القطاعات الاقتصادية وتوفير بنيات تحتية متطورة تلبي تطلعات النمو المستدام في مختلف الأقاليم والمقاطعات الحيوية."},
-        {"title": "مستجدات الملفات الوطنية والأوضاع الراهنة بالمملكة - التقرير 2", "content": "أكدت التقارير الأخيرة المرفوعة حول الاستثمارات المحلية على ضرورة تسريع وثيرة وتأهيل العنصر البشري، بهدف مواكبة التغيرات الاقتصادية العالمية الحالية وخلق فرص عمل جديدة ومستدامة تلبي تطلعات المقاولات الناشئة."},
-        {"title": "مستجدات الملفات الوطنية والأوضاع الراهنة بالمملكة - التقرير 3", "content": "في إطار المتابعة الميدانية للقرارات الإدارية، تشهد البنية التحتية تحولاً رقمياً شاملاً يهدف إلى تبسيط المساطر القانونية وتسهيل كافة المعاملات والخدمات الموجهة للمواطنين والمستثمرين لضمان الشفافية المطلقة."},
-        {"title": "مستجدات الملفات الوطنية والأوضاع الراهنة بالمملكة - التقرير 4", "content": "تناولت النقاشات الجارية آليات دعم المواد الاستهلاكية الأساسية في ظل Tالتحديات الحالية، مع التركيز على وضع خطط توازن دقيقة بين التدابير المالية العامة للدولة وبين الحفاظ على استقرار القدرة الشرائية للمواطن."},
-        {"title": "مستجدات الملفات الوطنية والأوضاع الراهنة بالمملكة - التقرير 5", "content": "تشير الإحصائيات الرسمية الأخيرة إلى نمو ملحوظ في قطاعات الطاقات المتجددة والصناعات التحويلية، مما يضع واجهة الاستثمار المحلي في صدارة الفاعلين الإقليميين والدوليين في مجال الانتقال الطاقي النظيف."},
-        {"title": "مستجدات الملفات الوطنية والأوضاع الراهنة بالمملكة - التقرير 6", "content": "اختتمت اللجان الدائمة دراسة الملفات التنموية المرتبطة بالبنيات التحتية واللوجستيكية، وسط تأكيدات رسمية على أهمية تعزيز الشراكة الاستراتيجية بين القطاعين العام والخاص لتسريع وتيرة إنجاز المشاريع الكبرى."}
-    ],
-    'ar_world': [
-        {"title": "آخر الأخبار الدولية ومستجدات الأوضاع في الشرق الأوسط - التقرير 1", "content": "تشهد منطقة الشرق الأوسط حراكاً دبلوماسياً مكثفاً لبحث ملفات الاستقرار الإقليمي وصياغة تفاهمات جديدة تضمن خفض التصعيد وتنمية الشراكات الاقتصادية بين دول المنطقة على المدى الطويل."},
-        {"title": "آخر الأخبار الدولية والتحولات السياسية في القارة الأوروبية - التقرير 2", "content": "تواجه العواصم الأوروبية تحديات هيكلية ترتبط بملفات الطاقة ومعدلات التضخم، مما يفرض على المفوضية بلورة استراتيجيات مرنة لدعم الأسواق وحماية سلاسل التوريد الحيوية العابرة للحدود."},
-        {"title": "آخر الأخبار الدولية والتوجهات الاستراتيجية في أمريكا - التقرير 3", "content": "تناولت التحليلات السياسية الصادرة من واشنطن أبعاد القرارات الاقتصادية والتجارية الجديدة، وتأثيراتها المباشرة على وتيرة المبادلات وأسواق الاستهلاك مع الشركاء الدوليين في قارات العالم."},
-        {"title": "آخر الأخبار الدولية والفرص التنموية الواعدة في إفريقيا - التقرير 4", "content": "تسجل الأسواق الإفريقية طفرة لافتة في مجالات الاستثمار الرقمي والبنية التحتية، وسط رغبة دولية متزايدة لبناء شراكات حقيقية تعزز التنمية المستدامة وتستشرف الموارد البشرية الصاعدة."},
-        {"title": "آخر الأخبار الدولية وتقاطعات السياسة والاقتصاد العالمي - التقرير 5", "content": "أدت التطورات الجيوسياسية الأخيرة إلى إعادة ترتيب أولويات الشحن واللوجستيك الدولي، مما يفرض على الدول الصاعدة تبني سياسات تجارية حمائية لضمان أمنها الغذائي والطاقي في ظل التقلبات."},
-        {"title": "آخر الأخبار الدولية واستشراف التوازنات الاستراتيجية المقبلة - التقرير 6", "content": "تتوقع التقارير التحليلية أن تشهد الساحة الدولية صياغة اتفاقيات أمنية ورقمية جديدة، مما يستدعي يقظة مستمرة مواكبة لتطلعات الصحافة الرقمية النزيهة والمستقلة لوضع الجمهور في قلب الحدث الفوري عاجلاً."}
-    ],
-    'ar_economy': [
-        {"title": "مؤشرات النمو الاقتصادي، الغلاء وأسعار المحروقات - التقرير 1", "content": "تواجه الأسواق المالية الدولية تقلبات مستمرة تؤثر مباشرة على أسعار الطاقة والمحروقات المحلية، مما يضع القوة الشرائية للمواطنين وميزانيات الأسر أمام ضغوط تضخمية متزايدة تستلزم التدخل والمراقبة التامة."},
-        {"title": "مؤشرات النمو الاقتصادي، الغلاء وأسعار المحروقات - التقرير 2", "content": "تعزى الموجة الحالية لارتفاع أسعار المواد الاستهلاكية إلى تزايد تكاليف الشحن الدولي والإنتاج الطاقي، مما يدفع المؤسسات المالية إلى تبني خطط دعم مرنة للتخفيف من حدة الأزمة المعيشية بالأسواق."},
-        {"title": "مؤشرات النمو الاقتصادي، الغلاء وأسعار المحروقات - التقرير 3", "content": "تشير تحليلات خبراء الاقتصاد إلى أن استقرار أسواق النفط يظل رهيناً بمدى توافق الأقطاب المنتجة وتراجع حدة النزاعات الجيوسياسية الحالية التي تلهب الأسواق وتزيد من تكافؤ الفرص في التوزيع بالمنطقة."},
-        {"title": "مؤشرات النمو الاقتصادي، الغلاء وأسعار المحروقات - التقرير 4", "content": "تضع تدابير تدبير المالية العمومية الحالية قطاع الاستثمار والمقاولات المتوسطة تحت المجهر، وسط مطالب نقابية وتشريعية بتخفيض الضرائب الجمركية على المواد الاستيرادية الحيوية والأساسية لحماية المستهلك."},
-        {"title": "مؤشرات النمو الاقتصادي، الغلاء وأسعار المحروقات - التقرير 5", "content": "تتوقع تقارير مصرفية مرتقبة أن تسهم السياسات النقدية الحمائية الجديدة في كبح جماح التضخم العالمي تدريجياً، شريطة استقرار سلاسل توريد الحبوب والمواد الغذائية الرئيسية والأساسية بالأسواق العالمية."},
-        {"title": "مؤشرات النمو الاقتصادي، الغلاء وأسعار المحروقات - التقرير 6", "content": "يظل الهم الأكبر للاقتصادات الحالية هو تحقيق الاكتفاء الذاتي في مجالات الطاقة والغذاء، عبر تشجيع الإنتاج الداخلي وتوفير تسهيلات تمويلية للمشاريع الفلاحية والصناعية الكبرى لتقليص التبعية بالخارج."}
-    ],
-    'ar_sports': [
-        {"title": "متابعة الفعاليات الرياضية الوطنية والبطولات الدولية - التقرير 1", "content": "تشهد الرياضات الفردية والجماعية بالمملكة طفرة نوعية لافتة، حيث نجحت النخب والمنتخبات الوطنية في تصدر واجهة الأحداث وتحقيق ميداليات وألقاب مشرفة تعكس حجم الاستثمار والدعم الموجه لتطوير القطاع الرياضي."},
-        {"title": "متابعة الفعاليات الرياضية الوطنية والبطولات الدولية - التقرير 2", "content": "أشادت وسائل الإعلام الرياضية العالمية بالتطور الكبير الذي تشهده مراكز التكوين الوطنية، والتي باتت تفرز مواهب وأبطالاً ينافسون بقوة على صعود منصات التتويج الأولمبية والقارية بمختلف الأنواع الرياضية."},
-        {"title": "متابعة الفعاليات الرياضية الوطنية والبطولات الدولية - التقرير 3", "content": "تستعد المنتخبات الوطنية لخوض غمار استحقاقات مرتقبة وسط أجواء إيجابية وتحضيرات تقنية مكثفة تهدف إلى حصد المزيد من الألقاب ورفع الراية الوطنية عالياً في المحافل الفردية والجماعية الكبرى."},
-        {"title": "متابعة الفعاليات الرياضية الوطنية والبطولات الدولية - التقرير 4", "content": "أكد خبراء تقنيون أن الاستثمار المستمر في البنيات التحتية الرياضية بدأ يعطي ثماره بشكل واضح، من خلال الهيمنة القارية للأندية والمنتخبات في البطولات الإقليمية وحصد جوائز التميز الدولية."},
-        {"title": "متابعة الفعاليات الرياضية الوطنية والبطولات الدولية - التقرير 5", "content": "شهدت الأيام الأخيرة تألقاً استثنائياً للأبطال في رياضات ألعاب القوى والفنون القتالية، حيث تمكنوا من حصد الميداليات وتحطيم أرقام قياسية جديدة لفتت أنظار كبرى الاتحادات والأندية العالمية المعنية."},
-        {"title": "متابعة الفعاليات الرياضية الوطنية والبطولات الدولية - التقرير 6", "content": "تتواصل الجهود التنظيمية لإنجاح الاستضافات الرياضية الكبرى المرتقبة، مما يعزز مكانة المنظومة الرياضية الوطنية كقطب رائد وجاذب للتظاهرات العالمية الكبرى والملتقيات الرياضية النخبوية المقبلة."}
-    ]
-}
 
-def clean_title_for_keywords(title):
-    if "وطنية" in title or "المملكة" in title: return "morocco,rabat"
-    elif "الدولية" in title or "الشرق" in title: return "global,politics"
-    elif "اقتصاد" in title or "المحروقات" in title: return "economy,finance"
-    return "stadium,sports"
+def clean_text(value):
+    value = re.sub(r"<[^>]*>", " ", value or "")
+    return re.sub(r"\s+", " ", html.unescape(value)).strip()
 
-def generate_deep_journalistic_content(title, base_content, topic):
-    p1 = f"تشهد الساحة الراهنة حراكاً متسارعاً وتطورات لافتة ترتبط ارتباطاً وثيقاً بـ {topic}، حيث أثارت المستجدات الأخيرة اهتماماً واسعاً على الصعيدين الشعبي والمؤسساتي، نظراً لأبعادها الاستراتيجية وتأثيراتها المباشرة على المنظومة والقطاع."
-    p2 = f"وفي تفاصيل هذا المشهد، يتضح أن الخلفيات المحيطة بالقضية تعود إلى تراكمات سابقة وملفات لطالما شكلت محور نقاش ساخن بين مختلف الفاعلين في الميدان. إن العنوان الأبرز اليوم المتجلي في تقرير '{title}' يضعنا أمام قراءة موضوعية تستلزم تفكيك المعطيات الميدانية والوقوف على الإحصائيات الرسمية الصادرة تماشياً مع المتغيرات الراهنة."
-    p3 = f"أبعاد الحدث وخلفياته الميدانية والتحليلية الرصينة تبرز في الآتي المعطى التحريري: {base_content}"
-    p4 = "ويرى خبراء ومحللون في تصريحات متفرقة تتابعها المنصة أن التدابير المتخذة حتى الآن تظل في حاجة إلى تعزيز بآليات رقابية أكثر مرونة، خصوصاً فيما يتعلق بالملفات الحارقة كالمحروقات والغلاء وتقلبات الأسواق الدولية، والتي تلقي بظلالها مباشرة على القدرة الشرائية وتفرض فتح قنوات حوار جادة."
-    p5 = "وعلى صعيد متصل، تبرز التقارير الأخيرة حاجة القطاعات الحيوية إلى استراتيجيات تجديدية تعتمد على التكنولوجيا والتحول الرقمي الشامل، وهو ما يعكس الطموح الوطني بجعل المنظومة المحلية قطباً رائداً يتجاوز التحديات التقليدية الهيكلية."
+
+def entry_image(entry):
+    candidates = []
+    for media in entry.get("media_content", []):
+        candidates.append(media.get("url", ""))
+    for media in entry.get("media_thumbnail", []):
+        candidates.append(media.get("url", ""))
+    for link in entry.get("links", []):
+        if link.get("type", "").startswith("image/"):
+            candidates.append(link.get("href", ""))
+    for candidate in candidates:
+        parsed = urlparse(candidate)
+        if parsed.scheme in ("http", "https") and parsed.netloc:
+            return candidate
+    return PLACEHOLDER
+
+
+def published(entry):
+    parsed = entry.get("published_parsed") or entry.get("updated_parsed")
+    if parsed:
+        return datetime(*parsed[:6], tzinfo=timezone.utc).strftime("%Y-%m-%d")
+    return ""
+
+
+def render_article(category, item):
+    title = html.escape(item["title"])
+    summary = html.escape(item["summary"])
+    image = html.escape(item["image"], quote=True)
+    source = html.escape(item["source"])
+    date = html.escape(item["published"])
+    article_url = html.escape(item["sourceUrl"], quote=True)
+    page_title = f"{title} - نكسوس بريس"
+    paragraphs = "".join(f"<p>{html.escape(part)}</p>" for part in re.split(r"(?<=[.!؟])\s+", item["summary"]) if part)
+    if not paragraphs:
+        paragraphs = "<p>تابع تفاصيل هذا الخبر من مصدره الأصلي عبر الرابط أدناه.</p>"
+    return f'''<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{html.escape(page_title)}</title>
+  <meta name="description" content="{summary[:155]}">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<header class="site-header"><div class="container header-inner"><a class="brand" href="./index.html"><img src="./image_MUwSAA.png" alt=""><span>نكسوس بريس</span></a><a href="./index.html">العودة إلى الرئيسية</a></div></header>
+<main class="container main-content"><article class="post"><span class="badge">{html.escape(category['label'])}</span><h1>{title}</h1><p class="card-meta">{date} · {source}</p><img class="article-image" src="{image}" alt="" onerror="this.onerror=null;this.src='./placeholder.svg'"><div class="article-body">{paragraphs}</div><p><a class="source-link" href="{article_url}" target="_blank" rel="noopener noreferrer">اقرأ الخبر كاملاً في المصدر الأصلي</a></p></article></main>
+<footer class="site-footer"><div class="container footer-inner"><span>© نكسوس بريس</span><a href="./privacy-policy.html">سياسة الخصوصية</a></div></footer>
+</body></html>'''
+
+
+def fetch_category(category):
+    response = requests.get(category["feed"], timeout=20, headers={"User-Agent": "NexusPress/1.0 (+GitHub Pages publisher)"})
+    response.raise_for_status()
+    parsed = feedparser.parse(response.content)
+    items = []
+    for entry in parsed.entries[:6]:
+        title = clean_text(entry.get("title", ""))
+        summary = clean_text(entry.get("summary", entry.get("description", "")))
+        link = entry.get("link", "")
+        parsed_link = urlparse(link)
+        if not title or parsed_link.scheme not in ("http", "https") or not parsed_link.netloc:
+            continue
+        items.append({
+            "title": title,
+            "category": category["key"],
+            "categoryLabel": category["label"],
+            "url": f"./news-{category['key']}-{len(items)}.html",
+            "image": entry_image(entry),
+            "published": published(entry),
+            "source": parsed_link.netloc.removeprefix("www."),
+            "sourceUrl": link,
+            "summary": summary or "لا يتوفر ملخص لهذا الخبر؛ يمكن متابعة التفاصيل من المصدر الأصلي.",
+        })
+    return items
+
+
+def main():
+    all_items = []
+    updated_categories = set()
+    for category in CATEGORIES:
+        try:
+            items = fetch_category(category)
+            if not items:
+                raise ValueError("لم يُرجع موجز الأخبار مواد صالحة")
+            for item in items:
+                article_path = ROOT / item["url"].removeprefix("./")
+                article_path.write_text(render_article(category, item), encoding="utf-8")
+            all_items.extend(items)
+            updated_categories.add(category["key"])
+            print(f"{category['label']}: نُشرت {len(items)} مواد")
+        except Exception as error:
+            print(f"تعذر تحديث {category['label']}: {error}")
+
+    data_path = ROOT / "news-data.json"
+    try:
+        existing = json.loads(data_path.read_text(encoding="utf-8"))
+        if not isinstance(existing, list):
+            existing = []
+    except (OSError, json.JSONDecodeError):
+        existing = []
+    retained = [item for item in existing if item.get("category") not in updated_categories]
+    data_path.write_text(json.dumps(all_items + retained, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+if __name__ == "__main__":
+    main()
