@@ -18,7 +18,7 @@ IMAGES_POOL = {
 }
 
 def generate_deep_journalistic_content(title, summary, topic):
-    """ تمديد وتوسيع المقال ليتراوح بين 800 إلى 1500 كلمة بأسلوب تحريري احترافي نخبوي """
+    """ تمديد وتوسيع المقال ليتراوح بين 800 إلى 1500 كلمة بأسلوب تحريري احترافي رصين موجه للسيو """
     paragraphs = [
         f"<strong>الرباط – تغطية خاصة وحصرية لـ نكسوس بريس |</strong> تشهد الساحة الراهنة حراكاً متسارعاً وتطورات لافتة ترتبط ارتباطاً وثيقاً بـ {topic}، حيث أثارت المستجدات الأخيرة اهتماماً واسعاً على الصعيدين الشعبي والمؤسساتي، نظراً لأبعادها الاستراتيجية وتأثيراتها المباشرة على المعيش اليومي والمنظومة العامة الموجهة للقطاع.",
         f"وفي تفاصيل هذا المشهد، يتضح أن الخلفيات المحيطة بالقضية تعود إلى تراكمات سابقة وملفات لطالما شكلت محور نقاش ساخن بين مختلف الفاعلين. إن العنوان الأبرز اليوم المتجلي في '{title}' يضعنا أمام قراءة موضوعية تستلزم تفكيك المعطيات الميدانية والوقوف على الإحصائيات الرسمية الصادرة عن الجهات الوصية تماشياً مع المتغيرات الاقتصادية والسياسية التي تعيشها المملكة وباقي دول العالم.",
@@ -46,7 +46,9 @@ def generate_article_html(title, summary, category, filename):
     <title>{title} - نكسوس بريس | Nexus Press</title>
     <meta name="description" content="{summary[:150]}">
     <meta name="robots" content="index, follow">
-    <link href="https://googleapis.com" rel="stylesheet">
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -66,6 +68,12 @@ def generate_article_html(title, summary, category, filename):
             <div class="post-body">{long_content}</div>
         </article>
     </main>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {{
+            new google.translate.TranslateElement({{pageLanguage: 'ar', includedLanguages: 'ar,en,fr', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}}, 'google_translate_element');
+        }}
+    </script>
+    <script type="text/javascript" src="https://google.com"></script>
 </body>
 </html>"""
     with open(filename, 'w', encoding='utf-8') as f:
@@ -75,7 +83,7 @@ def main():
     for key, info in FEEDS.items():
         feed = feedparser.parse(info['url'])
         if feed.entries:
-            # معالجة حلقة ذكية لتوليد ونشر أحدث 6 مقالات لكل قسم لملء المحتوى الكلي
+            # تشغيل مصفوفة التوزيع لتوليد 6 مقالات لكل قسم على حدة (المجموع 24 مقالاً كلياً)
             for i in range(min(6, len(feed.entries))):
                 entry = feed.entries[i]
                 title = entry.title
