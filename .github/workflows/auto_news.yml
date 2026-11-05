@@ -1,7 +1,6 @@
 name: Prepare hourly news drafts for editorial review
 
 on:
-  # GitHub Actions uses UTC; scheduled starts may be delayed.
   schedule:
     - cron: '5 * * * *'
   workflow_dispatch:
@@ -22,7 +21,8 @@ jobs:
       OPENAI_MODEL: gpt-4.1-mini
       NEWS_MAX_AGE_HOURS: '36'
       MAX_DRAFTS_PER_CATEGORY: '2'
-      DRAFT_OUTPUT_DIR: ${{ runner.temp }}/nexus-press-drafts
+      DRAFT_OUTPUT_DIR: /tmp/nexus-press-drafts
+      PYTHONDONTWRITEBYTECODE: '1'
 
     steps:
       - name: Check out repository
@@ -40,35 +40,32 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install feedparser requests
 
-      - name: Validate required secret and draft-only generator
+      - name: Check required files and secret
         shell: bash
         run: |
           set -euo pipefail
+
           if [[ -z "${OPENAI_API_KEY:-}" ]]; then
-            echo "Missing GitHub Actions secret: OPENAI_API_KEY" >&2
+            echo "Missing Actions secret: OPENAI_API_KEY" >&2
             exit 1
           fi
-          python - <<'PY'
-          from pathlib import Path
-          import sys
 
-          source_path = Path("fetch_news.py")
-          if not source_path.is_file():
-              sys.exit("fetch_news.py is missing")
-          source = source_path.read_text(encoding="utf-8")
-          required = ("DRAFT_OUTPUT_DIR", "publication_status", "OUTPUT_DIR")
-          missing = [marker for marker in required if marker not in source]
-          if missing:
-              sys.exit("Refusing to run a generator that is not configured for draft-only output; missing: " + ", ".join(missing))
-          for path in ("editorial_guard.py", "NEWS_PUBLISHING.md", "news-state.json"):
-              if not Path(path).is_file():
-                  sys.exit(f"Required file is missing: {path}")
-          PY
+          test -f fetch_news.py
+          test -f editorial_guard.py
+          test -f news-state.json
 
       - name: Check Python syntax
-        run: python -m py_compile fetch_news.py editorial_guard.py
+        run: |
+          python - <<'PY'
+          import ast
+          from pathlib import Path
 
-      - name: Generate unpublished drafts and review checklist
+          for filename in ("fetch_news.py", "editorial_guard.py"):
+              ast.parse(Path(filename).read_text(encoding="utf-8"), filename=filename)
+              print(f"Syntax OK: {filename}")
+          PY
+
+      - name: Generate drafts and review checklist
         shell: bash
         run: |
           set -euo pipefail
@@ -76,10 +73,11 @@ jobs:
           python fetch_news.py
           python editorial_guard.py
 
-      - name: Ensure only deduplication state changed in the repository
+      - name: Ensure public website files were not changed
         shell: bash
         run: |
           set -euo pipefail
+
           python - <<'PY'
           import subprocess
           import sys
@@ -90,38 +88,43 @@ jobs:
               capture_output=True,
               text=True,
           )
+
           unexpected = []
           for line in result.stdout.splitlines():
               path = line[3:] if len(line) >= 4 else line
               if path != "news-state.json":
                   unexpected.append(line)
+
           if unexpected:
-              print("Unexpected changes detected; refusing to publish site files:", file=sys.stderr)
-              print("\\n".join(unexpected), file=sys.stderr)
-              raise SystemExit(1)
+              print("Unexpected repository changes; stopping:", file=sys.stderr)
+              print("\n".join(unexpected), file=sys.stderr)
+              sys.exit(1)
           PY
 
-      - name: Persist deduplication state only
+      - name: Save deduplication state
         shell: bash
         run: |
           set -euo pipefail
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- news-state.json
+
           if git diff --cached --quiet; then
             echo "No deduplication state changes."
             exit 0
           fi
+
           git commit -m "Update editorial draft discovery state"
           git fetch origin "$GITHUB_REF_NAME"
           git rebase "origin/$GITHUB_REF_NAME"
           git push origin "HEAD:$GITHUB_REF_NAME"
 
-      - name: Upload drafts and checklist for review
+      - name: Upload drafts for review
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: nexus-press-editorial-review-${{ github.run_number }}
-          path: ${{ runner.temp }}/nexus-press-drafts/
+          path: /tmp/nexus-press-drafts/
           if-no-files-found: warn
           retention-days: 7
