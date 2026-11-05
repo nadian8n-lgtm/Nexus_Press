@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اتصل بنا - إدارة تحرير نكسوس بريس | Nexus Press</title>
+    <meta name="robots" content="index, follow">
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #f5f7fa; color: #333; line-height: 1.8; padding: 40px 20px; }
+        .contact-container { max-width: 650px; margin: 0 auto; background: #ffffff; padding: 40px; border-radius: 6px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 4px solid #0b3c7a; }
+        .contact-header { text-align: center; margin-bottom: 30px; }
+        .contact-header img { height: 60px; width: auto; margin-bottom: 15px; }
+        h1 { color: #0b3c7a; font-size: 26px; font-weight: 700; }
+        p { color: #666; font-size: 15px; }
+        .info-section { margin: 25px 0; background: #f8f9fa; padding: 20px; border-radius: 4px; border-right: 4px solid #0b3c7a; }
+        .info-item { margin-bottom: 12px; font-size: 16px; color: #444; }
+        .info-item strong { color: #071c35; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 600; margin-bottom: 5px; color: #071c35; font-size: 14px; }
+        input[type="text"], input[type="email"], textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-family: 'Cairo', sans-serif; font-size: 14px; box-sizing: border-box; }
+        textarea { height: 120px; resize: none; }
+        .btn-submit { display: block; width: 100%; background: #0b3c7a; color: #fff; border: none; padding: 12px; border-radius: 4px; font-weight: bold; font-size: 16px; cursor: pointer; transition: background 0.2s; font-family: 'Cairo', sans-serif; }
+        .btn-submit:hover { background: #071c35; }
+        .btn-back { display: block; text-align: center; margin-top: 20px; color: #555; text-decoration: none; font-size: 14px; }
+        .btn-back:hover { color: #0b3c7a; }
+    </style>
+</head>
+<body>
+
+    <div class="contact-container">
+        <div class="contact-header">
+            <img src="image_MUwSAA.png" alt="نكسوس بريس">
+            <h1>اتصل بهيئة التحرير والإدارة</h1>
+            <p>يسعدنا استقبال مقترحاتكم، استفساراتكم الإخبارية، وطلبات الإعلان</p>
+        </div>
+
+        <!-- معلومات التواصل المباشرة المهمة للقبول القانوني -->
+        <div class="info-section">
+            <div class="info-item"><strong>البريد الإلكتروني للإدارة:</strong> contact.nexuspress@gmail.com</div>
+            <div class="info-item"><strong>مقر هيئة التحرير الرئيسي:</strong> الرباط، المملكة المغربية</div>
+            <div class="info-item"><strong>ساعات العمل الصحفي:</strong> على مدار 24 ساعة طيلة أيام الأسبوع</div>
+        </div>
+
+        <!-- نموذج اتصال احترافي ونظيف يعمل فورا -->
+        <form action="#" method="POST" onsubmit="alert('شكراً لتواصلك مع نكسوس بريس. سيقوم القسم المختص بالرد عليك في أقرب وقت.'); return false;">
+            <div class="form-group">
+                <label for="name">الاسم الكامل / اسم المؤسسة</label>
+                <input type="text" id="name" required placeholder="أدخل اسمك هنا">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">البريد الإلكتروني</label>
+                <input type="email" id="email" required placeholder="name@example.com">
+            </div>
+
+            <div class="form-group">
+                <label for="subject">موضوع الرسالة</label>
+                <input type="text" id="subject" required placeholder="مثال: طلب تغطية إعلامية، استفسار إعلاني">
+            </div>
+
+            <div class="form-group">
+                <label for="message">نص الرسالة</label>
+                <textarea id="message" required placeholder="اكتب تفاصيل رسالتك هنا..."></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit">إرسال الرسالة الآن</button>
+        </form>
+
+        <a href="index.html" class="btn-back">العودة إلى الرئيسية</a>
+    </div>
+
+</body>
+</html>
