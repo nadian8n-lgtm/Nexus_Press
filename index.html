@@ -1,124 +1,110 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- أحدث كودات السيو (SEO) لعام 2026 لضمان الصدارة العالمية -->
-    <title>نكسوس بريس | Nexus Press - بوابة الأخبار العالمية والمحلية الفورية</title>
-    <meta name="description" content="بوابة إخبارية دولية تقدم تغطية شاملة للأحداث السياسية، الاقتصادية، والرياضية الراهنة بأعلى مستويات الاحترافية والمهنية على مدار الساعة.">
-    <meta name="keywords" content="نكسوس بريس, nexus press, أخبار المغرب, أخبار عاجلة, الأخبار الدولية, اقتصاد, رياضة, صحافة إلكترونية, تريند">
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-    <link rel="canonical" href="https://github.io">
-
-    <!-- أوسمة فتح الرسم البياني (Open Graph) لتصدر منصات التواصل الاجتماعي -->
-    <meta property="og:locale" content="ar_MA">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="نكسوس بريس | Nexus Press - بوابة الأخبار العالمية والمحلية">
-    <meta property="og:description" content="تغطية شاملة وموسعة للأحداث الراهنة بكل موضوعية ومهنية على مدار الساعة.">
-    <meta property="og:url" content="https://github.io">
-    <meta property="og:site_name" content="Nexus Press">
-    <meta property="og:image" content="https://github.ioimage_MUwSAA.png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-
-    <!-- خطوط جوجل سريعة التحميل لسرعة الـ SEO -->
-    <link rel="preconnect" href="https://googleapis.com">
-    <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="./style.css">
-
-    <!-- البيانات المنظمة لجوجل (JSON-LD) لتسريع الأرشفة الآلية للمؤسسات الصحفية -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "NewsMediaOrganization",
-      "name": "نكسوس بريس - Nexus Press",
-      "url": "https://github.io",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://github.ioimage_MUwSAA.png",
-        "width": "200",
-        "height": "95"
-      },
-      "sameAs": []
-    }
-    </script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071c35">
+  <title>نكسوس بريس | الأخبار الوطنية والدولية والاقتصاد والرياضة</title>
+  <meta name="description" content="نكسوس بريس: متابعة الأخبار الوطنية والدولية والاقتصادية والرياضية باللغة العربية.">
+  <link rel="canonical" href="https://nadian8n-lgtm.github.io/Nexus_Press/">
+  <link rel="icon" href="./image_MUwSAA.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-
-    <!-- شريط اللغات العلوي الفاخر بأيقونة العالم المحدثة برمجياً لتفعيل الترجمة الفورية بالكامل -->
-    <div class="top-bar">
-        <div class="container-flex">
-            <span class="live-ticker-date">تحديث مستمر على مدار الساعة</span>
-            <div class="global-lang-wrapper">
-                <span class="world-icon">🌐</span>
-                <div id="google_translate_element"></div>
-            </div>
-        </div>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="./index.html" aria-label="نكسوس بريس - الصفحة الرئيسية">
+        <img src="./image_MUwSAA.png" alt="نكسوس بريس" onerror="this.hidden=true">
+        <span>نكسوس بريس</span>
+      </a>
+      <p class="header-note">أخبار ومتابعة من مصادرها</p>
     </div>
-
-    <!-- هيدر الجريدة بالخلفية السماوية الفاتحة الجديدة وشعار نكسوس بريس -->
-    <header class="main-header">
-        <div class="container-flex">
-            <div class="logo-area">
-                <a href="index.html">
-                    <img src="./image_MUwSAA.png" alt="Nexus Press" class="main-logo-img">
-                </a>
-            </div>
-            <div class="ad-space-header">مساحة إعلانية مجهزة (Google AdSense 728x90)</div>
-        </div>
-    </header>
-
-    <!-- شريط الأقسام التفاعلي الفوري (نظام الفلترة الشامل للأقسام) -->
-    <nav class="main-nav">
-        <div class="container main-nav-container">
-            <ul class="nav-menu">
-                <li><a href="#" class="nav-filter active" data-filter="all">الرئيسية</a></li>
-                <li><a href="#" class="nav-filter" data-filter="local">أخبار وطنية</a></li>
-                <li><a href="#" class="nav-filter" data-filter="politics">الأخبار الدولية</a></li>
-                <li><a href="#" class="nav-filter" data-filter="economy">اقتصاد</a></li>
-                <li><a href="#" class="nav-filter" data-filter="sports">رياضة</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <!-- شريط عاجل المصلح بالخط الأبيض المقروء -->
-    <div class="breaking-news-bar">
-        <div class="breaking-title">عاجل</div>
-        <div class="breaking-content">
-            <marquee behavior="scroll" direction="right" scrollamount="5">
-                • شبكة نكسوس بريس تطلق منظومتها الرقمية المحدثة لمواكبة الأنباء والتحليلات الدولية والوطنية أولاً بأول وفق أعلى المعايير المهنية والصحفية.
-            </marquee>
-        </div>
+  </header>
+  <nav class="site-nav" aria-label="التنقل بين الأقسام">
+    <div class="container nav-inner">
+      <a class="nav-link is-active" href="#" data-filter="all">الرئيسية</a>
+      <a class="nav-link" href="#" data-filter="ar_local">أخبار وطنية</a>
+      <a class="nav-link" href="#" data-filter="ar_world">أخبار دولية</a>
+      <a class="nav-link" href="#" data-filter="ar_economy">اقتصاد</a>
+      <a class="nav-link" href="#" data-filter="ar_sports">رياضة</a>
     </div>
+  </nav>
+  <main class="container main-content">
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow">الخبر أولاً</p>
+      <h1 id="page-title">آخر المستجدات</h1>
+      <p>اختر قسماً لمتابعة الأخبار، أو تصفح أحدث المواد المنشورة.</p>
+    </section>
+    <div id="status" class="status" role="status" aria-live="polite">جارٍ تحميل الأخبار…</div>
+    <section id="news-grid" class="news-grid" aria-label="الأخبار"></section>
+  </main>
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <span>© <span id="year"></span> نكسوس بريس</span>
+      <a href="./about.html">من نحن</a>
+      <a href="./contact.html">اتصل بنا</a>
+      <a href="./privacy-policy.html">سياسة الخصوصية</a>
+    </div>
+  </footer>
+  <script>
+    (() => {
+      const grid = document.getElementById('news-grid');
+      const status = document.getElementById('status');
+      const links = [...document.querySelectorAll('[data-filter]')];
+      let stories = [];
+      let activeFilter = 'all';
+      document.getElementById('year').textContent = new Date().getFullYear();
 
-    <main class="main-wrapper container">
-        <div class="content-area">
-            <!-- تغطية الفيديوهات المرئية الشاملة للموقع -->
-            <div class="video-news-section card-animate">
-                <h3 class="block-title">تغطية مرئية خاصة</h3>
-                <div class="video-container">
-                    <iframe src="https://youtube.com" title="Nexus Press Video Player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                </div>
-            </div>
+      function render() {
+        const visible = stories.filter(item => activeFilter === 'all' || item.category === activeFilter);
+        grid.replaceChildren();
+        visible.forEach(item => {
+          const card = document.createElement('article');
+          card.className = 'news-card';
+          const link = document.createElement('a');
+          link.className = 'card-link';
+          link.href = item.url;
+          const image = document.createElement('img');
+          image.className = 'card-image';
+          image.src = item.image || './placeholder.svg';
+          image.alt = '';
+          image.loading = 'lazy';
+          image.onerror = () => { image.onerror = null; image.src = './placeholder.svg'; };
+          const body = document.createElement('div');
+          body.className = 'card-body';
+          const category = document.createElement('span');
+          category.className = 'badge';
+          category.textContent = item.categoryLabel || 'أخبار';
+          const title = document.createElement('h2');
+          title.textContent = item.title || 'خبر جديد';
+          const meta = document.createElement('p');
+          meta.className = 'card-meta';
+          meta.textContent = [item.published, item.source].filter(Boolean).join(' · ');
+          body.append(category, title, meta);
+          link.append(image, body);
+          card.append(link);
+          grid.append(card);
+        });
+        status.hidden = visible.length > 0;
+        status.textContent = stories.length ? 'لا توجد أخبار في هذا القسم حالياً.' : 'لا توجد أخبار منشورة حالياً. يرجى المحاولة لاحقاً.';
+      }
 
-            <h3 class="block-title" id="section-view-title">كافة المستجدات الراهنة</h3>
-            
-            <!-- شبكة الـ 24 مقالاً الموزعة والمنوعة بالكامل لمنع التكرار وإصلاح الـ 404 بالكامل -->
-            <section class="grid-stories-hub">
-                <!-- أخبار وطنية -->
-                <div class="news-card filter-item local card-animate"><a href="./news-ar_local-0.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="وطنية"></div><div class="card-info"><span class="badge">أخبار وطنية</span><h3>مستجدات الملفات الوطنية والأوضاع الراهنة بالمملكة - التقرير 1</h3></div></a></div>
-                <div class="news-card filter-item local card-animate"><a href="./news-ar_local-1.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="وطنية"></div><div class="card-info"><span class="badge">أخبار وطنية</span><h3>مستجدات الملفات الوطنية والأوضاع الراهنة بالمملكة - التقرير 2</h3></div></a></div>
-                <div class="news-card filter-item local card-animate"><a href="./news-ar_local-2.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="وطنية"></div><div class="card-info"><span class="badge">أخبار وطنية</span><h3>مستجدات الملفات الوطنية والأوضاع الراهنة بالمملكة - التقرير 3</h3></div></a></div>
-                <div class="news-card filter-item local card-animate"><a href="./news-ar_local-3.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="وطنية"></div><div class="card-info"><span class="badge">أخبار وطنية</span><h3>مستجدات الملفات الوطنية والأوضاع الراهنة بالمملكة - التقرير 4</h3></div></a></div>
-                <div class="news-card filter-item local card-animate"><a href="./news-ar_local-4.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="وطنية"></div><div class="card-info"><span class="badge">أخبار وطنية</span><h3>مستجدات الملفات الوطنية والأوضاع الراهنة بالمملكة - التقرير 5</h3></div></a></div>
-                <div class="news-card filter-item local card-animate"><a href="./news-ar_local-5.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="وطنية"></div><div class="card-info"><span class="badge">أخبار وطنية</span><h3>مستجدات الملفات الوطنية والأوضاع الراهنة بالمملكة - التقرير 6</h3></div></a></div>
+      links.forEach(link => link.addEventListener('click', event => {
+        event.preventDefault();
+        activeFilter = link.dataset.filter;
+        links.forEach(item => item.classList.toggle('is-active', item === link));
+        render();
+        document.getElementById('page-title').textContent = activeFilter === 'all' ? 'آخر المستجدات' : link.textContent.trim();
+      }));
 
-                <!-- الأخبار الدولية المحدثة للشرق الأوسط وأوروبا وأمريكا وأفريقيا -->
-                <div class="news-card filter-item politics card-animate"><a href="./news-ar_world-0.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="سياسة"></div><div class="card-info"><span class="badge">الأخبار الدولية</span><h3>آخر الأخبار الدولية ومستجدات الأوضاع في الشرق الأوسط - التقرير 1</h3></div></a></div>
-                <div class="news-card filter-item politics card-animate"><a href="./news-ar_world-1.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="سياسة"></div><div class="card-info"><span class="badge">الأخبار الدولية</span><h3>آخر الأخبار الدولية والتحولات السياسية في القارة الأوروبية - التقرير 2</h3></div></a></div>
-                <div class="news-card filter-item politics card-animate"><a href="./news-ar_world-2.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="سياسة"></div><div class="card-info"><span class="badge">الأخبار الدولية</span><h3>آخر الأخبار الدولية والتوجهات الاستراتيجية في أمريكا - التقرير 3</h3></div></a></div>
-                <div class="news-card filter-item politics card-animate"><a href="./news-ar_world-3.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="سياسة"></div><div class="card-info"><span class="badge">الأخبار الدولية</span><h3>آخر الأخبار الدولية والفرص التنموية الواعدة في إفريقيا - التقرير 4</h3></div></a></div>
-                <div class="news-card filter-item politics card-animate"><a href="./news-ar_world-4.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="سياسة"></div><div class="card-info"><span class="badge">الأخبار الدولية</span><h3>آخر الأخبار الدولية وتقاطعات السياسة والاقتصاد العالمي - التقرير 5</h3></div></a></div>
+      fetch('./news-data.json', { cache: 'no-store' })
+        .then(response => { if (!response.ok) throw new Error('تعذر تحميل الأخبار'); return response.json(); })
+        .then(data => { stories = Array.isArray(data) ? data : []; render(); })
+        .catch(() => { stories = []; render(); });
+    })();
+  </script>
+</body>
+</html>
