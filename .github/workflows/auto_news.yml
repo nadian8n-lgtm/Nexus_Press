@@ -1,7 +1,7 @@
 name: Prepare hourly news drafts for editorial review
 
 on:
-  # Runs hourly at minute 5 UTC; scheduled jobs can be delayed by GitHub.
+  # Runs hourly at minute 5 UTC; GitHub may delay scheduled jobs.
   schedule:
     - cron: '5 * * * *'
   workflow_dispatch:
@@ -38,8 +38,14 @@ jobs:
       - name: Install dependencies
         run: python -m pip install --upgrade pip feedparser requests
 
+      - name: Check Python syntax
+        run: python -m py_compile fetch_news.py editorial_guard.py
+
       - name: Discover sources and prepare unpublished drafts
         run: python fetch_news.py
+
+      - name: Validate provenance and create mandatory review checklist
+        run: python editorial_guard.py
 
       - name: Persist deduplication state only
         run: |
@@ -53,11 +59,11 @@ jobs:
           git commit -m "Update editorial draft discovery state"
           git push origin HEAD:${GITHUB_REF_NAME}
 
-      - name: Upload drafts for editorial review
+      - name: Upload drafts and review checklist
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: nexus-press-drafts-${{ github.run_number }}
+          name: nexus-press-editorial-review-${{ github.run_number }}
           path: ${{ runner.temp }}/nexus-press-drafts/
           if-no-files-found: warn
           retention-days: 7
