@@ -11,23 +11,21 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
 
-        - name: Commit and Push Updates
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install Dependencies
       run: |
-        git config --global user.name "NexusPress-Bot"
-        git config --global user.email "bot@nexuspress.com"
-        git add .
-        # كود المزامنة الذكي لمنع التعارض مع ملف جوجل
-        git pull --rebase origin main
-        git diff-index --quiet HEAD || git commit -m "تحديث تلقائي: نشر آخر الأخبار والتريندات الراهنة"
-        git push origin main
-
+        pip install feedparser
 
     - name: Run Robot Journalist
       run: |
-        # Recherche dynamique et exécution du fichier contenant 'fetch_news'
         SCRIPT_PATH=$(find . -name "*fetch_news*.py" | head -n 1)
-        echo "Script trouvé à l'emplacement : $SCRIPT_PATH"
         python "$SCRIPT_PATH"
 
     - name: Commit and Push Updates
@@ -35,5 +33,6 @@ jobs:
         git config --global user.name "NexusPress-Bot"
         git config --global user.email "bot@nexuspress.com"
         git add .
+        git pull --rebase origin main
         git diff-index --quiet HEAD || git commit -m "تحديث تلقائي: نشر آخر الأخبار والتريندات الراهنة"
-        git push
+        git push origin main
