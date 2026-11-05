@@ -11,13 +11,6 @@
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://github.io">
 
-    <!-- سيو منصات التواصل الاجتماعي (Open Graph / Twitter) -->
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="نكسوس بريس | عينك على الحدث">
-    <meta property="og:description" content="تغطية شاملة للأحداث الوطنية والدولية أولاً بأول بصيغة صحفية مبتكرة وسرعة فائقة.">
-    <meta property="og:url" content="https://github.io">
-    <meta name="twitter:card" content="summary_large_image">
-
     <!-- خطوط جوجل سريعة التحميل للـ SEO -->
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
@@ -32,20 +25,20 @@
       "@type": "NewsMediaOrganization",
       "name": "نكسوس بريس - Nexus Press",
       "url": "https://github.io",
-      "logo": "https://github.ioimage_MUwSAA.png",
-      "sameAs": [
-        "https://facebook.com",
-        "https://twitter.com"
-      ]
+      "logo": "https://github.ioimage_MUwSAA.png"
     }
     </script>
 </head>
 <body>
 
-    <!-- الشريط العلوي (التوقيت والروابط القانونية) -->
+    <!-- الشريط العلوي (التوقيت والروابط القانونية وأداة الترجمة) -->
     <div class="top-bar">
         <div class="container-flex">
             <span id="live-date">نوفمبر 2026</span>
+            
+            <!-- زر الترجمة الفوري السحري للجريدة -->
+            <div id="google_translate_element"></div>
+
             <div class="top-links">
                 <a href="privacy-policy.html">سياسة الخصوصية</a> | 
                 <a href="contact.html">اتصل بنا</a>
@@ -57,12 +50,10 @@
     <header class="main-header">
         <div class="container-flex">
             <div class="logo-area">
-                <!-- الشعار الأزرق المتناسق مع الكود -->
                 <a href="index.html" class="logo-link">
                     <img src="image_MUwSAA.png" alt="نكسوس بريس Nexus Press" class="main-logo-img">
                 </a>
             </div>
-            <!-- مساحة إعلانية علوية قياسية لأدسينس تزيد من الأرباح -->
             <div class="ad-space-header">مساحة إعلانية (Google AdSense 728x90)</div>
         </div>
     </header>
@@ -76,7 +67,6 @@
                 <li><a href="#local">أخبار وطنية</a></li>
                 <li><a href="#economy">اقتصاد</a></li>
                 <li><a href="#sports">رياضة</a></li>
-                <li><a href="#tech">تكنولوجيا</a></li>
             </ul>
         </div>
     </nav>
@@ -86,12 +76,12 @@
         <div class="breaking-title">عاجل</div>
         <div class="breaking-content">
             <marquee behavior="scroll" direction="right" scrollamount="6">
-                • شبكة نكسوس بريس تنطلق رسمياً لمواكبة الأحداث الوطنية والدولية أولاً بأول بصيغة بشرية احترافية متوافقة مع معايير السيو.
+                • شبكة نكسوس بريس تنطلق رسمياً لمواكبة الأحداث الوطنية والدولية أولاً بأول بصيغة بشرية احترافية متوافقة مع معايير السيو والترجمة الفورية.
             </marquee>
         </div>
     </div>
 
-    <!-- شبكة المحتوى الإخباري (الهيكل الجذري) -->
+    <!-- شبكة المحتوى الإخباري الجذري -->
     <main class="main-wrapper container">
         
         <!-- قسم الأخبار الرئيسي (اليمين) -->
@@ -99,33 +89,33 @@
             
             <!-- المانشيت الكبير (الخبر الرئيسي للجريدة) -->
             <article class="hero-story">
-                <a href="single-post.html">
+                <a href="news-ar_local-0.html">
                     <div class="img-container">
                         <img src="https://unsplash.com" alt="عنوان الخبر الرئيسي" loading="eager">
                     </div>
                     <div class="story-details">
                         <span class="category-tag">أخبار وطنية</span>
-                        <h2>ثورة رقمية بالمملكة.. كيف يغير الذكاء الاصطناعي ملامح الاقتصاد المغربي في 2026؟</h2>
-                        <p>تشهد المملكة المغربية تسارعاً غير مسبوق في تبني تكنولوجيات الذكاء الاصطناعي والأنظمة الرقمية المتقدمة، مما يمهد الطريق لقفزة نوعية في بنيتها الاقتصادية والإدارية...</p>
-                        <span class="time">منذ 3 دقائق</span>
+                        <h2>أحدث المستجدات الوطنية والمحلية والأوضاع الراهنة بالمملكة المغربية اليوم</h2>
+                        <p>تابعوا معنا من خلال هذا التقرير الشامل والمفصل آخر ما استجد في الساحة الوطنية والقرارات التشريعية والبرلمانية، وتطورات القوة الشرائية وأسواق الاستهلاك الأساسية بأسلوبنا البشري الخاص والمستقل...</p>
+                        <span class="time">منذ قليل</span>
                     </div>
                 </a>
             </article>
 
-            <!-- شبكة الأخبار الفرعية التكتيكية -->
+            <!-- شبكة الأخبار الفرعية التكتيكية لملء القوائم -->
             <section class="grid-stories">
                 <article class="sub-story">
-                    <a href="#">
-                        <img src="https://unsplash.com" alt="سياسة" loading="lazy">
-                        <span class="category-tag">سياسة</span>
-                        <h3>مستجدات الحراك السياسي الدولي وتأثيره على المنطقة الحالية</h3>
+                    <a href="news-ar_world-0.html">
+                        <img src="https://unsplash.com" alt="سياسة دولية" loading="lazy">
+                        <span class="category-tag">سياسة دولية</span>
+                        <h3>مستجدات الحراك السياسي الدولي وتأثيره المباشر على التوازنات في المنطقة</h3>
                     </a>
                 </article>
                 <article class="sub-story">
-                    <a href="#">
+                    <a href="news-ar_economy-0.html">
                         <img src="https://unsplash.com" alt="اقتصاد" loading="lazy">
                         <span class="category-tag">اقتصاد</span>
-                        <h3>تحليلات أسواق المال ومؤشرات النمو الاقتصادي المرتقبة</h3>
+                        <h3>تحليلات أسواق المال ومؤشرات النمو الاقتصادي المرتقبة بخصوص أسعار الطاقة والمحروقات</h3>
                     </a>
                 </article>
             </section>
@@ -139,16 +129,10 @@
                 <ul class="trending-list">
                     <li>
                         <span class="rank">1</span>
-                        <a href="#">تطورات متسارعة تشهدها الساحة الرياضية وجدول المباريات</a>
-                    </li>
-                    <li>
-                        <span class="rank">2</span>
-                        <a href="#">تحديثات تقنية تكتسح الأسواق العالمية هذا الأسبوع</a>
+                        <a href="news-ar_sports-0.html">تطورات متسارعة تشهدها الساحة الرياضية وجدول مباريات المنتخبات الوطنية</a>
                     </li>
                 </ul>
             </div>
-
-            <!-- إعلان أدسينس عمودي عالي الربح -->
             <div class="widget-ad">
                 <span>مساحة إعلانية عمودية (AdSense 300x600)</span>
             </div>
@@ -161,7 +145,7 @@
         <div class="container grid-footer">
             <div class="footer-about">
                 <h3>نكسوس بريس | Nexus Press</h3>
-                <p>منصة إعلامية متجددة على مدار الساعة تنقل الحدث بصيغة بشرية مهنية وقانونية خالية من حقوق الملكية.</p>
+                <p>منصة إعلامية متجددة على مدار الساعة تنقل الحدث بصيغة بشرية مهنية وقانونية خالية من حقوق الملكية وتدعم الترجمة الفورية الكاملة للإنجليزية والفرنسية.</p>
             </div>
             <div class="footer-legal">
                 <h4>روابط قانونية للقبول في أدسينس</h4>
@@ -175,6 +159,18 @@
             <p>&copy; 2026 نكسوس بريس. جميع الحقوق محفوظة.</p>
         </div>
     </footer>
+
+    <!-- سكربت جوجل الذكي المسؤول عن تفعيل ميزة الترجمة بدون تهنيج وبسرعة فائقة -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'ar',
+                includedLanguages: 'ar,en,fr',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//://google.com"></script>
 
 </body>
 </html>
