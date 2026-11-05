@@ -1,4 +1,4 @@
-/* إعدادات الألوان المتناسقة مع شعار Nexus Press الجديد */
+/* تنسيق جرافيك وألوان جريدة نكسوس بريس */
 :root {
     --main-color: #0b3c7a; /* الأزرق الملكي المتناسق مع اللوغو */
     --dark-color: #071c35; /* الكحلي الإخباري الموثوق */
@@ -55,10 +55,16 @@ a:hover {
     color: #ccc;
     margin: 0 5px;
 }
-#google_translate_element {
-    display: inline-block;
-    vertical-align: middle;
+.lang-selector-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 3px 8px;
+    border-radius: 4px;
 }
+.world-icon { font-size: 14px; }
+#google_translate_element { display: inline-block; vertical-align: middle; }
 .goog-te-gadget-simple {
     background-color: #0b3c7a !important;
     border: 1px solid rgba(255,255,255,0.2) !important;
@@ -71,14 +77,14 @@ a:hover {
     font-weight: bold;
 }
 
-/* الهيدر وشاشات العرض واللوغو الاحترافي */
+/* الهيدر والشعار */
 .main-header {
     background: var(--white);
     padding: 15px 0;
     border-bottom: 3px solid var(--main-color);
 }
 .main-logo-img {
-    height: 110px; /* الارتفاع المثالي للشعار الجديد لمنع البكسلة */
+    height: 110px;
     width: auto;
     display: block;
 }
@@ -94,7 +100,7 @@ a:hover {
     border: 1px dashed #ddd;
 }
 
-/* قائمة التنقل الاحترافية السيو */
+/* قائمة التنقل */
 .main-nav {
     background: var(--dark-color);
     position: sticky;
@@ -112,9 +118,7 @@ a:hover {
     font-weight: 700;
     font-size: 16px;
 }
-.main-nav ul li a.active, .main-nav ul li a:hover {
-    background: var(--main-color);
-}
+.main-nav ul li a:hover { background: var(--main-color); }
 
 /* شريط عاجل */
 .breaking-news-bar {
@@ -123,169 +127,36 @@ a:hover {
     color: var(--white);
     font-weight: bold;
 }
-.breaking-title {
-    background: var(--dark-color);
-    padding: 10px 25px;
-}
-.breaking-content {
-    align-self: center;
-    width: 100%;
-}
+.breaking-title { background: var(--dark-color); padding: 10px 25px; }
+.breaking-content { align-self: center; width: 100%; }
 
-/* تقسيم التخطيط الجذري */
+/* العناوين والتخطيط الجذري للشبكة */
 .main-wrapper {
     display: grid;
     grid-template-columns: 2fr 1fr;
     gap: 30px;
     margin-top: 30px;
 }
+.content-area { background: var(--white); padding: 20px; border-radius: 4px; }
+.section-block-title { margin: 30px 0 15px 0; border-right: 5px solid var(--main-color); padding-right: 10px; color: var(--dark-color); font-size: 22px; font-weight: 700; }
 
-.content-area {
-    background: var(--white);
-    padding: 20px;
-    border-radius: 4px;
-}
-
-/* الجزء الإخباري الرئيسي */
-.hero-story {
-    background: var(--white);
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 30px;
-}
-.img-container {
-    overflow: hidden;
-    height: 400px;
-}
-.hero-story img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-.story-details {
-    padding: 20px 0;
-}
-.category-tag {
-    background: var(--main-color);
-    color: var(--white);
-    padding: 3px 10px;
-    font-size: 12px;
-    font-weight: bold;
-    border-radius: 2px;
-}
-.hero-story h2 {
-    margin: 15px 0 10px 0;
-    font-size: 26px;
-    line-height: 1.4;
-}
-
-/* المقالات الفرعية وصفحات المقال */
 .grid-stories {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
-}
-.sub-story {
-    background: var(--light-bg);
-    padding: 15px;
-    border-radius: 4px;
-}
-.sub-story img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    border-radius: 2px;
-}
-.sub-story h3 {
-    font-size: 16px;
-    margin-top: 10px;
-}
-
-/* صفحة المقال الداخلي */
-.post-container {
-    padding: 30px;
-}
-.post-title {
-    font-size: 32px;
-    font-weight: 900;
-    margin-bottom: 15px;
-}
-.post-image-wrapper img {
-    width: 100%;
-    max-height: 450px;
-    object-fit: cover;
-    border-radius: 4px;
-}
-.post-body {
-    font-size: 18px;
-    line-height: 1.9;
-    color: #333;
-    margin-top: 20px;
-}
-.ad-inside-post {
-    background: #fdfdfd;
-    border: 1px dashed #ccc;
-    padding: 20px;
-    text-align: center;
-    margin: 25px 0;
-    color: #999;
-}
-
-/* الشريط الجانبي */
-.widget {
-    background: var(--white);
-    padding: 20px;
-    border-radius: 4px;
     margin-bottom: 25px;
 }
-.widget-title {
-    border-right: 4px solid var(--main-color);
-    padding-right: 10px;
-    margin-bottom: 20px;
-    font-size: 18px;
-}
-.trending-list li {
-    display: flex;
-    gap: 15px;
-    padding: 12px 0;
-    border-bottom: 1px solid #eee;
-}
-.trending-list li .rank {
-    font-size: 24px;
-    font-weight: 900;
-    color: #ccc;
-}
-.widget-ad {
-    background: #fafafa;
-    height: 600px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #999;
-    border: 1px dashed #ddd;
-}
+.sub-story { background: var(--light-bg); padding: 15px; border-radius: 4px; border-bottom: 3px solid #ccc; transition: all 0.2s; }
+.sub-story:hover { border-color: var(--main-color); }
+.sub-story h3 { font-size: 15px; font-weight: 700; line-height: 1.5; }
 
-/* فوتر الموقع */
-.main-footer {
-    background: var(--dark-color);
-    color: #bbb;
-    padding: 50px 0 20px 0;
-    margin-top: 50px;
-}
-.grid-footer {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 40px;
-    border-bottom: 1px solid #102a4e;
-    padding-bottom: 30px;
-}
-.grid-footer h3, .grid-footer h4 { color: var(--white); }
-.footer-bottom {
-    text-align: center;
-    padding-top: 20px;
-    font-size: 13px;
-    color: #555;
-}
+/* صفحة المقال الداخلي */
+.post-container { padding: 30px; }
+.post-title { font-size: 32px; font-weight: 900; margin-bottom: 15px; }
+.post-image-wrapper img { width: 100%; max-height: 450px; object-fit: cover; border-radius: 4px; }
+.post-body { font-size: 18px; line-height: 1.9; color: #333; margin-top: 20px; }
+.ad-inside-post { background: #fdfdfd; border: 1px dashed #ccc; padding: 20px; text-align: center; margin: 25px 0; color: #999; }
+.widget-ad { background: #fafafa; height: 600px; display: flex; align-items: center; justify-content: center; color: #999; border: 1px dashed #ddd; position: sticky; top: 80px; }
 
 /* الشاشات الصغيرة */
 @media (max-width: 992px) {
