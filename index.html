@@ -3,23 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- سيو (SEO) متقدم واحترافي للمنافسة العالمية -->
     <title>نكسوس بريس | Nexus Press - بوابة الأخبار العالمية والمحلية الفورية</title>
-    <meta name="description" content="جريدة نكسوس بريس الإلكترونية تواكب آخر الأخبار السياسية، الاقتصادية، الرياضية والثقافية في المغرب والعالم بأسلوب صحفي بشري واحترافي على مدار الساعة.">
+    <meta name="description" content="جريدة نكسوس بريس الإلكترونية تواكب آخر الأخبار السياسية، الاقتصادية، الرياضية والثقافية في المغرب والعالم بأعلى مستويات المهنية والصحفية على مدار الساعة.">
     <meta name="keywords" content="نكسوس بريس, nexus press, أخبار المغرب, أخبار عاجلة, سياسة, اقتصاد, رياضة, صحافة إلكترونية, تريند">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://github.io">
 
-    <!-- خطوط جوجل سريعة التحميل للـ SEO -->
+    <!-- خطوط جوجل سريعة التحميل -->
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
     <link href="https://googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     
-    <!-- ربط ملف التنسيق المباشر والمصحح لحل مشكلة المظهر -->
     <link rel="stylesheet" href="./style.css">
 
-    <!-- البيانات المنظمة لجوجل (JSON-LD) لتسريع الأرشفة التلقائية -->
+    <!-- البيانات المنظمة لجوجل (JSON-LD) لتسريع الأرشفة -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -32,13 +29,16 @@
 </head>
 <body>
 
-    <!-- الشريط العلوي (التوقيت والروابط القانونية وأداة الترجمة الفورية) -->
+    <!-- الشريط العلوي (أيقونة اللغات والروابط) -->
     <div class="top-bar">
         <div class="container-flex">
             <span id="live-date">نوفمبر 2026</span>
             
-            <!-- زر الترجمة الفوري السحري للجريدة من جوجل -->
-            <div id="google_translate_element"></div>
+            <!-- مستشعر اللغات الذكي مع أيقونة العالم -->
+            <div class="lang-selector-wrapper">
+                <span class="world-icon">🌐</span>
+                <div id="google_translate_element"></div>
+            </div>
 
             <div class="top-links">
                 <a href="privacy-policy.html">سياسة الخصوصية</a> | 
@@ -47,7 +47,7 @@
         </div>
     </div>
 
-    <!-- الهيدر الرئيسي مدمج فيه الشعار ومساحة أدسينس -->
+    <!-- الهيدر والشعار ومساحة الإعلان العلوية -->
     <header class="main-header">
         <div class="container-flex">
             <div class="logo-area">
@@ -64,95 +64,93 @@
         <div class="container main-nav-container">
             <ul>
                 <li><a href="index.html" class="active">الرئيسية</a></li>
-                <li><a href="#politics">سياسة دولية</a></li>
                 <li><a href="#local">أخبار وطنية</a></li>
+                <li><a href="#politics">سياسة دولية</a></li>
                 <li><a href="#economy">اقتصاد</a></li>
                 <li><a href="#sports">رياضة</a></li>
             </ul>
         </div>
     </nav>
 
-    <!-- شريط الأخبار العاجلة السريع -->
+    <!-- شريط الأخبار العاجلة -->
     <div class="breaking-news-bar">
         <div class="breaking-title">عاجل</div>
         <div class="breaking-content">
             <marquee behavior="scroll" direction="right" scrollamount="6">
-                • شبكة نكسوس بريس تنطلق رسمياً لمواكبة الأحداث الوطنية والدولية أولاً بأول بصيغة بشرية احترافية متوافقة مع معايير السيو والترجمة الفورية الشاملة.
+                • شبكة نكسوس بريس تنطلق رسمياً لمواكبة الأحداث الوطنية والدولية أولاً بأول بأعلى المعايير المهنية والصحفية المتكاملة.
             </marquee>
         </div>
     </div>
 
-    <!-- شبكة المحتوى الإخباري الجذري للواجهة -->
     <main class="main-wrapper container">
-        
-        <!-- قسم الأخبار الرئيسي (اليمين) -->
         <div class="content-area">
             
-            <!-- المانشيت الكبير (الخبر الرئيسي المرتبط تلقائياً بالبوت الصحفي لـ هسبريس) -->
-            <article class="hero-story">
-                <a href="news-ar_local-0.html">
-                    <div class="img-container">
-                        <img src="https://unsplash.com" alt="عنوان الخبر الرئيسي" loading="eager">
-                    </div>
-                    <div class="story-details">
-                        <span class="category-tag">أخبار وطنية</span>
-                        <h2>أحدث المستجدات الوطنية والمحلية والأوضاع الراهنة بالمملكة المغربية اليوم</h2>
-                        <p>تابعوا معنا من خلال هذا التقرير الشامل والمفصل آخر ما استجد في الساحة الوطنية والقرارات التشريعية والبرلمانية، وتطورات القوة الشرائية وأسواق الاستهلاك الأساسية بأسلوبنا البشري الخاص والمستقل والمواكب للحدث أولاً بأول...</p>
-                        <span class="time">تحديث فوري بالدقيقة</span>
-                    </div>
-                </a>
-            </article>
-
-            <!-- شبكة الأخبار الفرعية التكتيكية لملء القوائم ديناميكياً -->
+            <!-- قسم أخبار وطنية (6 مقالات مربوطة بالكامل) -->
+            <h2 class="section-block-title" id="local">أخبار وطنية ومحلية</h2>
             <section class="grid-stories">
-                <article class="sub-story">
-                    <a href="news-ar_world-0.html">
-                        <img src="https://unsplash.com" alt="سياسة دولية" loading="lazy">
-                        <span class="category-tag">سياسة دولية</span>
-                        <h3>مستجدات الحراك السياسي الدولي وتأثيره المباشر على التوازنات في المنطقة والعالم</h3>
-                    </a>
-                </article>
-                <article class="sub-story">
-                    <a href="news-ar_economy-0.html">
-                        <img src="https://unsplash.com" alt="اقتصاد" loading="lazy">
-                        <span class="category-tag">اقتصاد</span>
-                        <h3>تحليلات أسواق المال ومؤشرات النمو الاقتصادي المرتقبة بخصوص أسعار الطاقة والمحروقات</h3>
-                    </a>
-                </article>
+                <div class="sub-story"><a href="news-ar_local-0.html"><h3>مستجدات الملفات الوطنية والأوضاع الراهنة بالمملكة - التقرير الأول</h3></a></div>
+                <div class="sub-story"><a href="news-ar_local-1.html"><h3>مستجدات الملفات الوطنية والأوضاع الراهنة بالمملكة - التقرير الثاني</h3></a></div>
+                <div class="sub-story"><a href="news-ar_local-2.html"><h3>مستجدات الملفات الوطنية والأوضاع الراهنة بالمملكة - التقرير الثالث</h3></a></div>
+                <div class="sub-story"><a href="news-ar_local-3.html"><h3>مستجدات الملفات الوطنية والأوضاع الراهنة بالمملكة - التقرير الرابع</h3></a></div>
+                <div class="sub-story"><a href="news-ar_local-4.html"><h3>مستجدات الملفات الوطنية والأوضاع الراهنة بالمملكة - التقرير الخامس</h3></a></div>
+                <div class="sub-story"><a href="news-ar_local-5.html"><h3>مستجدات الملفات الوطنية والأوضاع الراهنة بالمملكة - التقرير السادس</h3></a></div>
+            </section>
+
+            <!-- قسم سياسة دولية (6 مقالات مربوطة بالكامل) -->
+            <h2 class="section-block-title" id="politics">سياسة دولية وعالمية</h2>
+            <section class="grid-stories">
+                <div class="sub-story"><a href="news-ar_world-0.html"><h3>تحليلات الحراك السياسي الدولي والتوازنات العالمية - التقرير الأول</h3></a></div>
+                <div class="sub-story"><a href="news-ar_world-1.html"><h3>تحليلات الحراك السياسي الدولي والتوازنات العالمية - التقرير الثاني</h3></a></div>
+                <div class="sub-story"><a href="news-ar_world-2.html"><h3>تحليلات الحراك السياسي الدولي والتوازنات العالمية - التقرير الثالث</h3></a></div>
+                <div class="sub-story"><a href="news-ar_world-3.html"><h3>تحليلات الحراك السياسي الدولي والتوازنات العالمية - التقرير الرابع</h3></a></div>
+                <div class="sub-story"><a href="news-ar_world-4.html"><h3>تحليلات الحراك السياسي الدولي والتوازنات العالمية - التقرير الخامس</h3></a></div>
+                <div class="sub-story"><a href="news-ar_world-5.html"><h3>تحليلات الحراك السياسي الدولي والتوازنات العالمية - التقرير السادس</h3></a></div>
+            </section>
+
+            <!-- قسم اقتصاد (6 مقالات مربوطة بالكامل) -->
+            <h2 class="section-block-title" id="economy">اقتصاد وأسواق طاقة</h2>
+            <section class="grid-stories">
+                <div class="sub-story"><a href="news-ar_economy-0.html"><h3>مؤشرات النمو الاقتصادي، الغلاء وأسعار المحروقات - التقرير الأول</h3></a></div>
+                <div class="sub-story"><a href="news-ar_economy-1.html"><h3>مؤشرات النمو الاقتصادي، الغلاء وأسعار المحروقات - التقرير الثاني</h3></a></div>
+                <div class="sub-story"><a href="news-ar_economy-2.html"><h3>مؤشرات النمو الاقتصادي، الغلاء وأسعار المحروقات - التقرير الثالث</h3></a></div>
+                <div class="sub-story"><a href="news-ar_economy-3.html"><h3>مؤشرات النمو الاقتصادي، الغلاء وأسعار المحروقات - التقرير الرابع</h3></a></div>
+                <div class="sub-story"><a href="news-ar_economy-4.html"><h3>مؤشرات النمو الاقتصادي، الغلاء وأسعار المحروقات - التقرير الخامس</h3></a></div>
+                <div class="sub-story"><a href="news-ar_economy-5.html"><h3>مؤشرات النمو الاقتصادي، الغلاء وأسعار المحروقات - التقرير السادس</h3></a></div>
+            </section>
+
+            <!-- قسم رياضة (6 مقالات مربوطة بالكامل) -->
+            <h2 class="section-block-title" id="sports">مستجدات الساحة الرياضية</h2>
+            <section class="grid-stories">
+                <div class="sub-story"><a href="news-ar_sports-0.html"><h3>متابعة الفعاليات الرياضية الوطنية والبطولات الدولية - التقرير الأول</h3></a></div>
+                <div class="sub-story"><a href="news-ar_sports-1.html"><h3>متابعة الفعاليات الرياضية الوطنية والبطولات الدولية - التقرير الثاني</h3></a></div>
+                <div class="sub-story"><a href="news-ar_sports-2.html"><h3>متابعة الفعاليات الرياضية الوطنية والبطولات الدولية - التقرير الثالث</h3></a></div>
+                <div class="sub-story"><a href="news-ar_sports-3.html"><h3>متابعة الفعاليات الرياضية الوطنية والبطولات الدولية - التقرير الرابع</h3></a></div>
+                <div class="sub-story"><a href="news-ar_sports-4.html"><h3>متابعة الفعاليات الرياضية الوطنية والبطولات الدولية - التقرير الخامس</h3></a></div>
+                <div class="sub-story"><a href="news-ar_sports-5.html"><h3>متابعة الفعاليات الرياضية الوطنية والبطولات الدولية - التقرير السادس</h3></a></div>
             </section>
 
         </div>
 
-        <!-- القائمة الجانبية (اليسار) للمنافسة والربح -->
+        <!-- القائمة الجانبية لإعلانات أدسينس الفاخرة المربحة -->
         <aside class="sidebar-area">
-            <div class="widget">
-                <h3 class="widget-title">الأكثر قراءة الآن</h3>
-                <ul class="trending-list">
-                    <li>
-                        <span class="rank">1</span>
-                        <a href="news-ar_sports-0.html">تطورات متسارعة تشهدها الساحة الرياضية وجدول مباريات المنتخبات الوطنية والرياضات الأخرى</a>
-                    </li>
-                </ul>
-            </div>
             <div class="widget-ad">
                 <span>مساحة إعلانية عمودية (AdSense 300x600)</span>
             </div>
         </aside>
-
     </main>
 
-    <!-- تذييل الجريدة الاحترافي -->
+    <!-- تذييل الجريدة المهني -->
     <footer class="main-footer">
         <div class="container grid-footer">
             <div class="footer-about">
                 <h3>نكسوس بريس | Nexus Press</h3>
-                <p>منصة إعلامية متجددة على مدار الساعة تنقل الحدث بصيغة بشرية مهنية وقانونية خالية من حقوق الملكية وتدعم الترجمة الفورية الكاملة للإنجليزية والفرنسية.</p>
+                <p>منصة إعلامية متجددة على مدار الساعة تنقل الحدث بأعلى معايير المصداقية والمهنية الصحفية المعتمدة وتدعم الترجمة الفورية الكاملة للإنجليزية والفرنسية.</p>
             </div>
             <div class="footer-legal">
-                <h4>روابط قانونية للقبول في أدسينس</h4>
+                <h4>روابط تهمك</h4>
                 <ul>
                     <li><a href="privacy-policy.html">سياسة الخصوصية</a></li>
-                    <li><a href="contact.html">اتصل بالإدارة</a></li>
+                    <li><a href="contact.html">اتصل بنا</a></li>
                 </ul>
             </div>
         </div>
@@ -161,7 +159,7 @@
         </div>
     </footer>
 
-    <!-- سكربت جوجل الذكي المسؤول عن تفعيل ميزة الترجمة بدون تهنيج وبسرعة فائقة -->
+    <!-- سكربت الترجمة الفورية التلقائي بدون تحميل زائد -->
     <script type="text/javascript">
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({
