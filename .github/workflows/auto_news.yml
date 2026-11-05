@@ -1,46 +1,39 @@
-name: Nexus Press Auto Publisher
+name: Publish Nexus Press news
 
 on:
   schedule:
-    - cron: '0 * * * *' # يعمل تلقائياً على رأس كل ساعة طيلة الـ 24 ساعة بدون توقف لمواكبة الحدث الفوري
-  workflow_dispatch: # يتيح لك تشغيل البوت يدوياً بضغطة زر واحدة في أي وقت
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-news
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0 # جلب كامل التاريخ لمنع تعارض المزامنة التلقائية نهائياً
-
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.x'
-
-    - name: Install Dependencies
-      run: |
-        # تثبيت حزم الاعتماد لضمان قراءة الأخبار وسحب مصفوفات الصور
-        pip install feedparser requests
-
-    - name: Run Robot Journalist
-      run: |
-        # تشغيل محرك البوت لبناء وضخ الـ 24 مقالاً بالصور والتعليقات والفقرات المنفصلة بسطور
-        SCRIPT_PATH=$(find . -name "*fetch_news*.py" | head -n 1)
-        python "$SCRIPT_PATH"
-
-    - name: Commit and Push Updates
-      run: |
-        git config --global user.name "NexusPress-Bot"
-        git config --global user.email "bot@nexuspress.com"
-        
-        # 1. حفظ التقارير الـ 24 المحدثة والمنوعة بالصور والتعليقات في مستودعك وتفريغ الـ Index
-        git add .
-        git diff-index --quiet HEAD || git commit -m "تحديث تلقائي رأس الساعة: صياغة ونشر آخر الأخبار والتحليلات لجريدة نكسوس بريس"
-        
-        # 2. المزامنة الآمنة والجذرية بعد الـ Commit لمنع التعارض والرفض مع ملف جوجل والملفات القانونية بالفوتر
-        git pull --rebase origin main
-        
-        # 3. رفع التحديثات النهائية لتظهر مباشرة وبأعلى سرعة على رابط موقعك
-        git push origin main
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip feedparser requests
+      - name: Generate articles and homepage data
+        run: python fetch_news.py
+      - name: Commit and push generated pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add news-data.json news-ar_*.html
+          if git diff --cached --quiet; then
+            echo "No news updates to publish."
+            exit 0
+          fi
+          git commit -m "Update news articles"
+          git push
