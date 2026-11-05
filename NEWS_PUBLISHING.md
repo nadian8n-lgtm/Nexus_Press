@@ -1,16 +1,20 @@
-# News publishing workflow
+# سياسة إعداد المسودات الإخبارية
 
-The scheduled workflow checks the configured publisher RSS feeds hourly. It publishes only fresh stories that have matching coverage from at least two distinct publisher domains. The script uses RSS headlines and short descriptions as reporting leads; it does not copy source article text or source images. Article copy is generated as a new Arabic editorial draft, source links are shown on the article page, and the accompanying graphics are created locally as original SVG artwork.
+يعمل GitHub Actions كل ساعة تقريباً لجلب عناوين وأوصاف قصيرة من موجزات RSS المحددة في `fetch_news.py`. ينشئ النظام مسودات عربية وروابط المصادر ورسومات SVG توضيحية أصلية، ثم يرفعها كـ Actions Artifact للمراجعة. **لا ينشر هذا النظام المقالات تلقائياً على الموقع**.
 
-## Required GitHub Actions secret
+## السر المطلوب
 
-In the repository settings, add an Actions secret named `OPENAI_API_KEY` containing an API key authorized to call the OpenAI Chat Completions API with the configured model (`gpt-4.1-mini`). Do not put the key in this file, in source code, or in a public message. If the existing key is for another provider or is stored under a different secret name, update the workflow and API client accordingly; the workflow cannot read or infer other secret names automatically.
+أضف سر GitHub Actions باسم `OPENAI_API_KEY` من Settings → Secrets and variables → Actions. لا تضع المفتاح في ملفات المشروع أو المحادثات. تُرسل عناوين ومقتطفات RSS إلى OpenAI لإنشاء مسودة، وقد تنطبق رسوم استخدام حسب حسابك وإعدادات المزود.
 
-## Editorial safeguards and limitations
+## حدود تحريرية وقانونية
 
-- The source list is curated in `fetch_news.py`; this is not an exhaustive search of the whole internet.
-- A story is skipped if it is not recent, cannot be matched across two distinct publishers, the API is unavailable, or the originality checks fail.
-- RSS does not provide complete reporting material in every case. Generated copy must not add facts not supported by the supplied source records, but automated checks cannot guarantee factual accuracy, legal compliance, or zero plagiarism. Human review is recommended for sensitive allegations, health, crime, legal matters, and developing events.
-- Images are original branded SVG illustrations based on the headline, not photographs of the event. They avoid reusing publisher photographs; they should not be mistaken for documentary images.
-- GitHub Actions scheduled starts can be delayed, and publication is not guaranteed to occur exactly at the start of every hour.
-- The API key may incur usage charges. Set provider spending limits and monitor usage.
+- قائمة RSS محددة وليست بحثاً شاملاً في الإنترنت، وقد تتغير عناوين الموجزات أو شروط استخدامها. راجع شروط كل ناشر قبل الاعتماد عليها.
+- تطابق عناوين أو مقتطفات من عدة موجزات لا يثبت استقلال المصادر ولا صحة الواقعة.
+- المقتطفات القصيرة لا تكفي عادةً لبناء خبر مكتمل. يجب الرجوع إلى المواد الأصلية والتحقق من التفاصيل والأرقام والأسماء والتواريخ والسياق، والاستناد إلى المصادر الأولية متى أمكن.
+- فحص التشابه الآلي محدود ولا يضمن خلو النص من الانتحال أو مخالفة حقوق النشر؛ لا توجد ضمانة بانعدام المسؤولية القانونية.
+- الصور رسوم توضيحية مولدة للمسودة، وليست صوراً توثيقية. لا تستخدم صور الصحف أو صور الأشخاص دون التحقق من الترخيص والحقوق.
+- الأخبار الحساسة (اتهامات، قضايا جنائية، صحة، قاصرون، خصوصية، انتخابات) تحتاج تحققاً بشرياً ومراجعة قانونية مناسبة قبل النشر.
+- مخرجات الذكاء الاصطناعي مسودات وقد تحتوي أخطاء. لا تعتمدها أو تنشرها دون تدقيق تحريري بشري.
+- تشغيل GitHub Actions المجدول تقريبي وقد يتأخر. لا يضمن السبق أو دقة مطلقة.
+
+هذا الإجراء يقلل بعض المخاطر فقط، ولا يحل محل المشورة القانونية في المغرب أو مراجعة شروط المصادر ومزوّد الخدمة.
