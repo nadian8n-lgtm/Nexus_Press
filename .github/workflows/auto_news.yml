@@ -1,6 +1,7 @@
-name: Prepare hourly news drafts for editorial review
+name: Publish original news hourly
 
 on:
+  # UTC. GitHub may delay scheduled starts; this is not guaranteed to run exactly on the hour.
   schedule:
     - cron: '5 * * * *'
   workflow_dispatch:
@@ -9,25 +10,25 @@ permissions:
   contents: write
 
 concurrency:
-  group: nexus-press-news-drafts
+  group: nexus-press-news-publisher
   cancel-in-progress: false
 
 jobs:
-  prepare-drafts:
+  publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     env:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       OPENAI_MODEL: gpt-4.1-mini
-      NEWS_MAX_AGE_HOURS: '36'
-      MAX_DRAFTS_PER_CATEGORY: '2'
-      DRAFT_OUTPUT_DIR: /tmp/nexus-press-drafts
-      PYTHONDONTWRITEBYTECODE: '1'
+      NEWS_MAX_AGE_HOURS: '24'
+      MAX_ARTICLES_PER_CATEGORY: '2'
+      MAX_TOTAL_ARTICLES: '40'
 
     steps:
-      - name: Check out repository
+      - name: Check out main
         uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
 
       - name: Set up Python
@@ -40,91 +41,29 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install feedparser requests
 
-      - name: Check required files and secret
+      - name: Validate secret and Python syntax
         shell: bash
         run: |
           set -euo pipefail
-
           if [[ -z "${OPENAI_API_KEY:-}" ]]; then
-            echo "Missing Actions secret: OPENAI_API_KEY" >&2
+            echo "Missing repository Actions secret OPENAI_API_KEY" >&2
             exit 1
           fi
+          python -m py_compile fetch_news.py
 
-          test -f fetch_news.py
-          test -f editorial_guard.py
-          test -f news-state.json
+      - name: Collect, edit, and publish eligible news
+        run: python fetch_news.py
 
-      - name: Check Python syntax
-        run: |
-          python - <<'PY'
-          import ast
-          from pathlib import Path
-
-          for filename in ("fetch_news.py", "editorial_guard.py"):
-              ast.parse(Path(filename).read_text(encoding="utf-8"), filename=filename)
-              print(f"Syntax OK: {filename}")
-          PY
-
-      - name: Generate drafts and review checklist
+      - name: Commit and push published articles
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p "$DRAFT_OUTPUT_DIR"
-          python fetch_news.py
-          python editorial_guard.py
-
-      - name: Ensure public website files were not changed
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          python - <<'PY'
-          import subprocess
-          import sys
-
-          result = subprocess.run(
-              ["git", "status", "--porcelain", "--untracked-files=all"],
-              check=True,
-              capture_output=True,
-              text=True,
-          )
-
-          unexpected = []
-          for line in result.stdout.splitlines():
-              path = line[3:] if len(line) >= 4 else line
-              if path != "news-state.json":
-                  unexpected.append(line)
-
-          if unexpected:
-              print("Unexpected repository changes; stopping:", file=sys.stderr)
-              print("\n".join(unexpected), file=sys.stderr)
-              sys.exit(1)
-          PY
-
-      - name: Save deduplication state
-        shell: bash
-        run: |
-          set -euo pipefail
-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- news-state.json
-
+          git add -- news-data.json news-state.json article-ar_*.html news-images/
           if git diff --cached --quiet; then
-            echo "No deduplication state changes."
+            echo "No new eligible stories to publish."
             exit 0
           fi
-
-          git commit -m "Update editorial draft discovery state"
-          git fetch origin "$GITHUB_REF_NAME"
-          git rebase "origin/$GITHUB_REF_NAME"
-          git push origin "HEAD:$GITHUB_REF_NAME"
-
-      - name: Upload drafts for review
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: nexus-press-editorial-review-${{ github.run_number }}
-          path: /tmp/nexus-press-drafts/
-          if-no-files-found: warn
-          retention-days: 7
+          git commit -m "Publish original source-linked news"
+          git push origin HEAD:main
