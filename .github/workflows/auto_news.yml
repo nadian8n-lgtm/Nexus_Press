@@ -12,7 +12,7 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
       with:
-        fetch-depth: 0 # جلب كامل التاريخ لمنع تعارض الـ Pull
+        fetch-depth: 0 # جلب كامل التاريخ لمنع تعارض الـ Pull والمزامنة
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -25,7 +25,7 @@ jobs:
 
     - name: Run Robot Journalist
       run: |
-        # تشغيل السكريبت بشكل آمن وديناميكي أينما كان بالمستودع
+        # البحث الديناميكي عن ملف البوت وتشغيله بكفاءة
         SCRIPT_PATH=$(find . -name "*fetch_news*.py" | head -n 1)
         python "$SCRIPT_PATH"
 
@@ -34,7 +34,7 @@ jobs:
         git config --global user.name "NexusPress-Bot"
         git config --global user.email "bot@nexuspress.com"
         git add .
-        # عمل مزامنة ذكية مسبقة لمنع أي تعارض مع ملف جوجل الإثباتي
+        # عمل مزامنة آمنة مسبقة لحماية ملف جوجل الإثباتي والصفحات القانونية
         git pull --rebase origin main
-        git diff-index --quiet HEAD || git commit -m "تحديث تلقائي: نشر آخر الأخبار والتريندات الراهنة"
+        git diff-index --quiet HEAD || git commit -m "تحديث تلقائي: صياغة ونشر آخر الأخبار المتنوعة من هسبريس والمصادر العالمية"
         git push origin main
