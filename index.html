@@ -16,7 +16,8 @@
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
     <link href="https://googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="style.css">
+    <!-- ربط ملف التنسيق المباشر والمصحح لحل مشكلة المظهر -->
+    <link rel="stylesheet" href="./style.css">
 
     <!-- البيانات المنظمة لجوجل (JSON-LD) لتسريع الأرشفة التلقائية -->
     <script type="application/ld+json">
@@ -31,12 +32,12 @@
 </head>
 <body>
 
-    <!-- الشريط العلوي (التوقيت والروابط القانونية وأداة الترجمة) -->
+    <!-- الشريط العلوي (التوقيت والروابط القانونية وأداة الترجمة الفورية) -->
     <div class="top-bar">
         <div class="container-flex">
             <span id="live-date">نوفمبر 2026</span>
             
-            <!-- زر الترجمة الفوري السحري للجريدة -->
+            <!-- زر الترجمة الفوري السحري للجريدة من جوجل -->
             <div id="google_translate_element"></div>
 
             <div class="top-links">
@@ -46,12 +47,12 @@
         </div>
     </div>
 
-    <!-- الهيدر الرئيسي مدمج فيه الشعار الجديد ومساحة أدسينس -->
+    <!-- الهيدر الرئيسي مدمج فيه الشعار ومساحة أدسينس -->
     <header class="main-header">
         <div class="container-flex">
             <div class="logo-area">
                 <a href="index.html" class="logo-link">
-                    <img src="image_MUwSAA.png" alt="نكسوس بريس Nexus Press" class="main-logo-img">
+                    <img src="./image_MUwSAA.png" alt="نكسوس بريس Nexus Press" class="main-logo-img">
                 </a>
             </div>
             <div class="ad-space-header">مساحة إعلانية (Google AdSense 728x90)</div>
@@ -60,7 +61,7 @@
 
     <!-- شريط الأقسام الرئيسي للجريدة -->
     <nav class="main-nav">
-        <div class="container">
+        <div class="container main-nav-container">
             <ul>
                 <li><a href="index.html" class="active">الرئيسية</a></li>
                 <li><a href="#politics">سياسة دولية</a></li>
@@ -81,7 +82,7 @@
         </div>
     </div>
 
-    <!-- شبكة المحتوى الإخباري الجذري -->
+    <!-- شبكة المحتوى الإخباري الجذري للواجهة -->
     <main class="main-wrapper container">
         
         <!-- قسم الأخبار الرئيسي (اليمين) -->
@@ -108,7 +109,7 @@
                     <a href="news-ar_world-0.html">
                         <img src="https://unsplash.com" alt="سياسة دولية" loading="lazy">
                         <span class="category-tag">سياسة دولية</span>
-                        <h3>مستجدات الحراك السياسي الدولي وتأثيره المباشر على التوازنات في المنطقة</h3>
+                        <h3>مستجدات الحراك السياسي الدولي وتأثيره المباشر على التوازنات في المنطقة والعالم</h3>
                     </a>
                 </article>
                 <article class="sub-story">
@@ -129,7 +130,7 @@
                 <ul class="trending-list">
                     <li>
                         <span class="rank">1</span>
-                        <a href="news-ar_sports-0.html">تطورات متسارعة تشهدها الساحة الرياضية وجدول مباريات المنتخبات الوطنية</a>
+                        <a href="news-ar_sports-0.html">تطورات متسارعة تشهدها الساحة الرياضية وجدول مباريات المنتخبات الوطنية والرياضات الأخرى</a>
                     </li>
                 </ul>
             </div>
@@ -170,7 +171,7 @@
             }, 'google_translate_element');
         }
     </script>
-    <script type="text/javascript" src="//://google.com"></script>
+    <script type="text/javascript" src="https://google.com"></script>
 
 </body>
 </html>
