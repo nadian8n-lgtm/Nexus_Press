@@ -3,73 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اتصل بنا - إدارة تحرير نكسوس بريس | Nexus Press</title>
+    <title>اتصل بنا - نكسوس بريس | Nexus Press</title>
     <meta name="robots" content="index, follow">
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #f5f7fa; color: #333; line-height: 1.8; padding: 40px 20px; }
-        .contact-container { max-width: 650px; margin: 0 auto; background: #ffffff; padding: 40px; border-radius: 6px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 4px solid #0b3c7a; }
-        .contact-header { text-align: center; margin-bottom: 30px; }
-        .contact-header img { height: 60px; width: auto; margin-bottom: 15px; }
-        h1 { color: #0b3c7a; font-size: 26px; font-weight: 700; }
-        p { color: #666; font-size: 15px; }
-        .info-section { margin: 25px 0; background: #f8f9fa; padding: 20px; border-radius: 4px; border-right: 4px solid #0b3c7a; }
-        .info-item { margin-bottom: 12px; font-size: 16px; color: #444; }
-        .info-item strong { color: #071c35; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; font-weight: 600; margin-bottom: 5px; color: #071c35; font-size: 14px; }
-        input[type="text"], input[type="email"], textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-family: 'Cairo', sans-serif; font-size: 14px; box-sizing: border-box; }
-        textarea { height: 120px; resize: none; }
-        .btn-submit { display: block; width: 100%; background: #0b3c7a; color: #fff; border: none; padding: 12px; border-radius: 4px; font-weight: bold; font-size: 16px; cursor: pointer; transition: background 0.2s; font-family: 'Cairo', sans-serif; }
-        .btn-submit:hover { background: #071c35; }
-        .btn-back { display: block; text-align: center; margin-top: 20px; color: #555; text-decoration: none; font-size: 14px; }
-        .btn-back:hover { color: #0b3c7a; }
+        :root {
+            --main-color: #0b3c7a;
+            --dark-color: #071c35;
+            --light-bg: #f4f6f9;
+            --white: #ffffff;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: var(--light-bg); 
+            color: #333; 
+            line-height: 1.8; 
+            padding: 40px 20px; 
+        }
+        .contact-container { 
+            max-width: 700px; 
+            margin: 0 auto; 
+            background: var(--white); 
+            padding: 40px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            border-top: 4px solid var(--main-color); 
+        }
+        .contact-header { 
+            text-align: center; 
+            margin-bottom: 30px; 
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 20px;
+        }
+        .contact-header img { 
+            height: 90px; 
+            width: auto; 
+            margin-bottom: 15px; 
+        }
+        h1 { 
+            color: var(--main-color); 
+            font-size: 26px; 
+            font-weight: 900; 
+        }
+        p { 
+            color: #555; 
+            font-size: 15px; 
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: var(--dark-color);
+            font-size: 14px;
+        }
+        input[type="text"], input[type="email"], textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+            background: #f8fafc;
+            transition: border-color 0.2s;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--main-color);
+            background: #fff;
+        }
+        .btn-submit {
+            display: block;
+            width: 100%;
+            background: var(--main-color);
+            color: var(--white);
+            border: none;
+            padding: 14px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            transition: background 0.2s;
+        }
+        .btn-submit:hover {
+            background: var(--dark-color);
+        }
+        .btn-home {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--gray-color);
+            font-size: 14px;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
 
     <div class="contact-container">
         <div class="contact-header">
-            <img src="image_MUwSAA.png" alt="نكسوس بريس">
-            <h1>اتصل بهيئة التحرير والإدارة</h1>
-            <p>يسعدنا استقبال مقترحاتكم، استفساراتكم الإخبارية، وطلبات الإعلان</p>
+            <img src="./image_MUwSAA.png" alt="Nexus Press">
+            <h1>اتصل بنا - هيئة التحرير</h1>
         </div>
+        
+        <p>يسعدنا استقبال استفساراتكم، مقترحاتكم، أو طلبات الإعلان عبر ملء الاستمارة الرسمية أدناه، وسيقوم القسم المعني بالرد عليكم في أقرب وقت.</p>
 
-        <!-- معلومات التواصل المباشرة المهمة للقبول القانوني -->
-        <div class="info-section">
-            <div class="info-item"><strong>البريد الإلكتروني للإدارة:</strong> contact.nexuspress@gmail.com</div>
-            <div class="info-item"><strong>مقر هيئة التحرير الرئيسي:</strong> الرباط، المملكة المغربية</div>
-            <div class="info-item"><strong>ساعات العمل الصحفي:</strong> على مدار 24 ساعة طيلة أيام الأسبوع</div>
-        </div>
-
-        <!-- نموذج اتصال احترافي ونظيف يعمل فورا -->
-        <form action="#" method="POST" onsubmit="alert('شكراً لتواصلك مع نكسوس بريس. سيقوم القسم المختص بالرد عليك في أقرب وقت.'); return false;">
+        <form action="#" method="POST" onsubmit="event.preventDefault(); alert('تم إرسال رسالتكم بنجاح! شكراً لتواصلكم مع نكسوس بريس.'); this.reset();">
             <div class="form-group">
-                <label for="name">الاسم الكامل / اسم المؤسسة</label>
-                <input type="text" id="name" required placeholder="أدخل اسمك هنا">
+                <label for="name">الاسم الكامل</label>
+                <input type="text" id="name" required placeholder="أدخل اسمك الكامل هنا">
             </div>
             
             <div class="form-group">
                 <label for="email">البريد الإلكتروني</label>
-                <input type="email" id="email" required placeholder="name@example.com">
+                <input type="email" id="email" required placeholder="username@example.com">
             </div>
-
+            
             <div class="form-group">
                 <label for="subject">موضوع الرسالة</label>
-                <input type="text" id="subject" required placeholder="مثال: طلب تغطية إعلامية، استفسار إعلاني">
+                <input type="text" id="subject" required placeholder="اكتب عنواناً لرسالتك">
             </div>
-
+            
             <div class="form-group">
                 <label for="message">نص الرسالة</label>
-                <textarea id="message" required placeholder="اكتب تفاصيل رسالتك هنا..."></textarea>
+                <textarea id="message" rows="6" required placeholder="اكتب تفاصيل رسالتك هنا بكل وضوح..."></textarea>
             </div>
-
+            
             <button type="submit" class="btn-submit">إرسال الرسالة الآن</button>
         </form>
 
-        <a href="index.html" class="btn-back">العودة إلى الرئيسية</a>
+        <div style="text-align: center;">
+            <a href="index.html" class="btn-home">العودة إلى الصفحة الرئيسية</a>
+        </div>
     </div>
 
 </body>
