@@ -2,8 +2,8 @@ name: Nexus Press Auto Publisher
 
 on:
   schedule:
-    - cron: '0 */6 * * *' # يعمل تلقائياً كل 6 ساعات لمواكبة الحدث أولاً بأول
-  workflow_dispatch: # يتيح لك تشغيله يدوياً بضغطة زر في أي وقت
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -22,7 +22,11 @@ jobs:
         pip install feedparser
 
     - name: Run Robot Journalist
-      run: python fetch_news.py
+      run: |
+        # Recherche dynamique et exécution du fichier contenant 'fetch_news'
+        SCRIPT_PATH=$(find . -name "*fetch_news*.py" | head -n 1)
+        echo "Script trouvé à l'emplacement : $SCRIPT_PATH"
+        python "$SCRIPT_PATH"
 
     - name: Commit and Push Updates
       run: |
