@@ -12,14 +12,16 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.x'
-
-    - name: Install Dependencies
+        - name: Commit and Push Updates
       run: |
-        pip install feedparser
+        git config --global user.name "NexusPress-Bot"
+        git config --global user.email "bot@nexuspress.com"
+        git add .
+        # كود المزامنة الذكي لمنع التعارض مع ملف جوجل
+        git pull --rebase origin main
+        git diff-index --quiet HEAD || git commit -m "تحديث تلقائي: نشر آخر الأخبار والتريندات الراهنة"
+        git push origin main
+
 
     - name: Run Robot Journalist
       run: |
