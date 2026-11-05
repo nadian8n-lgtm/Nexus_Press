@@ -1,6 +1,6 @@
 ---
 
-### 2. كود ملف التنسيقات الفاخر والمصحح للألوان (`style.css`)
+### 3. كود ملف التنسيقات الفاخر والمتحرك للألوان (`style.css`)
 قم باستبدال كود ملف `style.css` الحالي بالكامل لتفعيل اللون السماوي الفاتح لرأس الموقع والخطوط البيضاء الواضحة داخل شريط عاجل:
 
 ```css
@@ -59,7 +59,7 @@ a { text-decoration: none; color: inherit; transition: var(--transition); }
     font-weight: 600;
 }
 
-/* تعديل الهيدر ليصبح بالخلفية السماوية الفاتحة الاحترافية */
+/* تعديل الهيدر ليصبح بالخلفية السماوية الفاتحة */
 .main-header { 
     background: var(--sky-blue) !important; 
     padding: 20px 0; 
@@ -93,7 +93,7 @@ a { text-decoration: none; color: inherit; transition: var(--transition); }
     background: var(--main-color);
 }
 
-/* تعديل شريط عاجل لتصبح الكتابة باللون الأبيض الواضح والثابت */
+/* شريط عاجل ذو نصوص بيضاء بالكامل عالية المقروئية والمصداقية */
 .breaking-news-bar { display: flex; background: #c2185b; color: var(--white) !important; font-weight: bold; }
 .breaking-title { background: #880e4f; padding: 12px 30px; color: var(--white); }
 .breaking-content { align-self: center; width: 100%; font-size: 15px; color: var(--white) !important; }
