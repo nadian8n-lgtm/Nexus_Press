@@ -1,0 +1,46 @@
+<!-- أوسمة الميتا الأساسية والترميز -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!-- العناوين والأوصاف المتقدمة للسيو (SEO) -->
+<title>نكسوس بريس | Nexus Press - بوابة الأخبار العالمية والمحلية الفورية</title>
+<meta name="description" content="بوابة إخبارية دولية مستقلة تقدم تغطية شاملة للأحداث السياسية، الاقتصادية، والرياضية الراهنة بأعلى مستويات الاحترافية والمهنية على مدار الساعة.">
+<meta name="keywords" content="نكسوس بريس, nexus press, أخبار المغرب, أخبار عاجلة, الأخبار الدولية, اقتصاد, رياضة, صحافة إلكترونية, تريند">
+<meta name="author" content="القسم التحريري - نكسوس بريس">
+
+<!-- أوامر توجيه عناكب البحث والزحف (Robots Control) لـ Google News -->
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="googlebot" content="index, follow, news", max-snippet:-1>
+<meta name="bingbot" content="index, follow">
+
+<!-- كود الرابط الثابت (Canonical) لمنع تكرار المحتوى وتثبيت القوة البرمجية -->
+<link rel="canonical" href="https://github.io">
+
+<!-- أوسمة الفتح الفاخرة (Open Graph) لتصدر منصات التواصل الاجتماعي (فيسبوك، وتساب، تيليجرام) -->
+<meta property="og:locale" content="ar_MA">
+<meta property="og:type" content="website">
+<meta property="og:title" content="نكسوس بريس | Nexus Press - بوابة الأخبار العالمية والمحلية الفورية">
+<meta property="og:description" content="تغطية شاملة وموسعة للأحداث الراهنة بكل موضوعية ومهنية على مدار الساعة بأسلوب صحفي متميز.">
+<meta property="og:url" content="https://github.io">
+<meta property="og:site_name" content="Nexus Press">
+<meta property="og:image" content="https://github.ioimage_MUwSAA.png">
+<meta property="og:image:secure_url" content="https://github.ioimage_MUwSAA.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/png">
+
+<!-- ميتاداتـا بطاقات إكس / تويتر (Twitter Cards) -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="نكسوس بريس | Nexus Press - بوابة الأخبار العالمية والمحلية الفورية">
+<meta name="twitter:description" content="تغطية شاملة وموسعة للأحداث الراهنة بكل موضوعية ومهنية على مدار الساعة.">
+<meta name="twitter:image" content="https://github.ioimage_MUwSAA.png">
+
+<!-- ميتاداتـا جغرافية لتثبيت النطاق المحلي لـ Google للمملكة المغربية -->
+<meta name="geo.region" content="MA">
+<meta name="geo.position" content="34.26101; -6.58022">
+<meta name="ICBM" content="34.26101, -6.58022">
+
+<!-- ميتاداتـا الأمان والتحقق المتوافقة مع المتصفحات الحديثة -->
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#071c35">
