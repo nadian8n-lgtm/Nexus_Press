@@ -2,7 +2,7 @@ name: Publish original news hourly
 
 on:
   schedule:
-    - cron: '5 * * * *' # UTC; GitHub may delay scheduled starts
+    - cron: '5 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -21,7 +21,7 @@ jobs:
       OPENAI_MODEL: gpt-4.1-mini
       NEWS_MAX_AGE_HOURS: '24'
       MAX_ARTICLES_PER_CATEGORY: '2'
-      MAX_TOTAL_ARTICLES: '40'
+      MAX_TOTAL_ARTICLES: '100'
       GENERATE_AI_IMAGES: 'true'
 
     steps:
@@ -41,7 +41,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install feedparser requests
 
-      - name: Validate secret and syntax
+      - name: Check required secret and Python syntax
         shell: bash
         run: |
           set -euo pipefail
@@ -51,10 +51,10 @@ jobs:
           fi
           python -m py_compile fetch_news.py
 
-      - name: Fetch, edit, and publish unique articles
+      - name: Fetch and publish eligible original articles
         run: python fetch_news.py
 
-      - name: Commit generated article files safely
+      - name: Stage generated files without unmatched globs
         shell: bash
         run: |
           set -euo pipefail
@@ -62,7 +62,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
           if git diff --cached --quiet; then
-            echo "No new eligible stories; nothing to commit."
+            echo "No new eligible stories."
             exit 0
           fi
           git commit -m "Publish unique source-linked news"
