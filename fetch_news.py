@@ -47,11 +47,11 @@ def generate_article_html(title, summary, category, filename):
         f.write(html_content)
 
 def main():
-    new_articles = [] # تم تصحيح القوسين هنا بنجax
+    new_articles = []
     for cat_name, url in FEEDS.items():
         feed = feedparser.parse(url)
         if feed.entries:
-            entry = feed.entries[0] 
+            entry = feed.entries[0]
             title = entry.title
             summary = entry.get('summary', entry.title)
             
