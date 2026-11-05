@@ -18,7 +18,7 @@ IMAGES_POOL = {
 }
 
 def generate_deep_journalistic_content(title, summary, topic):
-    """ تمديد وتوسيع محتوى الخبر تلقائياً ليتراوح بين 800 إلى 1500 كلمة لضمان جودة السيو """
+    """ تمديد وتوسيع محتوى الخبر تلقائياً ليتراوح بين 800 إلى 1500 كلمة لضمان جودة السيو وحماية الفكرية """
     paragraphs = [
         f"<strong>الرباط – تغطية خاصة وحصرية لـ نكسوس بريس |</strong> تشهد الساحة الراهنة حراكاً متسارعاً وتطورات لافتة ترتبط ارتباطاً وثيقاً بـ {topic}، حيث أثارت المستجدات الأخيرة اهتماماً واسعاً على الصعيدين الشعبي والمؤسساتي، نظراً لأبعادها الاستراتيجية وتأثيراتها المباشرة على المعيش اليومي والمنظومة العامة الموجهة للقطاع.",
         f"وفي تفاصيل هذا المشهد، يتضح أن الخلفيات المحيطة بالقضية تعود إلى تراكمات سابقة وملفات لطالما شكلت محور نقاش ساخن بين مختلف الفاعلين. إن العنوان الأبرز اليوم المتجلي في '{title}' يضعنا أمام قراءة موضوعية تستلزم تفكيك المعطيات الميدانية والوقوف على الإحصائيات الرسمية الصادرة عن الجهات الوصية تماشياً مع المتغيرات الاقتصادية والسياسية التي تعيشها المملكة وباقي دول العالم.",
@@ -46,8 +46,10 @@ def generate_article_html(title, summary, category, filename):
     <title>{title} - نكسوس بريس | Nexus Press</title>
     <meta name="description" content="{summary[:150]}">
     <meta name="robots" content="index, follow">
-    <link href="https://googleapis.com" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
     <header class="main-header">
@@ -71,7 +73,7 @@ def generate_article_html(title, summary, category, filename):
             new google.translate.TranslateElement({{pageLanguage: 'ar', includedLanguages: 'ar,en,fr', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}}, 'google_translate_element');
         }}
     </script>
-    <script type="text/javascript" src="//://google.com"></script>
+    <script type="text/javascript" src="https://google.com"></script>
 </body>
 </html>"""
     with open(filename, 'w', encoding='utf-8') as f:
