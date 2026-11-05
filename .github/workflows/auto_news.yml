@@ -2,8 +2,8 @@ name: Nexus Press Auto Publisher
 
 on:
   schedule:
-    - cron: '0 * * * *' # السيرفر يعمل تلقائياً كل ساعة على مدار الـ 24 ساعة لمواكبة الأنباء
-  workflow_dispatch: # يتيح التشغيل اليدوي الفوري بضغطة زر
+    - cron: '0 * * * *' # السيرفر يستيقظ تلقائياً على رأس كل ساعة طيلة الـ 24 ساعة لمواكبة الحدث
+  workflow_dispatch: # يتيح لك تشغيله يدوياً بضغطة زر في أي وقت
 
 jobs:
   build:
@@ -12,7 +12,7 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
       with:
-        fetch-depth: 0
+        fetch-depth: 0 # جلب كامل التاريخ لمنع تعارض المزامنة نهائياً
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -25,6 +25,7 @@ jobs:
 
     - name: Run Robot Journalist
       run: |
+        # البحث الديناميكي عن ملف البوت وتشغيله بكفاءة
         SCRIPT_PATH=$(find . -name "*fetch_news*.py" | head -n 1)
         python "$SCRIPT_PATH"
 
@@ -33,12 +34,12 @@ jobs:
         git config --global user.name "NexusPress-Bot"
         git config --global user.email "bot@nexuspress.com"
         
-        # 1. تثبيت وحفظ ملفات المقالات الـ 24 المحدثة
+        # 1. عمل حفظ (Commit) للمقالات الـ 24 المحدثة لتفريغ الـ Index
         git add .
         git diff-index --quiet HEAD || git commit -m "تحديث تلقائي رأس الساعة: صياغة ونشر آخر الأخبار والتحليلات لجريدة نكسوس بريس"
         
-        # 2. الدمج والمزامنة مع ملف إثبات جوجل تلقائياً
+        # 2. المزامنة الآمنة بعد الـ Commit لدمج ملفات جوجل والملفات القانونية تلقائياً ومنع التعارض
         git pull --rebase origin main
         
-        # 3. رفع الأكواد لتحديث الموقع المباشر فوراً
+        # 3. رفع التحديثات النهائية على مستودعك الخاص لتحديث الجريدة فوراً
         git push origin main
