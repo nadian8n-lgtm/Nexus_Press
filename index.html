@@ -4,80 +4,279 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#071c35">
-  <title>نكسوس بريس | أخبار وطنية ودولية واقتصاد ورياضة</title>
-  <meta name="description" content="نكسوس بريس: مقالات وأخبار مع مصادرها وروابطها.">
+  <title>نكسوس بريس | آخر الأخبار والمقالات</title>
+  <meta name="description" content="تابع أحدث الأخبار الوطنية والدولية والاقتصادية والرياضية والتكنولوجية في نكسوس بريس.">
   <link rel="canonical" href="https://nadian8n-lgtm.github.io/Nexus_Press/">
   <link rel="icon" href="./image_MUwSAA.png">
-  <link rel="stylesheet" href="./style.css?v=20261106-1">
+  <link rel="stylesheet" href="./style.css?v=3">
 </head>
+
 <body>
-  <header class="site-header"><div class="container header-inner">
-    <a class="brand" href="./index.html"><img src="./image_MUwSAA.png" alt="شعار نكسوس بريس"><span>نكسوس بريس</span></a>
-    <p>أخبار ومتابعة من مصادرها</p>
-  </div></header>
-  <nav class="site-nav" aria-label="الأقسام"><div class="container nav-inner">
-    <button class="nav-link is-active" data-filter="all">الرئيسية</button>
-    <button class="nav-link" data-filter="ar_local">أخبار وطنية</button>
-    <button class="nav-link" data-filter="ar_world">أخبار دولية</button>
-    <button class="nav-link" data-filter="ar_economy">اقتصاد</button>
-    <button class="nav-link" data-filter="ar_sports">رياضة</button>
-    <button class="nav-link" data-filter="ar_technology">تكنولوجيا</button>
-  </div></nav>
-  <div class="breaking"><strong>آخر الأخبار</strong><div class="ticker"><span id="ticker">تابع أحدث المقالات المنشورة في نكسوس بريس</span></div></div>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="./index.html" aria-label="نكسوس بريس - الصفحة الرئيسية">
+        <img src="./image_MUwSAA.png" alt="شعار نكسوس بريس">
+        <span>نكسوس بريس</span>
+      </a>
+      <p class="header-note">أخبار ومتابعة من مصادرها</p>
+    </div>
+  </header>
+
+  <nav class="site-nav" aria-label="أقسام الأخبار">
+    <div class="container nav-inner">
+      <button class="nav-link is-active" type="button" data-category="all">الرئيسية</button>
+      <button class="nav-link" type="button" data-category="ar_local">أخبار وطنية</button>
+      <button class="nav-link" type="button" data-category="ar_world">أخبار دولية</button>
+      <button class="nav-link" type="button" data-category="ar_economy">اقتصاد</button>
+      <button class="nav-link" type="button" data-category="ar_sports">رياضة</button>
+      <button class="nav-link" type="button" data-category="ar_technology">تكنولوجيا</button>
+    </div>
+  </nav>
+
+  <section class="breaking-news" aria-label="آخر الأخبار">
+    <strong class="breaking-label">آخر الأخبار</strong>
+    <div class="ticker-window">
+      <div id="ticker" class="ticker">جارٍ تحميل الأخبار…</div>
+    </div>
+  </section>
+
   <main class="container main-content">
-    <section class="intro"><span>المصدر واضح · الصياغة تحريرية</span><h1 id="page-title">أحدث المقالات</h1><p>اختر قسماً لعرض المقالات المنشورة فيه.</p></section>
-    <div class="section-title"><h2>أبرز المقالات</h2><span id="count"></span></div>
-    <div id="status" class="status" role="status">جارٍ تحميل المقالات…</div>
-    <section id="articles" class="news-grid" aria-label="المقالات"></section>
-    <aside class="service-panel"><div><h2>الطقس ومواقيت الصلاة</h2><p>اكتب المدينة والبلد لعرض المعلومات المحلية.</p></div><div class="city-controls"><input id="city" value="Casablanca" aria-label="المدينة"><input id="country" value="Morocco" aria-label="البلد"><button id="load-city">عرض</button></div><p id="weather">الطقس: جارٍ التحميل…</p><p id="prayer">الصلاة: جارٍ التحميل…</p></aside>
-    <aside class="ad-placeholder"><strong>مساحة إعلانية</strong><span>تُفعّل بعد موافقة Google AdSense وإضافة رمز الناشر والوحدة.</span></aside>
+    <section class="intro">
+      <p class="eyebrow">المصدر واضح · الخبر أولاً</p>
+      <h1 id="page-title">أحدث المقالات</h1>
+      <p>اختاري قسماً لمشاهدة المقالات المنشورة فيه.</p>
+    </section>
+
+    <section class="featured-section" aria-labelledby="featured-heading">
+      <div class="section-heading">
+        <h2 id="featured-heading">أبرز المقالات</h2>
+        <div class="slider-controls">
+          <button id="previous" type="button" aria-label="المقال السابق">‹</button>
+          <button id="next" type="button" aria-label="المقال التالي">›</button>
+        </div>
+      </div>
+      <div id="featured-grid" class="featured-grid"></div>
+    </section>
+
+    <div class="ad-placeholder" aria-label="مساحة إعلانية">
+      <strong>مساحة إعلانية</strong>
+      <span>تُفعّل بعد موافقة AdSense وإضافة رمز الناشر والوحدة الرسميين.</span>
+    </div>
+
+    <section class="articles-section" aria-labelledby="articles-heading">
+      <div class="section-heading">
+        <h2 id="articles-heading">كل المقالات</h2>
+        <span id="article-count" class="article-count"></span>
+      </div>
+
+      <p id="status" class="status" role="status" aria-live="polite">
+        جارٍ تحميل المقالات…
+      </p>
+      <div id="articles-grid" class="articles-grid"></div>
+    </section>
   </main>
-  <footer class="site-footer"><div class="container footer-inner"><a href="./index.html">نكسوس بريس</a><a href="./about.html">من نحن</a><a href="./contact.html">اتصل بنا</a><a href="./privacy-policy.html">سياسة الخصوصية</a><span>© <span id="year"></span></span></div></footer>
-<script>
-(() => {
-  const labels={all:'أحدث المقالات',ar_local:'أخبار وطنية',ar_world:'أخبار دولية',ar_economy:'اقتصاد',ar_sports:'رياضة',ar_technology:'تكنولوجيا'};
-  const grid=document.getElementById('articles'),status=document.getElementById('status'); let data=[],filter='all';
-  document.getElementById('year').textContent=new Date().getFullYear();
-  function render(){
-    const items=data.filter(x=>filter==='all'||x.category===filter);
-    grid.replaceChildren();
-    for(const item of items){
-      const card=document.createElement('article');card.className='news-card';
-      const link=document.createElement('a');link.className='card-link';link.href=item.url;
-      const image=document.createElement('img');image.className='card-image';image.src=item.image||'./placeholder.svg';image.alt=item.imageAlt||'';image.loading='lazy';image.onerror=()=>{image.onerror=null;image.src='./placeholder.svg'};
-      const body=document.createElement('div');body.className='card-body';
-      const cat=document.createElement('span');cat.className='badge';cat.textContent=item.categoryLabel||'أخبار';
-      const title=document.createElement('h2');title.textContent=item.title;
-      const summary=document.createElement('p');summary.textContent=item.summary||'';
-      const meta=document.createElement('small');meta.textContent=[item.published,item.source].filter(Boolean).join(' · ');
-      body.append(cat,title,summary,meta);link.append(image,body);card.append(link);grid.append(card);
-    }
-    document.getElementById('page-title').textContent=labels[filter]||labels.all;
-    document.getElementById('count').textContent=`${items.length} مقال`;
-    status.hidden=items.length>0;
-    status.textContent=data.length?'لا توجد مقالات في هذا القسم حالياً.':'لا توجد مقالات محفوظة في ملف news-data.json.';
-  }
-  document.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>{filter=button.dataset.filter;document.querySelectorAll('[data-filter]').forEach(x=>x.classList.toggle('is-active',x===button));render()}));
-  fetch('./news-data.json?v=20261106-1',{cache:'no-store'}).then(response=>{if(!response.ok)throw Error('HTTP '+response.status);return response.json()}).then(items=>{
-    const unique=new Map();(Array.isArray(items)?items:[]).forEach(item=>{const key=item.storyId||item.url||item.title;if(item.title&&item.url&&key&&!unique.has(key))unique.set(key,item)});
-    data=[...unique.values()].sort((a,b)=>String(b.published||'').localeCompare(String(a.published||'')));
-    document.getElementById('ticker').textContent=data.slice(0,8).map(x=>x.title).join('　•　')||'تابع أحدث المقالات المنشورة في نكسوس بريس';render();
-  }).catch(error=>{status.hidden=false;status.textContent='تعذر تحميل ملف الأخبار: '+error.message});
-  async function loadCity(){
-    const city=document.getElementById('city').value.trim(),country=document.getElementById('country').value.trim();
-    if(!city||!country)return;
-    document.getElementById('weather').textContent='الطقس: جارٍ التحميل…';document.getElementById('prayer').textContent='الصلاة: جارٍ التحميل…';
-    try{
-      const g=await fetch('https://geocoding-api.open-meteo.com/v1/search?'+new URLSearchParams({name:city,count:'1',language:'en',format:'json'})).then(r=>r.json());
-      const place=(g.results||[]).find(x=>x.country_code===country||x.country.toLowerCase()===country.toLowerCase())||(g.results||[])[0];if(!place)throw Error('لم نعثر على المدينة');
-      const w=await fetch('https://api.open-meteo.com/v1/forecast?'+new URLSearchParams({latitude:place.latitude,longitude:place.longitude,current:'temperature_2m,relative_humidity_2m',timezone:'auto'})).then(r=>r.json());
-      document.getElementById('weather').textContent=`الطقس في ${place.name}: ${w.current.temperature_2m}°م، الرطوبة ${w.current.relative_humidity_2m}%`;
-      const p=await fetch('https://api.aladhan.com/v1/timingsByCity?'+new URLSearchParams({city:place.name,country:place.country,method:'21'})).then(r=>r.json());if(!p.data)throw Error('مواقيت الصلاة غير متاحة');const t=p.data.timings;
-      document.getElementById('prayer').textContent=`مواقيت ${place.name}: الفجر ${t.Fajr} · الظهر ${t.Dhuhr} · العصر ${t.Asr} · المغرب ${t.Maghrib} · العشاء ${t.Isha}`;
-    }catch(error){document.getElementById('weather').textContent='الطقس: '+error.message;document.getElementById('prayer').textContent='الصلاة: '+error.message}
-  }
-  document.getElementById('load-city').addEventListener('click',loadCity);loadCity();
-})();
-</script>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <a class="footer-brand" href="./index.html">نكسوس بريس</a>
+      <nav class="footer-links" aria-label="روابط الموقع">
+        <a href="./about.html">من نحن</a>
+        <a href="./contact.html">اتصل بنا</a>
+        <a href="./privacy-policy.html">سياسة الخصوصية</a>
+      </nav>
+      <span>© <span id="year"></span> نكسوس بريس</span>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      const categories = {
+        all: 'أحدث المقالات',
+        ar_local: 'أخبار وطنية',
+        ar_world: 'أخبار دولية',
+        ar_economy: 'اقتصاد',
+        ar_sports: 'رياضة',
+        ar_technology: 'تكنولوجيا'
+      };
+
+      const articlesGrid = document.getElementById('articles-grid');
+      const featuredGrid = document.getElementById('featured-grid');
+      const status = document.getElementById('status');
+      const navButtons = [...document.querySelectorAll('[data-category]')];
+
+      let articles = [];
+      let activeCategory = 'all';
+      let sliderStart = 0;
+
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      function makeCard(article, featured = false) {
+        const card = document.createElement('article');
+        card.className = featured ? 'article-card featured-card' : 'article-card';
+
+        const link = document.createElement('a');
+        link.className = 'article-link';
+        link.href = article.url || '#';
+        link.setAttribute('aria-label', article.title || 'اقرأ المقال');
+
+        const image = document.createElement('img');
+        image.className = 'article-image';
+        image.src = article.image || './placeholder.svg';
+        image.alt = article.imageAlt || 'رسم توضيحي للمقال';
+        image.loading = 'lazy';
+        image.onerror = () => {
+          image.onerror = null;
+          image.src = './placeholder.svg';
+        };
+
+        const content = document.createElement('div');
+        content.className = 'article-content';
+
+        const category = document.createElement('span');
+        category.className = 'category-badge';
+        category.textContent = article.categoryLabel ||
+          categories[article.category] ||
+          'أخبار';
+
+        const title = document.createElement('h3');
+        title.textContent = article.title || 'مقال إخباري';
+
+        const summary = document.createElement('p');
+        summary.className = 'article-summary';
+        summary.textContent = article.summary || '';
+
+        const meta = document.createElement('p');
+        meta.className = 'article-meta';
+        meta.textContent = [article.published, article.source]
+          .filter(Boolean)
+          .join(' · ');
+
+        content.append(category, title);
+
+        if (summary.textContent) {
+          content.append(summary);
+        }
+
+        content.append(meta);
+        link.append(image, content);
+        card.append(link);
+
+        return card;
+      }
+
+      function render() {
+        const visibleArticles = articles.filter(article =>
+          activeCategory === 'all' || article.category === activeCategory
+        );
+
+        articlesGrid.replaceChildren(
+          ...visibleArticles.map(article => makeCard(article))
+        );
+
+        document.getElementById('page-title').textContent =
+          categories[activeCategory] || categories.all;
+
+        document.getElementById('article-count').textContent =
+          `${visibleArticles.length} مقال`;
+
+        status.hidden = visibleArticles.length > 0;
+        status.textContent = articles.length
+          ? 'لا توجد مقالات منشورة في هذا القسم حالياً.'
+          : 'لا توجد مقالات في ملف news-data.json.';
+
+        navButtons.forEach(button => {
+          button.classList.toggle(
+            'is-active',
+            button.dataset.category === activeCategory
+          );
+        });
+      }
+
+      function renderFeatured() {
+        if (!articles.length) {
+          featuredGrid.replaceChildren();
+          return;
+        }
+
+        const numberToShow = Math.min(3, articles.length);
+        const featuredArticles = [];
+
+        for (let i = 0; i < numberToShow; i++) {
+          featuredArticles.push(
+            articles[(sliderStart + i) % articles.length]
+          );
+        }
+
+        featuredGrid.replaceChildren(
+          ...featuredArticles.map(article => makeCard(article, true))
+        );
+      }
+
+      navButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          activeCategory = button.dataset.category;
+          render();
+
+          document.querySelector('.articles-section').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        });
+      });
+
+      document.getElementById('previous').addEventListener('click', () => {
+        if (!articles.length) return;
+        sliderStart = (sliderStart - 1 + articles.length) % articles.length;
+        renderFeatured();
+      });
+
+      document.getElementById('next').addEventListener('click', () => {
+        if (!articles.length) return;
+        sliderStart = (sliderStart + 1) % articles.length;
+        renderFeatured();
+      });
+
+      fetch('./news-data.json?v=3', { cache: 'no-store' })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`تعذر تحميل الأخبار (${response.status})`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (!Array.isArray(data)) {
+            throw new Error('صيغة news-data.json يجب أن تكون قائمة مقالات.');
+          }
+
+          const uniqueArticles = new Map();
+
+          data.forEach(article => {
+            if (!article || !article.title || !article.url) return;
+
+            const key = article.storyId || article.url || article.title;
+            if (!uniqueArticles.has(key)) {
+              uniqueArticles.set(key, article);
+            }
+          });
+
+          articles = [...uniqueArticles.values()].sort((a, b) =>
+            String(b.published || '').localeCompare(String(a.published || ''))
+          );
+
+          document.getElementById('ticker').textContent = articles.length
+            ? articles.slice(0, 8).map(article => article.title).join('　•　')
+            : 'لا توجد أخبار منشورة حالياً.';
+
+          render();
+          renderFeatured();
+        })
+        .catch(error => {
+          status.hidden = false;
+          status.textContent = `${error.message} تأكدي من وجود الملف بجانب index.html.`;
+          document.getElementById('ticker').textContent =
+            'تعذر تحميل الأخبار.';
+        });
+    })();
+  </script>
 </body>
 </html>
