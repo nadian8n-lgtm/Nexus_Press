@@ -2,8 +2,8 @@ name: Nexus Press Auto Publisher
 
 on:
   schedule:
-    - cron: '0 * * * *' # يعمل تلقائياً رأس كل ساعة طيلة الـ 24 ساعة بدون توقف لمواكبة الأحداث الفورية
-  workflow_dispatch: # يتيح لك تشغيله يدوياً بضغطة زر واحدة في أي وقت من لوحة التحكم
+    - cron: '0 * * * *'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -12,7 +12,7 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
       with:
-        fetch-depth: 0 # جلب كامل التاريخ البرمجي للمستودع لمنع تعارض المزامنة التلقائية نهائياً
+        fetch-depth: 0
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -21,28 +21,22 @@ jobs:
 
     - name: Install Dependencies
       run: |
-        # تثبيت حزم الاعتماد لضمان قراءة الأخبار وسحب الصور وهندسة الأوامر بالذكاء الاصطناعي
         pip install feedparser requests
 
     - name: Run Robot Journalist
       run: |
-        # تشغيل محرك البوت لبناء وضخ الـ 42 مقالاً بالصور والتعليقات والفقرات المنفصلة بسطور
         SCRIPT_PATH=$(find . -name "*fetch_news*.py" | head -n 1)
         python "$SCRIPT_PATH"
       env:
-        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} # الربط السري الآمن مع مفتاح التوليد
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
     - name: Commit and Push Updates
       run: |
         git config --global user.name "NexusPress-Bot"
         git config --global user.email "bot@nexuspress.com"
         
-        # 1. حفظ المقالات الـ 42 المحدثة والمنظمة بالصور والتعليقات والأدوات التفاعلية
         git add .
         git diff-index --quiet HEAD || git commit -m "تحديث تلقائي رأس الساعة: صياغة ونشر آخر الأخبار والتحليلات لجريدة نكسوس بريس"
         
-        # 2. المزامنة الآمنة والجذرية بعد الـ Commit لمنع التعارض والرفض مع ملف جوجل والملفات القانونية بالفوتر
         git pull --rebase origin main
-        
-        # 3. رفع التحديثات النهائية لتظهر مباشرة وبأعلى سرعة على رابط موقعك العالمي
         git push origin main
