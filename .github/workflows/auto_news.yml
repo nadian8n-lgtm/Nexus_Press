@@ -1,15 +1,15 @@
-name: Nexus Press hourly news publishing
+name: Publish Nexus Press news
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '5 * * * *'
-  workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: nexus-press-publisher
+  group: nexus-press-news-publisher
   cancel-in-progress: false
 
 jobs:
@@ -20,33 +20,24 @@ jobs:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       OPENAI_MODEL: gpt-4.1-mini
       NEWS_MAX_AGE_HOURS: '48'
-      MAX_ARTICLES_PER_CATEGORY: '6'
+      MAX_ARTICLES_PER_CATEGORY: '3'
       MAX_TOTAL_ARTICLES: '100'
       GENERATE_AI_IMAGES: 'true'
-      ADSENSE_CLIENT: ${{ vars.ADSENSE_CLIENT }}
-      ADSENSE_SLOT_TOP: ${{ vars.ADSENSE_SLOT_TOP }}
-      ADSENSE_SLOT_INLINE: ${{ vars.ADSENSE_SLOT_INLINE }}
-      ADSENSE_SLOT_BOTTOM: ${{ vars.ADSENSE_SLOT_BOTTOM }}
-      ADSENSE_SLOT_SIDE: ${{ vars.ADSENSE_SLOT_SIDE }}
-
     steps:
       - name: Checkout main
         uses: actions/checkout@v4
         with:
           ref: main
           fetch-depth: 0
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install feedparser requests
-
-      - name: Validate secrets and Python syntax
+      - name: Validate secret and script
         shell: bash
         run: |
           set -euo pipefail
@@ -54,15 +45,10 @@ jobs:
             echo "Required Actions secret OPENAI_API_KEY is missing." >&2
             exit 1
           fi
-          python -m py_compile fetch_news.py inject_ads.py
-
-      - name: Fetch, write, and illustrate unique articles
+          python -m py_compile fetch_news.py
+      - name: Generate articles and original illustrations
         run: python fetch_news.py
-
-      - name: Add configured AdSense units to article pages
-        run: python inject_ads.py
-
-      - name: Commit only changed files
+      - name: Commit generated site content
         shell: bash
         run: |
           set -euo pipefail
@@ -70,10 +56,10 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
           if git diff --cached --quiet; then
-            echo "No eligible new stories or article updates were produced."
+            echo "No new eligible articles; nothing to commit."
             exit 0
           fi
-          git commit -m "Publish original source-linked articles"
+          git commit -m "Publish source-linked news articles and illustrations"
           git fetch origin main
           git rebase origin/main
           git push origin HEAD:main
