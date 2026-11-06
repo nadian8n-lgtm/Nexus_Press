@@ -7,7 +7,13 @@
     "categoryLabel": "أخبار وطنية",
     "published": "2026-11-05",
     "source": "نكسوس بريس",
-    "sources": [{"publisher":"المصدر الأصلي","title":"الداخلية ترفع سقف اعتمادات الجماعات","url":"https://www.hespress.com/feed"}],
+    "sources": [
+      {
+        "publisher": "المصدر الأصلي",
+        "title": "الداخلية ترفع سقف اعتمادات الجماعات",
+        "url": "https://www.hespress.com/feed"
+      }
+    ],
     "url": "./news-ar_local-0.html",
     "image": "./placeholder.svg",
     "imageAlt": "رسم توضيحي عام لنكسوس بريس"
@@ -20,7 +26,13 @@
     "categoryLabel": "أخبار وطنية",
     "published": "2026-11-05",
     "source": "نكسوس بريس",
-    "sources": [{"publisher":"المصدر الأصلي","title":"عصيد ينتقد انصراف النقاشات إلى التفاصيل الهامشية بدل القضايا الأساسية","url":"https://www.hespress.com/feed"}],
+    "sources": [
+      {
+        "publisher": "المصدر الأصلي",
+        "title": "عصيد ينتقد انصراف النقاشات إلى التفاصيل الهامشية بدل القضايا الأساسية",
+        "url": "https://www.hespress.com/feed"
+      }
+    ],
     "url": "./news-ar_local-1.html",
     "image": "./placeholder.svg",
     "imageAlt": "رسم توضيحي عام لنكسوس بريس"
