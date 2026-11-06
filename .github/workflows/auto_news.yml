@@ -3,7 +3,7 @@ name: Publish Nexus Press news
 on:
   workflow_dispatch:
   schedule:
-    - cron: '5 * * * *' # hourly, UTC
+    - cron: '5 * * * *' # مرة كل ساعة، بتوقيت UTC
 
 permissions:
   contents: write
@@ -16,6 +16,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+
     env:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       OPENAI_MODEL: gpt-4.1-mini
@@ -26,119 +27,116 @@ jobs:
       PYTHONDONTWRITEBYTECODE: '1'
 
     steps:
-      - name: Check out the site branch
+      - name: Checkout main
         uses: actions/checkout@v4
         with:
           ref: main
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          cache: pip
 
       - name: Install publisher dependencies
-        run: python -m pip install feedparser requests
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install feedparser requests
 
-      - name: Validate publisher configuration and scripts
+      - name: Validate secret and Python syntax
         shell: bash
         run: |
           set -euo pipefail
+
           if [[ -z "${OPENAI_API_KEY:-}" ]]; then
-            echo "Required Actions secret OPENAI_API_KEY is missing. Add it under Settings > Secrets and variables > Actions." >&2
+            echo "Missing Actions secret OPENAI_API_KEY." >&2
+            echo "Add it under Settings > Secrets and variables > Actions." >&2
             exit 1
           fi
-          python - <<'PY'
+
+          python -B - <<'PY'
           import ast
           from pathlib import Path
-          for filename in ("fetch_news.py",):
-              path = Path(filename)
-              if not path.is_file():
-                  raise SystemExit(f"Required publisher file is missing: {filename}")
-              ast.parse(path.read_text(encoding="utf-8"), filename=filename)
-          print("Publisher syntax and required files are valid.")
+
+          script = Path("fetch_news.py")
+          if not script.is_file():
+              raise SystemExit("Required file fetch_news.py was not found.")
+
+          ast.parse(script.read_text(encoding="utf-8"), filename=str(script))
+          print("fetch_news.py syntax is valid.")
           PY
 
-      - name: Generate articles, pages, and illustrations
+      - name: Generate articles and illustrations
         run: python -B fetch_news.py
 
-      - name: Validate article data and referenced files
+      - name: Validate generated article data and files
         shell: bash
         run: |
           set -euo pipefail
-          python - <<'PY'
+
+          python -B - <<'PY'
           import json
           from pathlib import Path
 
-          data_path = Path("news-data.json")
-          if not data_path.is_file():
-              raise SystemExit("news-data.json was not created")
-          items = json.loads(data_path.read_text(encoding="utf-8"))
-          if not isinstance(items, list):
-              raise SystemExit("news-data.json must contain a JSON array")
+          data_file = Path("news-data.json")
+          if not data_file.is_file():
+              raise SystemExit("news-data.json was not found.")
 
-          ids, urls = set(), set()
-          for index, item in enumerate(items, start=1):
-              if not isinstance(item, dict):
-                  raise SystemExit(f"Article #{index} is not an object")
-              for field in ("title", "category", "url", "image"):
-                  if not item.get(field):
-                      raise SystemExit(f"Article #{index} is missing {field}")
-              story_id = item.get("storyId")
-              if story_id and story_id in ids:
-                  raise SystemExit(f"Duplicate storyId: {story_id}")
-              if story_id:
-                  ids.add(story_id)
-              if item["url"] in urls:
-                  raise SystemExit(f"Duplicate article URL: {item['url']}")
-              urls.add(item["url"])
+          articles = json.loads(data_file.read_text(encoding="utf-8"))
+          if not isinstance(articles, list):
+              raise SystemExit("news-data.json must contain a JSON array.")
+
+          seen_urls = set()
+
+          for number, article in enumerate(articles, start=1):
+              if not isinstance(article, dict):
+                  raise SystemExit(f"Article {number} is not a JSON object.")
+
+              for required in ("title", "category", "url", "image"):
+                  if not article.get(required):
+                      raise SystemExit(
+                          f"Article {number} is missing the required field: {required}"
+                      )
+
+              if article["url"] in seen_urls:
+                  raise SystemExit(f"Duplicate article URL: {article['url']}")
+              seen_urls.add(article["url"])
+
               for field in ("url", "image"):
-                  value = item[field]
-                  if value.startswith(("./", "../")):
-                      target = Path(value).as_posix().removeprefix("./")
-                      if not Path(target).is_file():
-                          raise SystemExit(f"Article #{index} references missing {field}: {value}")
+                  value = article[field]
+                  if value.startswith("./"):
+                      target = Path(value[2:])
+                      if not target.is_file():
+                          raise SystemExit(
+                              f"Article {number} points to a missing {field}: {value}"
+                          )
 
-          print(f"Validated {len(items)} indexed articles and all local page/image paths.")
+          print(f"Validated {len(articles)} articles and their local files.")
           PY
 
-      - name: Stage generated site files and remove tracked Python cache
+      - name: Stage site content, excluding Python cache files
         shell: bash
         run: |
           set -euo pipefail
-          git rm --cached --ignore-unmatch -r -- __pycache__
-          python - <<'PY'
-          import subprocess
-          from pathlib import Path
 
-          tracked = subprocess.check_output(["git", "ls-files", "-z"]).decode().split("\0")
-          generated = {
-              path for path in tracked
-              if path in {"news-data.json", "news-state.json"}
-              or path.startswith("news-images/")
-              or path.startswith("article-") and path.endswith(".html")
-              or path.startswith("news-ar_") and path.endswith(".html")
-          }
-          generated.update(path.as_posix() for pattern in ("article-*.html", "news-ar_*.html") for path in Path(".").glob(pattern))
-          image_dir = Path("news-images")
-          if image_dir.exists():
-              generated.update(path.as_posix() for path in image_dir.rglob("*") if path.is_file())
-          if generated:
-              subprocess.run(["git", "add", "-A", "--", *sorted(generated)], check=True)
-          PY
+          git add -A -- . \
+            ':(exclude)**/__pycache__/**' \
+            ':(exclude)**/*.pyc' \
+            ':(exclude)**/*.pyo'
 
       - name: Commit and publish changes
         shell: bash
         run: |
           set -euo pipefail
+
           if git diff --cached --quiet; then
-            echo "No new eligible stories. Existing published articles remain unchanged."
+            echo "No new eligible stories. Existing articles are unchanged."
             exit 0
           fi
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Publish source-linked news articles and illustrations"
+
+          git commit -m "Publish source-linked articles and illustrations"
           git pull --rebase origin main
           git push origin HEAD:main
