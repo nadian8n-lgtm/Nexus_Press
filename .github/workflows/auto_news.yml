@@ -22,7 +22,8 @@ jobs:
       NEWS_MAX_AGE_HOURS: '48'
       MAX_ARTICLES_PER_CATEGORY: '3'
       MAX_TOTAL_ARTICLES: '100'
-      GENERATE_AI_IMAGES: 'true'
+      GENERATE_AI_IMAGES: 'false'
+      PYTHONDONTWRITEBYTECODE: '1'
     steps:
       - name: Checkout main
         uses: actions/checkout@v4
@@ -37,7 +38,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install feedparser requests
-      - name: Validate secret and script
+      - name: Validate secret and Python syntax
         shell: bash
         run: |
           set -euo pipefail
@@ -45,21 +46,35 @@ jobs:
             echo "Required Actions secret OPENAI_API_KEY is missing." >&2
             exit 1
           fi
-          python -m py_compile fetch_news.py
-      - name: Generate articles and original illustrations
+          python - <<'PY'
+          import ast
+          from pathlib import Path
+          ast.parse(Path('fetch_news.py').read_text(encoding='utf-8'))
+          print('fetch_news.py syntax OK')
+          PY
+      - name: Generate articles and illustrations
         run: python fetch_news.py
-      - name: Commit generated site content
+      - name: Verify published data and article targets
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          items=json.loads(Path('news-data.json').read_text(encoding='utf-8'))
+          if not isinstance(items,list): raise SystemExit('news-data.json must be an array')
+          missing=[x.get('url','?') for x in items if not Path(x.get('url','').removeprefix('./')).is_file()]
+          if missing: raise SystemExit('Missing article pages: '+', '.join(missing))
+          print(f'Validated {len(items)} indexed articles and all article pages.')
+          PY
+      - name: Commit only when site files changed
         shell: bash
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
+          git add -- news-data.json news-state.json article-*.html news-ar_*.html news-images
           if git diff --cached --quiet; then
-            echo "No new eligible articles; nothing to commit."
+            echo "No new eligible stories. Existing articles are preserved."
             exit 0
           fi
-          git commit -m "Publish source-linked news articles and illustrations"
-          git fetch origin main
-          git rebase origin/main
+          git commit -m "Publish source-linked articles and illustrations"
           git push origin HEAD:main
