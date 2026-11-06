@@ -1,15 +1,15 @@
-name: Publish original news hourly
+name: Nexus Press hourly news publishing
 
 on:
   schedule:
-    - cron: '5 * * * *'
+    - cron: '5 * * * *' # UTC; GitHub may delay scheduled starts
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: nexus-press-news-publisher
+  group: nexus-press-publisher
   cancel-in-progress: false
 
 jobs:
@@ -19,13 +19,13 @@ jobs:
     env:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       OPENAI_MODEL: gpt-4.1-mini
-      NEWS_MAX_AGE_HOURS: '24'
-      MAX_ARTICLES_PER_CATEGORY: '2'
+      NEWS_MAX_AGE_HOURS: '48'
+      MAX_ARTICLES_PER_CATEGORY: '6'
       MAX_TOTAL_ARTICLES: '100'
       GENERATE_AI_IMAGES: 'true'
 
     steps:
-      - name: Check out main
+      - name: Checkout main
         uses: actions/checkout@v4
         with:
           ref: main
@@ -41,20 +41,20 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install feedparser requests
 
-      - name: Check required secret and Python syntax
+      - name: Validate key and Python syntax
         shell: bash
         run: |
           set -euo pipefail
           if [[ -z "${OPENAI_API_KEY:-}" ]]; then
-            echo "Missing Actions secret OPENAI_API_KEY" >&2
+            echo "Required Actions secret OPENAI_API_KEY is missing." >&2
             exit 1
           fi
           python -m py_compile fetch_news.py
 
-      - name: Fetch and publish eligible original articles
+      - name: Fetch, write, and illustrate unique articles
         run: python fetch_news.py
 
-      - name: Stage generated files without unmatched globs
+      - name: Commit only when files changed
         shell: bash
         run: |
           set -euo pipefail
@@ -62,10 +62,10 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
           if git diff --cached --quiet; then
-            echo "No new eligible stories."
+            echo "No eligible new stories were produced."
             exit 0
           fi
-          git commit -m "Publish unique source-linked news"
+          git commit -m "Publish original source-linked articles"
           git fetch origin main
           git rebase origin/main
           git push origin HEAD:main
