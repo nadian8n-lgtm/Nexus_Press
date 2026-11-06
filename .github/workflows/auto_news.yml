@@ -2,8 +2,8 @@ name: Nexus Press Auto Publisher
 
 on:
   schedule:
-    - cron: '0 * * * *' # Le serveur s'exécute automatiquement au début de chaque heure (24h/24)
-  workflow_dispatch: # Permet de lancer le robot manuellement en 1 clic depuis l'onglet Actions
+    - cron: '0 * * * *' # يعمل تلقائياً على رأس كل ساعة طيلة الـ 24 ساعة بدون توقف لمواكبة الحدث الفوري بنظام الـ 42 مقالاً
+  workflow_dispatch: # يتيح لك تشغيله يدوياً بضغطة زر واحدة في أي وقت من لوحة التحكم لتجربة الموقع فوراً
 
 jobs:
   build:
@@ -12,7 +12,7 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
       with:
-        fetch-depth: 0 # Récupère tout l'historique pour éviter les erreurs de synchronisation avec la branche principale
+        fetch-depth: 0 # جلب كامل التاريخ البرمجي للمستودع لمنع تعارض المزامنة التلقائية نهائياً
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -21,28 +21,28 @@ jobs:
 
     - name: Install Dependencies
       run: |
-        # Installation des paquets requis pour l'analyse des flux et les requêtes d'images IA
+        # تثبيت حزم الاعتماد لضمان قراءة الأخبار وسحب مصفوفات الصور وهندسة الأوامر بالذكاء الاصطناعي
         pip install feedparser requests
 
     - name: Run Robot Journalist
       run: |
-        # Recherche dynamique et exécution du script de génération d'articles
+        # تشغيل محرك البوت لبناء وضخ الـ 42 مقالاً بالصور والتعليقات والفقرات المنفصلة بسطور
         SCRIPT_PATH=$(find . -name "*fetch_news*.py" | head -n 1)
         python "$SCRIPT_PATH"
       env:
-        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} # Liaison sécurisée avec votre clé secrète OpenAI
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} # الربط السري الآمن مع مفتاح التوليد لصور ومقالات الذكاء الاصطناعي
 
     - name: Commit and Push Updates
       run: |
         git config --global user.name "NexusPress-Bot"
         git config --global user.email "bot@nexuspress.com"
         
-        # 1. Indexation et enregistrement des 42 articles générés, des images et des widgets mis à jour
+        # 1. حفظ المقالات الـ 42 المحدثة والمنظمة بالصور والتعليقات والأدوات التفاعلية وتفريغ الـ Index
         git add .
-        git diff-index --quiet HEAD || git commit -m "Mise à jour horaire automatique : Génération et publication des analyses exclusives"
+        git diff-index --quiet HEAD || git commit -m "تحديث تلقائي رأس الساعة: صياغة ونشر آخر الأخبار والتحليلات لجريدة نكسوس بريس"
         
-        # 2. Synchronisation sécurisée pour fusionner les fichiers légaux et de validation sans rejet
+        # 2. المزامنة الآمنة والجذرية بعد الـ Commit لمنع التعارض والرفض مع ملف جوجل والملفات القانونية بالفوتر
         git pull --rebase origin main
         
-        # 3. Déploiement immédiat et envoi des fichiers sur GitHub Pages
+        # 3. رفع التحديثات النهائية لتظهر مباشرة وبأعلى سرعة على رابط موقعك العالمي
         git push origin main
