@@ -7,29 +7,56 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    <header class="main-header" style="background:#e0f2fe !important;">
+    <div class="top-bar">
         <div class="container-flex">
-            <a href="index.html"><img src="image_MUwSAA.png" alt="Portal" class="main-logo-img"></a>
-            <div class="ad-space-header">مساحة إعلانية مجهزة (Google AdSense 728x90)</div>
+            <span class="live-ticker-date">تحديث مستمر على مدار الساعة</span>
+            <div class="global-lang-wrapper">
+                <span class="lang-btn" onclick="translateTo('ar')">العربية</span> | 
+                <span class="lang-btn" onclick="translateTo('fr')">Français</span> | 
+                <span class="lang-btn" onclick="translateTo('en')">English</span>
+            </div>
+        </div>
+    </div>
+    <header class="main-header">
+        <div class="container-flex">
+            <div class="logo-area"><a href="index.html"><img src="image_MUwSAA.png" alt="Portal" class="main-logo-img"></a></div>
+            <div class="nav-links-header-top"><a href="index.html">الرئيسية</a> | <a href="about.html">من نحن</a> | <a href="contact.html">اتصل بنا</a></div>
+            <div class="ad-space-header">Google AdSense Space</div>
         </div>
     </header>
     <main class="main-wrapper container">
         <article class="content-area post-container">
             <span class="category-tag">أخبار وطنية</span>
             <h1 class="post-title">عصيد ينتقد انصراف النقاشات إلى التفاصيل الهامشية بدل القضايا الأساسية والتعليم</h1>
-            <div class="post-meta"><span>تحرير: القسم الصحفي الدولي</span> | <span>تاريخ النشر: 06/11/2026</span></div>
-            <div class="post-image-wrapper"><img src="https://unsplash.com?morocco,rabat" alt="عصيد ينتقد انصراف النقاشات إلى التفاصيل الهامشية بدل القضايا الأساسية والتعليم" loading="eager" style="width:100%; height:auto; max-height:450px; object-fit:cover; border-radius:4px; margin:15px 0;"></div>
-            <div class="ad-inside-post">Google AdSense In-Article Ad Space (أعلى الفقرات)</div>
-            <p class="post-p">أثار المفكر والناشط الحقوقي أحمد عصيد نقاشاً واسعاً بتصريحاته الأخيرة التي انتقد فيها بشدة انشغال الفاعلين بالجزئيات والهوامش التحريرية، معتبراً أن المرحلة الحالية تتطلب التركيز التام على القضايا الهيكلية المباشرة كدعم التعليم والصحة والإصلاح الإداري الشامل.</p>
-            <div class="ad-inside-post">Google AdSense In-Article Ad Space (أسفل المقال)</div>
+            <div class="post-meta"><span>تاريخ النشر: 06/11/2026</span></div>
+            <div class="post-image-wrapper"><img src="https://unsplash.com?morocco,rabat&sig=1" alt="عصيد ينتقد انصراف النقاشات إلى التفاصيل الهامشية بدل القضايا الأساسية والتعليم" loading="eager" style="width:100%; height:auto; max-height:450px; object-fit:cover; border-radius:4px; margin:15px 0;"></div>
+            <div class="ad-inside-post">Google AdSense In-Article Ad Space</div>
+            <div class="post-body-text">
+<p class='post-p'>أثار المفكر والناشط الحقوقي أحمد عصيد نقاشاً واسعاً بتصريحاته الأخيرة التي انتقد فيها بشدة انشغال الفاعلين بالجزئيات والهوامش التحريرية والسياسية، معتبراً أن المرحلة الحالية تتطلب التركيز التام على القضايا الهيكلية المباشرة كدعم التعليم والصحة والإصلاح الإداري الشامل بالمملكة.</p>
+
+</div>
+            <div class="ad-inside-post">Google AdSense In-Article Bottom</div>
+            <div class="navigation-arrows">
+                <a href="index.html" class="nav-arrow-btn">⬅ العودة للرئيسية</a>
+                <a href="./news-ar_local-0.html" class="nav-arrow-btn">المقال الموالي ➡</a>
+            </div>
             <div class="comments-section" style="margin-top: 50px; padding-top: 30px; border-top: 2px solid #e2e8f0;">
-                <h3 style="margin-bottom: 20px; font-weight: 700; color: #071c35;">شاركونا بتعليقاتكم وآرائكم حول الموضوع</h3>
+                <h3 style="margin-bottom: 20px; font-weight: 700;">شاركونا بتعليقاتكم وآرائكم</h3>
                 <div id="disqus_thread"></div>
             </div>
         </article>
-        <aside class="sidebar-area">
-            <div class="widget-ad-box"><span>مساحة إعلانية عمودية بجانب المقال (AdSense 300x600)</span></div>
-        </aside>
+        <aside class="sidebar-area"><div class="widget-ad-box"><span>AdSense 300x600</span></div></aside>
     </main>
+    <div id="google_translate_element" style="display:none;"></div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: "ar", layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, "google_translate_element");
+        }
+        function translateTo(lang) {
+            var select = document.querySelector(".goog-te-combo");
+            if (select) { select.value = lang; select.dispatchEvent(new Event("change")); }
+        }
+    </script>
+    <script type="text/javascript" src="https://google.com"></script>
 </body>
 </html>
