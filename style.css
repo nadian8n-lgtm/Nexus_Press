@@ -6,91 +6,39 @@
     --white: #ffffff;
     --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
-
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Cairo', sans-serif; background-color: var(--light-bg); color: #333; line-height: 1.6; }
-a { text-decoration: none; color: inherit; transition: var(--transition); }
+body { font-family: 'Cairo', sans-serif; background-color: var(--light-bg); color: #333; }
+a { text-decoration: none; color: inherit; }
 .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
 .container-flex { max-width: 1200px; margin: 0 auto; padding: 0 15px; display: flex; justify-content: space-between; align-items: center; }
-
-/* شريط اللغات */
-.top-bar { background: var(--dark-color); color: #eee; font-size: 13px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-.global-lang-wrapper { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); }
-.world-icon { font-size: 14px; font-weight: bold; }
-#google_translate_element { display: inline-block; }
-.goog-te-gadget-simple { background-color: transparent !important; border: none !important; cursor: pointer; }
-.goog-te-gadget-simple .goog-te-menu-value span { color: #ffffff !important; font-weight: 600; }
-
-/* هيدر الجريدة */
-.main-header { background: var(--sky-blue) !important; padding: 25px 0; border-bottom: 2px solid #bae6fd; }
-.main-logo-img { height: 95px; width: auto; display: block; }
-.ad-space-header { width: 728px; height: 90px; background: rgba(255, 255, 255, 0.7); display: flex; align-items: center; justify-content: center; color: #666; font-size: 13px; border: 1px dashed #cbd5e1; border-radius: 4px; }
-
-/* السلايدر الإخباري المتحرك */
-.slider-wrapper { position: relative; width: 100%; height: 420px; overflow: hidden; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); background: #000; }
-.main-slider { width: 100%; height: 100%; position: relative; }
-.slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.8s ease-in-out; z-index: 1; }
-.slide.active { opacity: 1; z-index: 2; }
-.slide img { width: 100%; height: 100%; object-fit: cover; }
-.slide-caption { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(transparent, rgba(7, 28, 53, 0.95)); padding: 40px 30px 20px; color: var(--white); text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-.slide-caption h2 { font-size: 24px; font-weight: 900; }
-
-/* شريط الأقسام */
-.main-nav { background: var(--dark-color); position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.top-bar { background: var(--dark-color); color: #eee; padding: 12px 0; }
+.global-lang-wrapper { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); padding: 6px 14px; border-radius: 20px; }
+.main-header { background: var(--sky-blue) !important; padding: 25px 0; }
+.main-logo-img { height: 95px; width: auto; }
+.ad-space-header { width: 728px; height: 90px; background: rgba(255,255,255,0.5); display: flex; align-items: center; justify-content: center; font-size: 13px; border: 1px dashed #cbd5e1; }
+.main-nav { background: var(--dark-color); position: sticky; top: 0; z-index: 1000; }
 .nav-menu { list-style: none; display: flex; flex-wrap: wrap; }
-.nav-menu li a { display: block; padding: 16px 22px; color: var(--white); font-weight: 700; font-size: 15px; }
+.nav-menu li a { display: block; padding: 16px 22px; color: var(--white); font-weight: 700; }
 .nav-menu li a:hover, .nav-menu li a.active { background: var(--main-color); }
-
-/* عاجل */
-.breaking-news-bar { display: flex; background: #c2185b; color: var(--white) !important; font-weight: bold; }
-.breaking-title { background: #880e4f; padding: 12px 30px; color: var(--white); }
-.breaking-content { align-self: center; width: 100%; font-size: 15px; color: var(--white) !important; }
-
-/* الهيكلية */
+.breaking-news-bar { display: flex; background: #c2185b; color: var(--white); font-weight: bold; }
+.breaking-title { background: #880e4f; padding: 12px 30px; }
+.breaking-content { align-self: center; width: 100%; }
 .main-wrapper { display: grid; grid-template-columns: 3fr 1fr; gap: 30px; margin-top: 40px; }
 .content-area { display: flex; flex-direction: column; gap: 35px; }
 .block-title { font-size: 24px; font-weight: 900; color: var(--dark-color); border-right: 6px solid var(--main-color); padding-right: 12px; }
-.ad-in-content { background: var(--white); padding: 20px; text-align: center; color: #aaa; border: 1px dashed #cbd5e1; border-radius: 4px; }
-
-/* شبكة المقالات */
 .grid-stories-hub { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
 .news-card { background: var(--white); border-radius: 8px; overflow: hidden; border: 1px solid #eef2f6; transition: var(--transition); }
 .card-img-holder { overflow: hidden; height: 180px; }
-.news-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.news-card img { width: 100%; height: 100%; object-fit: cover; }
 .card-info { padding: 20px; }
-.badge { background: var(--main-color); color: var(--white); padding: 3px 8px; font-size: 11px; font-weight: bold; border-radius: 3px; display: inline-block; margin-bottom: 10px; }
-.news-card h3 { font-size: 15px; font-weight: 700; line-height: 1.5; color: var(--dark-color); }
-.news-card:hover { transform: translateY(-6px); border-color: var(--main-color); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-.news-card:hover img { transform: scale(1.06); }
-
-/* المقالات الداخلية */
-.post-container { background: var(--white); padding: 40px; border-radius: 8px; border: 1px solid #eef2f6; }
-.post-title { font-size: 32px; font-weight: 900; color: var(--dark-color); margin-bottom: 20px; line-height: 1.4; }
-.post-meta { font-size: 13px; color: #888; margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
-.ad-inside-post { background: #fafafa; border: 1px dashed #cbd5e1; padding: 20px; text-align: center; color: #aaa; margin: 25px 0; border-radius: 4px; font-size: 13px; }
-
-/* فصل وعزل الفقرات بسطر كامل واضح جداً ميكانيكياً */
+.badge { background: var(--main-color); color: var(--white); padding: 3px 8px; font-size: 11px; border-radius: 3px; display: inline-block; }
+.news-card:hover { transform: translateY(-6px); border-color: var(--main-color); }
+.post-container { background: var(--white); padding: 40px; border-radius: 8px; }
+.post-title { font-size: 32px; font-weight: 900; color: var(--dark-color); margin-bottom: 20px; }
 .post-p { font-size: 18px; line-height: 2.0; color: #2d3748; margin-bottom: 28px !important; text-align: justify; display: block; }
-
-/* الأدوات الجانبية */
-.widget { background: var(--white); padding: 25px; border-radius: 6px; border: 1px solid #eef2f6; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.01); }
+.widget { background: var(--white); padding: 25px; border-radius: 6px; margin-bottom: 25px; border: 1px solid #eef2f6; }
 .widget-title { font-size: 17px; font-weight: 900; color: var(--dark-color); border-bottom: 3px solid var(--main-color); padding-bottom: 8px; margin-bottom: 15px; }
-.prayer-times-list { list-style: none; }
-.prayer-times-list li { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 15px; font-weight: bold; }
-.weather-info { display: flex; flex-direction: column; gap: 12px; }
-.weather-city { font-size: 15px; font-weight: 700; display: flex; justify-content: space-between; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; }
-.poll-question { font-size: 14px; font-weight: 700; color: #4a5568; margin-bottom: 15px; }
-.poll-form label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 12px; color: #555; cursor: pointer; }
-.poll-btn { background: var(--main-color); color: var(--white); border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; font-family: 'Cairo', sans-serif; }
-.widget-ad-box { background: var(--white); border: 1px dashed #cbd5e1; height: 600px; display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 13px; border-radius: 6px; position: sticky; top: 90px; }
-
-/* الفوتر */
-.main-footer { background: var(--dark-color); color: #abb9c9; padding: 60px 0 30px 0; margin-top: 60px; }
-.grid-footer { display: grid; grid-template-columns: 2fr 1fr; gap: 50px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 40px; }
-.footer-legal-links ul { list-style: none; }
-.footer-legal-links ul li { margin-bottom: 12px; }
-.footer-legal-links ul li a { color: #cbd5e1; font-size: 14px; font-weight: bold; }
-.footer-bottom-bar { text-align: center; padding-top: 30px; font-size: 13px; color: #64748b; }
-
-@media (max-width: 992px) { .main-wrapper { grid-template-columns: 1fr; } .widget-ad-box { height: 250px; position: static; } }
-@media (max-width: 768px) { .grid-footer { grid-template-columns: 1fr; gap: 30px; } }
+.prayer-times-list li, .weather-city { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-weight: bold; }
+.main-footer { background: var(--dark-color); color: #abb9c9; padding: 40px 0; margin-top: 60px; }
+.grid-footer { display: flex; justify-content: space-between; flex-wrap: wrap; }
+.footer-legal-links ul { list-style: none; display: flex; gap: 20px; }
