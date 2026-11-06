@@ -1,282 +1,96 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#071c35">
-  <title>نكسوس بريس | آخر الأخبار والمقالات</title>
-  <meta name="description" content="تابع أحدث الأخبار الوطنية والدولية والاقتصادية والرياضية والتكنولوجية في نكسوس بريس.">
-  <link rel="canonical" href="https://nadian8n-lgtm.github.io/Nexus_Press/">
-  <link rel="icon" href="./image_MUwSAA.png">
-  <link rel="stylesheet" href="./style.css?v=3">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نكسوس بريس | Nexus Press - المنصة الإخبارية العالمية الشاملة</title>
+    <meta name="description" content="بوابة إخبارية دولية تقدم تغطية شاملة ومستقلة للأحداث السياسية، الاقتصادية، الرياضية، الطقس ومواقيت الصلاة بأعلى مستويات المهنية.">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <link rel="canonical" href="https://github.io">
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
 </head>
-
 <body>
-  <header class="site-header">
-    <div class="container header-inner">
-      <a class="brand" href="./index.html" aria-label="نكسوس بريس - الصفحة الرئيسية">
-        <img src="./image_MUwSAA.png" alt="شعار نكسوس بريس">
-        <span>نكسوس بريس</span>
-      </a>
-      <p class="header-note">أخبار ومتابعة من مصادرها</p>
-    </div>
-  </header>
 
-  <nav class="site-nav" aria-label="أقسام الأخبار">
-    <div class="container nav-inner">
-      <button class="nav-link is-active" type="button" data-category="all">الرئيسية</button>
-      <button class="nav-link" type="button" data-category="ar_local">أخبار وطنية</button>
-      <button class="nav-link" type="button" data-category="ar_world">أخبار دولية</button>
-      <button class="nav-link" type="button" data-category="ar_economy">اقتصاد</button>
-      <button class="nav-link" type="button" data-category="ar_sports">رياضة</button>
-      <button class="nav-link" type="button" data-category="ar_technology">تكنولوجيا</button>
-    </div>
-  </nav>
-
-  <section class="breaking-news" aria-label="آخر الأخبار">
-    <strong class="breaking-label">آخر الأخبار</strong>
-    <div class="ticker-window">
-      <div id="ticker" class="ticker">جارٍ تحميل الأخبار…</div>
-    </div>
-  </section>
-
-  <main class="container main-content">
-    <section class="intro">
-      <p class="eyebrow">المصدر واضح · الخبر أولاً</p>
-      <h1 id="page-title">أحدث المقالات</h1>
-      <p>اختاري قسماً لمشاهدة المقالات المنشورة فيه.</p>
-    </section>
-
-    <section class="featured-section" aria-labelledby="featured-heading">
-      <div class="section-heading">
-        <h2 id="featured-heading">أبرز المقالات</h2>
-        <div class="slider-controls">
-          <button id="previous" type="button" aria-label="المقال السابق">‹</button>
-          <button id="next" type="button" aria-label="المقال التالي">›</button>
+    <!-- شريط اللغات والترجمة الفورية لأيقونة العالم المعطلة سابقاً -->
+    <div class="top-bar">
+        <div class="container-flex">
+            <span class="live-ticker-date">تحديث مستمر على مدار الساعة</span>
+            <div class="global-lang-wrapper">
+                <span class="world-icon">🌐</span>
+                <div id="google_translate_element"></div>
+            </div>
         </div>
-      </div>
-      <div id="featured-grid" class="featured-grid"></div>
-    </section>
-
-    <div class="ad-placeholder" aria-label="مساحة إعلانية">
-      <strong>مساحة إعلانية</strong>
-      <span>تُفعّل بعد موافقة AdSense وإضافة رمز الناشر والوحدة الرسميين.</span>
     </div>
 
-    <section class="articles-section" aria-labelledby="articles-heading">
-      <div class="section-heading">
-        <h2 id="articles-heading">كل المقالات</h2>
-        <span id="article-count" class="article-count"></span>
-      </div>
+    <!-- هيدر الجريدة بالخلفية السماوية الفاتحة وإعلانات أدسينس -->
+    <header class="main-header">
+        <div class="container-flex">
+            <div class="logo-area">
+                <a href="index.html"><img src="./image_MUwSAA.png" alt="Nexus Press" class="main-logo-img"></a>
+            </div>
+            <div class="ad-space-header">مساحة إعلانية مجهزة (Google AdSense 728x90)</div>
+        </div>
+    </header>
 
-      <p id="status" class="status" role="status" aria-live="polite">
-        جارٍ تحميل المقالات…
-      </p>
-      <div id="articles-grid" class="articles-grid"></div>
-    </section>
-  </main>
+    <!-- شريط الأقسام التفاعلي الفوري (إثلاح نظام الفلترة والأخبار الدولية) -->
+    <nav class="main-nav">
+        <div class="container main-nav-container">
+            <ul class="nav-menu">
+                <li><a href="#" class="nav-filter active" data-filter="all">الرئيسية</a></li>
+                <li><a href="#" class="nav-filter" data-filter="local">أخبار وطنية</a></li>
+                <li><a href="#" class="nav-filter" data-filter="politics">الأخبار الدولية</a></li>
+                <li><a href="#" class="nav-filter" data-filter="economy">اقتصاد</a></li>
+                <li><a href="#" class="nav-filter" data-filter="sports">رياضة</a></li>
+            </ul>
+        </div>
+    </nav>
 
-  <footer class="site-footer">
-    <div class="container footer-inner">
-      <a class="footer-brand" href="./index.html">نكسوس بريس</a>
-      <nav class="footer-links" aria-label="روابط الموقع">
-        <a href="./about.html">من نحن</a>
-        <a href="./contact.html">اتصل بنا</a>
-        <a href="./privacy-policy.html">سياسة الخصوصية</a>
-      </nav>
-      <span>© <span id="year"></span> نكسوس بريس</span>
+    <!-- شريط عاجل المصلح بالخط الأبيض المقرؤ تماماً وثابت الحركة -->
+    <div class="breaking-news-bar">
+        <div class="breaking-title">عاجل</div>
+        <div class="breaking-content">
+            <marquee behavior="scroll" direction="right" scrollamount="5">
+                • شبكة نكسوس بريس تطلق منظومتها الرقمية المحدثة لمواكبة الأنباء والتحليلات الدولية والوطنية أولاً بأول وفق أعلى المعايير المهنية والصحفية.
+            </marquee>
+        </div>
     </div>
-  </footer>
 
-  <script>
-    (() => {
-      const categories = {
-        all: 'أحدث المقالات',
-        ar_local: 'أخبار وطنية',
-        ar_world: 'أخبار دولية',
-        ar_economy: 'اقتصاد',
-        ar_sports: 'رياضة',
-        ar_technology: 'تكنولوجيا'
-      };
+    <main class="main-wrapper container">
+        <div class="content-area">
+            <div class="video-news-section card-animate">
+                <h3 class="block-title">تغطية مرئية خاصة</h3>
+                <div class="video-container">
+                    <iframe src="https://youtube.com" title="Nexus Press Video Player" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
 
-      const articlesGrid = document.getElementById('articles-grid');
-      const featuredGrid = document.getElementById('featured-grid');
-      const status = document.getElementById('status');
-      const navButtons = [...document.querySelectorAll('[data-category]')];
+            <!-- مساحة إعلانية داخل الواجهة (AdSense 728x90) -->
+            <div class="ad-in-content">مساحة إعلانية داخل المحتوى (Google AdSense 728x90)</div>
 
-      let articles = [];
-      let activeCategory = 'all';
-      let sliderStart = 0;
+            <h3 class="block-title" id="section-view-title">كافة المستجدات الراهنة</h3>
+            
+            <section class="grid-stories-hub">
+                <!-- أخبار وطنية -->
+                <div class="news-card filter-item local card-animate"><a href="./news-ar_local-0.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="وطنية"></div><div class="card-info"><span class="badge">أخبار وطنية</span><h3>الداخلية ترفع سقف اعتمادات الجماعات المحلية بالمملكة لدعم التنمية</h3></div></a></div>
+                <div class="news-card filter-item local card-animate"><a href="./news-ar_local-1.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="وطنية"></div><div class="card-info"><span class="badge">أخبار وطنية</span><h3>عصيد ينتقد انصراف النقاشات إلى التفاصيل الهامشية بدل القضايا الأساسية</h3></div></a></div>
+                <div class="news-card filter-item local card-animate"><a href="./news-ar_local-2.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="وطنية"></div><div class="card-info"><span class="badge">أخبار وطنية</span><h3>مشاريع البنية التحتية الكبرى بالمملكة تدخل مراحل التنفيذ الفعلي</h3></div></a></div>
+                <div class="news-card filter-item local card-animate"><a href="./news-ar_local-3.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="وطنية"></div><div class="card-info"><span class="badge">أخبار وطنية</span><h3>قرارات تشريعية جديدة لتبسيط المساطر الإدارية وتسهيل الاستثمار</h3></div></a></div>
+                <div class="news-card filter-item local card-animate"><a href="./news-ar_local-4.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="وطنية"></div><div class="card-info"><span class="badge">أخبار وطنية</span><h3>إشادة دولية واسعة بجهود المغرب في قطاع الطاقات المتجددة النظيفة</h3></div></a></div>
+                <div class="news-card filter-item local card-animate"><a href="./news-ar_local-5.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="وطنية"></div><div class="card-info"><span class="badge">أخبار وطنية</span><h3>خطة وطنية موسعة لتحديث منظومة النقل اللوجستيكي بين المدن</h3></div></a></div>
 
-      document.getElementById('year').textContent = new Date().getFullYear();
+                <!-- الأخبار الدولية (الشرق الأوسط، أوروبا، أمريكا، أفريقيا) -->
+                <div class="news-card filter-item politics card-animate"><a href="./news-ar_world-0.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="سياسة"></div><div class="card-info"><span class="badge">الأخبار الدولية</span><h3>آخر الأخبار الدولية ومستجدات الحراك السياسي بمنطقة الشرق الأوسط</h3></div></a></div>
+                <div class="news-card filter-item politics card-animate"><a href="./news-ar_world-1.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="سياسة"></div><div class="card-info"><span class="badge">الأخبار الدولية</span><h3>آخر الأخبار الدولية والتحولات الاقتصادية والسياسية في القارة الأوروبية</h3></div></a></div>
+                <div class="news-card filter-item politics card-animate"><a href="./news-ar_world-2.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="سياسة"></div><div class="card-info"><span class="badge">الأخبار الدولية</span><h3>آخر الأخبار الدولية والتوجهات الاستراتيجية الجديدة في أمريكا</h3></div></a></div>
+                <div class="news-card filter-item politics card-animate"><a href="./news-ar_world-3.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="سياسة"></div><div class="card-info"><span class="badge">الأخبار الدولية</span><h3>آخر الأخبار الدولية والفرص التنموية والاقصادية الواعدة في إفريقيا</h3></div></a></div>
+                <div class="news-card filter-item politics card-animate"><a href="./news-ar_world-4.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="سياسة"></div><div class="card-info"><span class="badge">الأخبار الدولية</span><h3>آخر الأخبار الدولية وتقاطعات الدبلوماسية وأسواق الإمداد العالمية</h3></div></a></div>
+                <div class="news-card filter-item politics card-animate"><a href="./news-ar_world-5.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="سياسة"></div><div class="card-info"><span class="badge">الأخبار الدولية</span><h3>آخر الأخبار الدولية واستشراف التوازنات الاستراتيجية المقبلة في المنطقة</h3></div></a></div>
 
-      function makeCard(article, featured = false) {
-        const card = document.createElement('article');
-        card.className = featured ? 'article-card featured-card' : 'article-card';
-
-        const link = document.createElement('a');
-        link.className = 'article-link';
-        link.href = article.url || '#';
-        link.setAttribute('aria-label', article.title || 'اقرأ المقال');
-
-        const image = document.createElement('img');
-        image.className = 'article-image';
-        image.src = article.image || './placeholder.svg';
-        image.alt = article.imageAlt || 'رسم توضيحي للمقال';
-        image.loading = 'lazy';
-        image.onerror = () => {
-          image.onerror = null;
-          image.src = './placeholder.svg';
-        };
-
-        const content = document.createElement('div');
-        content.className = 'article-content';
-
-        const category = document.createElement('span');
-        category.className = 'category-badge';
-        category.textContent = article.categoryLabel ||
-          categories[article.category] ||
-          'أخبار';
-
-        const title = document.createElement('h3');
-        title.textContent = article.title || 'مقال إخباري';
-
-        const summary = document.createElement('p');
-        summary.className = 'article-summary';
-        summary.textContent = article.summary || '';
-
-        const meta = document.createElement('p');
-        meta.className = 'article-meta';
-        meta.textContent = [article.published, article.source]
-          .filter(Boolean)
-          .join(' · ');
-
-        content.append(category, title);
-
-        if (summary.textContent) {
-          content.append(summary);
-        }
-
-        content.append(meta);
-        link.append(image, content);
-        card.append(link);
-
-        return card;
-      }
-
-      function render() {
-        const visibleArticles = articles.filter(article =>
-          activeCategory === 'all' || article.category === activeCategory
-        );
-
-        articlesGrid.replaceChildren(
-          ...visibleArticles.map(article => makeCard(article))
-        );
-
-        document.getElementById('page-title').textContent =
-          categories[activeCategory] || categories.all;
-
-        document.getElementById('article-count').textContent =
-          `${visibleArticles.length} مقال`;
-
-        status.hidden = visibleArticles.length > 0;
-        status.textContent = articles.length
-          ? 'لا توجد مقالات منشورة في هذا القسم حالياً.'
-          : 'لا توجد مقالات في ملف news-data.json.';
-
-        navButtons.forEach(button => {
-          button.classList.toggle(
-            'is-active',
-            button.dataset.category === activeCategory
-          );
-        });
-      }
-
-      function renderFeatured() {
-        if (!articles.length) {
-          featuredGrid.replaceChildren();
-          return;
-        }
-
-        const numberToShow = Math.min(3, articles.length);
-        const featuredArticles = [];
-
-        for (let i = 0; i < numberToShow; i++) {
-          featuredArticles.push(
-            articles[(sliderStart + i) % articles.length]
-          );
-        }
-
-        featuredGrid.replaceChildren(
-          ...featuredArticles.map(article => makeCard(article, true))
-        );
-      }
-
-      navButtons.forEach(button => {
-        button.addEventListener('click', () => {
-          activeCategory = button.dataset.category;
-          render();
-
-          document.querySelector('.articles-section').scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        });
-      });
-
-      document.getElementById('previous').addEventListener('click', () => {
-        if (!articles.length) return;
-        sliderStart = (sliderStart - 1 + articles.length) % articles.length;
-        renderFeatured();
-      });
-
-      document.getElementById('next').addEventListener('click', () => {
-        if (!articles.length) return;
-        sliderStart = (sliderStart + 1) % articles.length;
-        renderFeatured();
-      });
-
-      fetch('./news-data.json?v=3', { cache: 'no-store' })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`تعذر تحميل الأخبار (${response.status})`);
-          }
-          return response.json();
-        })
-        .then(data => {
-          if (!Array.isArray(data)) {
-            throw new Error('صيغة news-data.json يجب أن تكون قائمة مقالات.');
-          }
-
-          const uniqueArticles = new Map();
-
-          data.forEach(article => {
-            if (!article || !article.title || !article.url) return;
-
-            const key = article.storyId || article.url || article.title;
-            if (!uniqueArticles.has(key)) {
-              uniqueArticles.set(key, article);
-            }
-          });
-
-          articles = [...uniqueArticles.values()].sort((a, b) =>
-            String(b.published || '').localeCompare(String(a.published || ''))
-          );
-
-          document.getElementById('ticker').textContent = articles.length
-            ? articles.slice(0, 8).map(article => article.title).join('　•　')
-            : 'لا توجد أخبار منشورة حالياً.';
-
-          render();
-          renderFeatured();
-        })
-        .catch(error => {
-          status.hidden = false;
-          status.textContent = `${error.message} تأكدي من وجود الملف بجانب index.html.`;
-          document.getElementById('ticker').textContent =
-            'تعذر تحميل الأخبار.';
-        });
-    })();
-  </script>
-</body>
-</html>
+                <!-- اقتصاد -->
+                <div class="news-card filter-item economy card-animate"><a href="./news-ar_economy-0.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="اقتصاد"></div><div class="card-info"><span class="badge">اقتصاد</span> EVENT<h3>مؤشرات النمو الاقتصادي وتقلبات أسعار الطاقة والمحروقات دولياً</h3></div></a></div>
+                <div class="news-card filter-item economy card-animate"><a href="./news-ar_economy-1.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="اقتصاد"></div><div class="card-info"><span class="badge">اقتصاد</span><h3>مستجدات أسعار المواد الاستهلاكية والتدابير الحمائية للقدرة الشرائية</h3></div></a></div>
+                <div class="news-card filter-item economy card-animate"><a href="./news-ar_economy-2.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="اقتصاد"></div><div class="card-info"><span class="badge">اقتصاد</span><h3>تحليلات أسواق المال وأداء الأسهم والبورصات العالمية هذا الأسبوع</h3></div></a></div>
+                <div class="news-card filter-item economy card-animate"><a href="./news-ar_economy-3.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="اقتصاد"></div><div class="card-info"><span class="badge">اقتصاد</span><h3>السياسات النقدية والمصرفية المرتقبة للحد من تداعيات التضخم</h3></div></a></div>
