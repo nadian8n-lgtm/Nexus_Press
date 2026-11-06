@@ -4,71 +4,79 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#071c35">
-  <title>نكسوس بريس | الأخبار والمقالات</title>
-  <meta name="description" content="أخبار ومقالات نكسوس بريس مع عرض المصادر وروابطها.">
+  <title>نكسوس بريس | أخبار وطنية ودولية واقتصاد ورياضة</title>
+  <meta name="description" content="نكسوس بريس: مقالات وأخبار مع مصادرها وروابطها.">
   <link rel="canonical" href="https://nadian8n-lgtm.github.io/Nexus_Press/">
   <link rel="icon" href="./image_MUwSAA.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./style.css?v=20261106-1">
 </head>
 <body>
-  <div class="utility-bar"><div class="container utility-inner">
-    <span data-i18n="masthead">نكسوس بريس · متابعة من مصادر متعددة</span>
-    <label class="language-picker"><span aria-hidden="true">🌐</span><span class="visually-hidden" data-i18n="language">اللغة</span>
-      <select id="language-select" aria-label="Language"><option value="ar">العربية</option><option value="fr">Français</option><option value="en">English</option></select>
-    </label>
-  </div></div>
   <header class="site-header"><div class="container header-inner">
-    <a class="brand" href="./index.html"><img src="./image_MUwSAA.png" alt="Nexus Press"><span>نكسوس بريس</span></a>
-    <div class="header-ad ad-slot"><strong data-i18n="ad">مساحة إعلانية</strong><small data-i18n="adNote">تظهر الإعلانات بعد اعتماد الحساب وإضافة الشفرة الرسمية</small></div>
+    <a class="brand" href="./index.html"><img src="./image_MUwSAA.png" alt="شعار نكسوس بريس"><span>نكسوس بريس</span></a>
+    <p>أخبار ومتابعة من مصادرها</p>
   </div></header>
   <nav class="site-nav" aria-label="الأقسام"><div class="container nav-inner">
-    <a class="nav-link is-active" href="#" data-filter="all" data-i18n="home">الرئيسية</a>
-    <a class="nav-link" href="#articles" data-filter="ar_local" data-i18n="local">أخبار وطنية</a>
-    <a class="nav-link" href="#articles" data-filter="ar_world" data-i18n="world">أخبار دولية</a>
-    <a class="nav-link" href="#articles" data-filter="ar_economy" data-i18n="economy">اقتصاد</a>
-    <a class="nav-link" href="#articles" data-filter="ar_sports" data-i18n="sports">رياضة</a>
-    <a class="nav-link" href="#articles" data-filter="ar_technology" data-i18n="technology">تكنولوجيا</a>
+    <button class="nav-link is-active" data-filter="all">الرئيسية</button>
+    <button class="nav-link" data-filter="ar_local">أخبار وطنية</button>
+    <button class="nav-link" data-filter="ar_world">أخبار دولية</button>
+    <button class="nav-link" data-filter="ar_economy">اقتصاد</button>
+    <button class="nav-link" data-filter="ar_sports">رياضة</button>
+    <button class="nav-link" data-filter="ar_technology">تكنولوجيا</button>
   </div></nav>
-  <section class="breaking-bar" aria-label="Latest news"><strong class="breaking-label" data-i18n="latest">آخر الأخبار</strong><div class="ticker-window"><div id="ticker-track" class="ticker-track">تابع أحدث المقالات المنشورة في نكسوس بريس</div></div></section>
-
+  <div class="breaking"><strong>آخر الأخبار</strong><div class="ticker"><span id="ticker">تابع أحدث المقالات المنشورة في نكسوس بريس</span></div></div>
   <main class="container main-content">
-    <section class="intro"><p class="eyebrow" data-i18n="eyebrow">المصدر واضح · الصياغة تحريرية</p><h1 id="page-title" data-i18n="headline">أحدث المقالات</h1><p data-i18n="intro">تصفح الأخبار حسب القسم، وافتح المقال لقراءة التفاصيل والمصادر.</p></section>
-    <section class="featured-section" aria-labelledby="featured-title"><div class="section-heading"><h2 id="featured-title" data-i18n="featured">أبرز المقالات</h2><div class="carousel-controls"><button id="slide-prev" type="button" aria-label="Previous">‹</button><button id="slide-next" type="button" aria-label="Next">›</button></div></div><div id="featured-track" class="featured-track"></div></section>
-    <section class="services-grid" aria-label="خدمات"><article class="service-card"><h2 data-i18n="weather">الطقس — الدار البيضاء</h2><p id="weather-status">جارٍ التحميل…</p></article><article class="service-card"><h2 data-i18n="prayer">مواقيت الصلاة — الدار البيضاء</h2><p id="prayer-status">جارٍ التحميل…</p></article><article class="service-card poll-card"><h2 data-i18n="poll">استطلاع القراء</h2><p data-i18n="pollQuestion">هل تفضل قراءة الأخبار عبر الهاتف؟</p><div class="poll-options"><button type="button" data-poll="yes" data-i18n="yes">نعم</button><button type="button" data-poll="no" data-i18n="no">لا</button></div><p id="poll-result" class="service-note" data-i18n="pollNote">التصويت محفوظ محلياً على هذا الجهاز فقط.</p></article></section>
-    <div class="ad-slot in-feed-ad"><strong data-i18n="ad">مساحة إعلانية</strong><small data-i18n="adNote">تظهر الإعلانات بعد اعتماد الحساب وإضافة الشفرة الرسمية</small></div>
-    <div class="section-heading list-heading" id="articles"><h2 id="list-title" data-i18n="allArticles">كل المقالات</h2><span id="story-count" class="story-count"></span></div>
-    <div id="status" class="status" role="status" aria-live="polite">جارٍ تحميل المقالات…</div><section id="news-grid" class="news-grid" aria-label="Articles"></section>
+    <section class="intro"><span>المصدر واضح · الصياغة تحريرية</span><h1 id="page-title">أحدث المقالات</h1><p>اختر قسماً لعرض المقالات المنشورة فيه.</p></section>
+    <div class="section-title"><h2>أبرز المقالات</h2><span id="count"></span></div>
+    <div id="status" class="status" role="status">جارٍ تحميل المقالات…</div>
+    <section id="articles" class="news-grid" aria-label="المقالات"></section>
+    <aside class="service-panel"><div><h2>الطقس ومواقيت الصلاة</h2><p>اكتب المدينة والبلد لعرض المعلومات المحلية.</p></div><div class="city-controls"><input id="city" value="Casablanca" aria-label="المدينة"><input id="country" value="Morocco" aria-label="البلد"><button id="load-city">عرض</button></div><p id="weather">الطقس: جارٍ التحميل…</p><p id="prayer">الصلاة: جارٍ التحميل…</p></aside>
+    <aside class="ad-placeholder"><strong>مساحة إعلانية</strong><span>تُفعّل بعد موافقة Google AdSense وإضافة رمز الناشر والوحدة.</span></aside>
   </main>
-  <footer class="site-footer"><div class="container footer-columns"><div><a class="footer-brand" href="./index.html">نكسوس بريس</a><p data-i18n="footerAbout">منصة إخبارية عربية تعرض المقالات وروابط المصادر.</p></div><nav aria-label="Footer"><a href="./about.html" data-i18n="about">من نحن</a><a href="./contact.html" data-i18n="contact">اتصل بنا</a><a href="./privacy-policy.html" data-i18n="privacy">سياسة الخصوصية</a></nav><div class="footer-ad ad-slot"><strong data-i18n="ad">مساحة إعلانية</strong><small data-i18n="adNote">تظهر الإعلانات بعد اعتماد الحساب وإضافة الشفرة الرسمية</small></div></div><div class="container footer-bottom">© <span id="year"></span> نكسوس بريس</div></footer>
-
+  <footer class="site-footer"><div class="container footer-inner"><a href="./index.html">نكسوس بريس</a><a href="./about.html">من نحن</a><a href="./contact.html">اتصل بنا</a><a href="./privacy-policy.html">سياسة الخصوصية</a><span>© <span id="year"></span></span></div></footer>
 <script>
 (() => {
-  const dict = {
-    ar:{masthead:'نكسوس بريس · متابعة من مصادر متعددة',language:'اللغة',ad:'مساحة إعلانية',adNote:'تظهر الإعلانات بعد اعتماد الحساب وإضافة الشفرة الرسمية',home:'الرئيسية',local:'أخبار وطنية',world:'أخبار دولية',economy:'اقتصاد',sports:'رياضة',technology:'تكنولوجيا',latest:'آخر الأخبار',eyebrow:'المصدر واضح · الصياغة تحريرية',headline:'أحدث المقالات',intro:'تصفح الأخبار حسب القسم، وافتح المقال لقراءة التفاصيل والمصادر.',featured:'أبرز المقالات',weather:'الطقس — الدار البيضاء',prayer:'مواقيت الصلاة — الدار البيضاء',poll:'استطلاع القراء',pollQuestion:'هل تفضل قراءة الأخبار عبر الهاتف؟',yes:'نعم',no:'لا',pollNote:'التصويت محفوظ محلياً على هذا الجهاز فقط.',allArticles:'كل المقالات',about:'من نحن',contact:'اتصل بنا',privacy:'سياسة الخصوصية',footerAbout:'منصة إخبارية عربية تعرض المقالات وروابط المصادر.',empty:'لا توجد مقالات منشورة حالياً.',emptyCategory:'لا توجد مقالات في هذا القسم حالياً.',count:'مقال'},
-    fr:{masthead:'Nexus Press · actualités avec sources',language:'Langue',ad:'Espace publicitaire',adNote:'Disponible après approbation et ajout du code officiel',home:'Accueil',local:'Actualités nationales',world:'International',economy:'Économie',sports:'Sport',technology:'Technologie',latest:'Dernières nouvelles',eyebrow:'Sources visibles · rédaction éditoriale',headline:'Articles récents',intro:'Choisissez une rubrique et ouvrez un article pour consulter ses sources.',featured:'À la une',weather:'Météo — Casablanca',prayer:'Horaires de prière — Casablanca',poll:'Sondage des lecteurs',pollQuestion:'Lisez-vous les actualités sur votre téléphone ?',yes:'Oui',no:'Non',pollNote:'Vote enregistré uniquement sur cet appareil.',allArticles:'Tous les articles',about:'À propos',contact:'Contact',privacy:'Confidentialité',footerAbout:'Actualités arabes avec liens vers les sources.',empty:'Aucun article publié pour le moment.',emptyCategory:'Aucun article dans cette rubrique.',count:'articles'},
-    en:{masthead:'Nexus Press · news with sources',language:'Language',ad:'Advertisement space',adNote:'Available after account approval and official code setup',home:'Home',local:'National',world:'World',economy:'Economy',sports:'Sports',technology:'Technology',latest:'Latest news',eyebrow:'Sources shown · editorial writing',headline:'Latest articles',intro:'Choose a section and open an article to read details and sources.',featured:'Featured articles',weather:'Weather — Casablanca',prayer:'Prayer times — Casablanca',poll:'Reader poll',pollQuestion:'Do you prefer reading news on your phone?',yes:'Yes',no:'No',pollNote:'Vote is saved only on this device.',allArticles:'All articles',about:'About',contact:'Contact',privacy:'Privacy policy',footerAbout:'Arabic news platform with links to sources.',empty:'No articles have been published yet.',emptyCategory:'No articles in this section.',count:'articles'}
-  };
-  const cats={all:'allArticles',ar_local:'local',ar_world:'world',ar_economy:'economy',ar_sports:'sports',ar_technology:'technology'};
-  const select=document.getElementById('language-select'), grid=document.getElementById('news-grid'), featured=document.getElementById('featured-track'), status=document.getElementById('status'), nav=[...document.querySelectorAll('[data-filter]')];
-  let stories=[], filter='all', slide=0, lang=localStorage.getItem('nexus-language')||'ar';
-  document.getElementById('year').textContent=new Date().getFullYear(); select.value=lang;
-  function t(key){return (dict[lang]&&dict[lang][key])||dict.ar[key]||key}
-  function applyLanguage(){document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.dataset.i18n)});render();renderFeatured()}
-  function localize(item,key){return item.translations&&item.translations[lang]&&item.translations[lang][key]||item[key]||''}
-  function makeCard(item,top=false){const el=document.createElement('article');el.className=top?'featured-card':'news-card';const a=document.createElement('a');a.className='card-link';a.href=item.url||'#';const img=document.createElement('img');img.className='card-image';img.src=item.image||'./placeholder.svg';img.alt=item.imageAlt||'';img.loading='lazy';img.onerror=()=>{img.onerror=null;img.src='./placeholder.svg'};const box=document.createElement('div');box.className='card-body';const badge=document.createElement('span');badge.className='badge';badge.textContent=localize(item,'categoryLabel')||t(cats[item.category]||'latest');const h=document.createElement('h3');h.textContent=localize(item,'title')||'خبر';const meta=document.createElement('p');meta.className='card-meta';meta.textContent=[item.published,item.source].filter(Boolean).join(' · ');box.append(badge,h,meta);a.append(img,box);el.append(a);return el}
-  function render(){const shown=stories.filter(x=>filter==='all'||x.category===filter);grid.replaceChildren(...shown.map(x=>makeCard(x)));document.getElementById('list-title').textContent=t(cats[filter]||'allArticles');document.getElementById('page-title').textContent=filter==='all'?t('headline'):t(cats[filter]);document.getElementById('story-count').textContent=`${shown.length} ${t('count')}`;status.hidden=shown.length>0;status.textContent=stories.length?t('emptyCategory'):t('empty')}
-  function renderFeatured(){if(!stories.length){featured.replaceChildren();return}const result=[];for(let i=0;i<Math.min(3,stories.length);i++)result.push(stories[(slide+i)%stories.length]);featured.replaceChildren(...result.map(x=>makeCard(x,true)))}
-  select.addEventListener('change',()=>{lang=select.value;localStorage.setItem('nexus-language',lang);applyLanguage()});
-  nav.forEach(link=>link.addEventListener('click',event=>{event.preventDefault();filter=link.dataset.filter;nav.forEach(n=>n.classList.toggle('is-active',n===link));render();document.getElementById('articles').scrollIntoView({behavior:'smooth'})}));
-  document.getElementById('slide-prev').addEventListener('click',()=>{if(stories.length){slide=(slide-1+stories.length)%stories.length;renderFeatured()}});document.getElementById('slide-next').addEventListener('click',()=>{if(stories.length){slide=(slide+1)%stories.length;renderFeatured()}});
-  document.querySelectorAll('[data-poll]').forEach(btn=>btn.addEventListener('click',()=>{localStorage.setItem('nexus-poll-v1',btn.dataset.poll);document.getElementById('poll-result').textContent=`${t('pollNote')} (${btn.textContent})`}));
-  fetch('./news-data.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error();return r.json()}).then(data=>{const unique=new Map();(Array.isArray(data)?data:[]).forEach(item=>{const key=item.storyId||item.url||item.title;if(key&&!unique.has(key))unique.set(key,item)});stories=[...unique.values()].sort((a,b)=>String(b.published||'').localeCompare(String(a.published||'')));document.getElementById('ticker-track').textContent=stories.slice(0,10).map(x=>x.title).join('　•　')||t('empty');applyLanguage()}).catch(()=>{status.textContent='تعذر تحميل ملف الأخبار news-data.json';status.hidden=false});
-  fetch('https://api.open-meteo.com/v1/forecast?latitude=33.5731&longitude=-7.5898&current=temperature_2m,relative_humidity_2m&timezone=Africa%2FCasablanca').then(r=>r.json()).then(d=>document.getElementById('weather-status').textContent=`${d.current.temperature_2m}°C · ${d.current.relative_humidity_2m}%`).catch(()=>document.getElementById('weather-status').textContent='غير متاح حالياً');
-  fetch('https://api.aladhan.com/v1/timingsByCity?city=Casablanca&country=Morocco&method=21').then(r=>r.json()).then(d=>{const x=d.data.timings;document.getElementById('prayer-status').textContent=`الفجر ${x.Fajr} · الظهر ${x.Dhuhr} · العصر ${x.Asr} · المغرب ${x.Maghrib} · العشاء ${x.Isha}`}).catch(()=>document.getElementById('prayer-status').textContent='غير متاح حالياً');
-  applyLanguage();
+  const labels={all:'أحدث المقالات',ar_local:'أخبار وطنية',ar_world:'أخبار دولية',ar_economy:'اقتصاد',ar_sports:'رياضة',ar_technology:'تكنولوجيا'};
+  const grid=document.getElementById('articles'),status=document.getElementById('status'); let data=[],filter='all';
+  document.getElementById('year').textContent=new Date().getFullYear();
+  function render(){
+    const items=data.filter(x=>filter==='all'||x.category===filter);
+    grid.replaceChildren();
+    for(const item of items){
+      const card=document.createElement('article');card.className='news-card';
+      const link=document.createElement('a');link.className='card-link';link.href=item.url;
+      const image=document.createElement('img');image.className='card-image';image.src=item.image||'./placeholder.svg';image.alt=item.imageAlt||'';image.loading='lazy';image.onerror=()=>{image.onerror=null;image.src='./placeholder.svg'};
+      const body=document.createElement('div');body.className='card-body';
+      const cat=document.createElement('span');cat.className='badge';cat.textContent=item.categoryLabel||'أخبار';
+      const title=document.createElement('h2');title.textContent=item.title;
+      const summary=document.createElement('p');summary.textContent=item.summary||'';
+      const meta=document.createElement('small');meta.textContent=[item.published,item.source].filter(Boolean).join(' · ');
+      body.append(cat,title,summary,meta);link.append(image,body);card.append(link);grid.append(card);
+    }
+    document.getElementById('page-title').textContent=labels[filter]||labels.all;
+    document.getElementById('count').textContent=`${items.length} مقال`;
+    status.hidden=items.length>0;
+    status.textContent=data.length?'لا توجد مقالات في هذا القسم حالياً.':'لا توجد مقالات محفوظة في ملف news-data.json.';
+  }
+  document.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>{filter=button.dataset.filter;document.querySelectorAll('[data-filter]').forEach(x=>x.classList.toggle('is-active',x===button));render()}));
+  fetch('./news-data.json?v=20261106-1',{cache:'no-store'}).then(response=>{if(!response.ok)throw Error('HTTP '+response.status);return response.json()}).then(items=>{
+    const unique=new Map();(Array.isArray(items)?items:[]).forEach(item=>{const key=item.storyId||item.url||item.title;if(item.title&&item.url&&key&&!unique.has(key))unique.set(key,item)});
+    data=[...unique.values()].sort((a,b)=>String(b.published||'').localeCompare(String(a.published||'')));
+    document.getElementById('ticker').textContent=data.slice(0,8).map(x=>x.title).join('　•　')||'تابع أحدث المقالات المنشورة في نكسوس بريس';render();
+  }).catch(error=>{status.hidden=false;status.textContent='تعذر تحميل ملف الأخبار: '+error.message});
+  async function loadCity(){
+    const city=document.getElementById('city').value.trim(),country=document.getElementById('country').value.trim();
+    if(!city||!country)return;
+    document.getElementById('weather').textContent='الطقس: جارٍ التحميل…';document.getElementById('prayer').textContent='الصلاة: جارٍ التحميل…';
+    try{
+      const g=await fetch('https://geocoding-api.open-meteo.com/v1/search?'+new URLSearchParams({name:city,count:'1',language:'en',format:'json'})).then(r=>r.json());
+      const place=(g.results||[]).find(x=>x.country_code===country||x.country.toLowerCase()===country.toLowerCase())||(g.results||[])[0];if(!place)throw Error('لم نعثر على المدينة');
+      const w=await fetch('https://api.open-meteo.com/v1/forecast?'+new URLSearchParams({latitude:place.latitude,longitude:place.longitude,current:'temperature_2m,relative_humidity_2m',timezone:'auto'})).then(r=>r.json());
+      document.getElementById('weather').textContent=`الطقس في ${place.name}: ${w.current.temperature_2m}°م، الرطوبة ${w.current.relative_humidity_2m}%`;
+      const p=await fetch('https://api.aladhan.com/v1/timingsByCity?'+new URLSearchParams({city:place.name,country:place.country,method:'21'})).then(r=>r.json());if(!p.data)throw Error('مواقيت الصلاة غير متاحة');const t=p.data.timings;
+      document.getElementById('prayer').textContent=`مواقيت ${place.name}: الفجر ${t.Fajr} · الظهر ${t.Dhuhr} · العصر ${t.Asr} · المغرب ${t.Maghrib} · العشاء ${t.Isha}`;
+    }catch(error){document.getElementById('weather').textContent='الطقس: '+error.message;document.getElementById('prayer').textContent='الصلاة: '+error.message}
+  }
+  document.getElementById('load-city').addEventListener('click',loadCity);loadCity();
 })();
 </script>
 </body>
