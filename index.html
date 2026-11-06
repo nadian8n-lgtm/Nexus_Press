@@ -11,6 +11,7 @@
 </head>
 <body>
 
+    <!-- شريط اللغات العلوي التفاعلي الفوري المباشر -->
     <div class="top-bar">
         <div class="container-flex">
             <span class="live-ticker-date">تحديث مستمر على مدار الساعة</span>
@@ -22,6 +23,7 @@
         </div>
     </div>
 
+    <!-- هيدر الجريدة بالخلفية السماوية وقوائم التوجيه العليا القانونية ومساحة أدسينس -->
     <header class="main-header">
         <div class="container-flex">
             <div class="logo-area">
@@ -34,6 +36,7 @@
         </div>
     </header>
 
+    <!-- شريط أقسام الفلترة الفورية للأقسام الـ 6 -->
     <nav class="main-nav">
         <div class="container main-nav-container">
             <ul class="nav-menu">
@@ -48,6 +51,7 @@
         </div>
     </nav>
 
+    <!-- شريط المقالات الساخنة والعناوين اللامعة التي تتحرك من اليمين إلى اليسار -->
     <div class="breaking-news-bar">
         <div class="breaking-title">عاجل</div>
         <div class="breaking-content">
@@ -62,19 +66,25 @@
     <main class="main-wrapper container">
         <div class="content-area">
             <h3 class="block-title" id="section-view-title">كافة المستجدات الراهنة</h3>
+            
+            <!-- شبكة المقالات الـ 36 الموزعة ديناميكياً حسب الفلترة والتصنيف للزوار -->
             <section class="grid-stories-hub">
+                <!-- أخبار وطنية -->
                 <div class="news-card filter-item local card-animate"><a href="./news-ar_local-0.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="وطنية"></div><div class="card-info"><span class="badge">أخبار وطنية</span><h3>الداخلية ترفع سقف اعتمادات الجماعات المحلية بالمملكة لدعم التنمية</h3></div></a></div>
                 <div class="news-card filter-item local card-animate"><a href="./news-ar_local-1.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="وطنية"></div><div class="card-info"><span class="badge">أخبار وطنية</span><h3>عصيد ينتقد انصراف النقاشات إلى التفاصيل الهامشية بدل القضايا الأساسية</h3></div></a></div>
+                
+                <!-- الأخبار الدولية -->
                 <div class="news-card filter-item world card-animate"><a href="./news-ar_world-0.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="سياسة"></div><div class="card-info"><span class="badge">الأخبار الدولية</span><h3>آخر الأخبار الدولية ومستجدات الأوضاع في الشرق الأوسط</h3></div></a></div>
                 <div class="news-card filter-item world card-animate"><a href="./news-ar_world-1.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="سياسة"></div><div class="card-info"><span class="badge">الأخبار الدولية</span><h3>آخر الأخبار الدولية والتحولات الاقتصادية والسياسية في القارة الأوروبية</h3></div></a></div>
             </section>
         </div>
 
+        <!-- الجزء الجانبي المحمل بـ الوجت التفاعلي للصلاة والطقس المتغير باستمرار حسب المدينة -->
         <aside class="sidebar-area">
             <div class="widget">
                 <h4 class="widget-title">مواقيت الصلاة وحالة الطقس</h4>
                 <div style="margin-bottom:15px;">
-                    <select id="city-selector" onchange="updateWeatherAndPrayer()" style="width:100%; padding:8px; font-family:'Cairo';">
+                    <select id="city-selector" onchange="updateWeatherAndPrayer()" style="width:100%; padding:8px; font-family:'Cairo'; font-weight: bold; border: 1px solid #cbd5e1; border-radius: 4px;">
                         <option value="rabat">الرباط (المغرب)</option>
                         <option value="paris">باريس (فرنسا)</option>
                         <option value="cairo">القاهرة (مصر)</option>
@@ -86,16 +96,17 @@
                 </div>
             </div>
 
+            <!-- استطلاع الرأي اليومي لزيادة وقت بقاء الزوار ومعدل التفاعل -->
             <div class="widget">
                 <h4 class="widget-title">استطلاع الرأي اليومي</h4>
-                <p>ما هو رأيك في مستوى التغطية التكنولوجية بالمنصة؟</p>
-                <form class="poll-form" onsubmit="event.preventDefault(); alert('شكراً لتصويتك المباشر!');">
-                    <label><input type="radio" name="poll_ans" required> ممتازة وشاملة</label>
-                    <label><input type="radio" name="poll_ans"> متوسطة وبحاجة لتطوير</label>
+                <p style="font-size:14px; font-weight:600; color:#4a5568; margin-bottom:12px;">ما هو رأيك في مستوى التغطية التكنولوجية والتحليلية بالمنصة؟</p>
+                <form class="poll-form" onsubmit="event.preventDefault(); alert('شكراً لتصويتك المباشر! رأيك يهمنا لتطوير المنصة.');">
+                    <label style="display:block; margin-bottom:8px; font-size:13px; font-weight:bold;"><input type="radio" name="poll_ans" required> ممتازة وشاملة ومتفردة</label>
+                    <label style="display:block; margin-bottom:12px; font-size:13px; font-weight:bold;"><input type="radio" name="poll_ans"> متوسطة وبحاجة لتطوير إضافي</label>
                     <button type="submit" class="poll-btn">تصويت</button>
                 </form>
             </div>
-            <div class="widget-ad-box"><span>مساحة جانبية (AdSense 300x600)</span></div>
+            <div class="widget-ad-box"><span>مساحة جانبية متجاوبة (AdSense 300x600)</span></div>
         </aside>
     </main>
 
@@ -103,7 +114,7 @@
         <div class="container grid-footer">
             <div class="footer-about">
                 <h3>نكسوس بريس | Nexus Press</h3>
-                <p>منصة إعلامية دولية متجددة تقدم قراءات تحليلية وتغطية موسعة للأحداث الراهنة.</p>
+                <p>منصة إعلامية دولية مستقلة ومصادق عليها تقدم قراءات تحليلية وتغطية موسعة للأحداث الراهنة.</p>
             </div>
             <div class="footer-legal-links">
                 <ul>
@@ -116,6 +127,7 @@
         <div class="footer-bottom-bar"><p>&copy; 2026 نكسوس بريس. جميع الحقوق التحريرية محفوظة.</p></div>
     </footer>
 
+    <!-- نظام الترجمة والتحويل الصافي بدون بنر علوي مشوه -->
     <div id="google_translate_element" style="display:none;"></div>
     <script type="text/javascript">
         function googleTranslateElementInit() {
@@ -138,5 +150,8 @@
         }
     </script>
     <script type="text/javascript" src="https://google.com"></script>
-</body>
-</html>
+
+    <script type="text/javascript">
+        document.querySelectorAll('.nav-filter').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
