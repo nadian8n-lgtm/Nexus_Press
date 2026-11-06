@@ -27,16 +27,12 @@ jobs:
       run: |
         SCRIPT_PATH=$(find . -name "*fetch_news*.py" | head -n 1)
         python "$SCRIPT_PATH"
-      env:
-        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
     - name: Commit and Push Updates
       run: |
         git config --global user.name "NexusPress-Bot"
         git config --global user.email "bot@nexuspress.com"
-        
         git add .
-        git diff-index --quiet HEAD || git commit -m "تحديث تلقائي رأس الساعة: صياغة ونشر آخر الأخبار والتحليلات لجريدة نكسوس بريس"
-        
+        git diff-index --quiet HEAD || git commit -m "تحديث تلقائي مستقر لجريدة نكسوس بريس"
         git pull --rebase origin main
         git push origin main
