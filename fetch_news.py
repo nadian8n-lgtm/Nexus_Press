@@ -1,7 +1,6 @@
 import os
 from datetime import datetime
 
-# الأقسام الـ 6 المفعلة للموقع بالكامل مع الكلمات المفتاحية للصور الذكية
 CATEGORIES_CONFIG = {
     'ar_local': {"name": "أخبار وطنية", "keyword": "morocco,rabat"},
     'ar_world': {"name": "الأخبار الدولية", "keyword": "global,politics"},
@@ -11,125 +10,83 @@ CATEGORIES_CONFIG = {
     'ar_arts': {"name": "فن وثقافة", "keyword": "painting,culture"}
 }
 
-# 6 عناوين ومواضيع فريدة وحصرية لكل قسم لضمان التنوع ومنع التكرار والـ 404 نهائياً
 ARTICLES_DATA = {
     'ar_local': [
-        "الداخلية ترفع سقف اعتمادات الجماعات المحلية بالمملكة لدعم التنمية واللوجستيك",
-        "عصيد ينتقد انصراف النقاشات إلى التفاصيل الهامشية بدل القضايا الأساسية والتعليم",
-        "مشاريع البنية التحتية الكبرى بالمملكة تدخل مراحل التنفيذ الميداني الفعلي والربط القاري",
-        "قرارات تشريعية جديدة لتبسيط المساطر الإدارية وتسهيل الاستثمار الوطني والأجنبي",
-        "إشادة دولية واسعة بجهود المغرب في قطاع الطاقات المتجددة النظيفة والهيدروجين الأخضر",
-        "خطة وطنية موسعة لتحديث منظومة النقل اللوجستيكي والربط السككي الفوري بين المدن"
+        {"title": "الداخلية ترفع سقف اعتمادات الجماعات المحلية بالمملكة لدعم التنمية واللوجستيك", "content": "أعلنت وزارة الداخلية رسمياً عن حزمة قرارات مالية تهدف إلى الرفع من اعتمادات الميزانيات الموجهة للجماعات الترابية والمحلية في مختلف جهات المملكة، وذلك رغبة في تسريع وتيرة إنعاش المشاريع التنموية الحيوية المتوقفة وبناء البنيات اللوجستية الأساسية بالمنطقة تماشياً مع متطلبات المرحلة الجارية."},
+        {"title": "عصيد ينتقد انصراف النقاشات إلى التفاصيل الهامشية بدل القضايا الأساسية والتعليم", "content": "أثار المفكر والناشط الحقوقي أحمد عصيد نقاشاً واسعاً بتصريحاته الأخيرة التي انتقد فيها بشدة انشغال الفاعلين بالجزئيات والهوامش التحريرية والسياسية، معتبراً أن المرحلة الحالية تتطلب التركيز التام على القضايا الهيكلية المباشرة كدعم التعليم والصحة والإصلاح الإداري الشامل بالمملكة."}
     ],
     'ar_world': [
-        "آخر الأخبار الدولية ومستجدات الحراك السياسي وملفات الأمن بمنطقة الشرق الأوسط",
-        "آخر الأخبار الدولية والتحولات الاقتصادية والسياسية الراهنة في القارة الأوروبية",
-        "آخر الأخبار الدولية والتوجهات الاستراتيجية والتجارية الجديدة في أمريكا والبيت الأبيض",
-        "آخر الأخبار الدولية والفرص التنموية والاقتصادية الواعدة في القارة الإفريقية",
-        "آخر الأخبار الدولية وتقاطعات الدبلوماسية وأسواق الإمداد والشحن العالمية عبر البحار",
-        "آخر الأخبار الدولية واستشراف التوازنات الاستراتيجية المقبلة في المنطقة والعالم الراهن"
-    ],
-    'ar_economy': [
-        "مؤشرات النمو الاقتصادي وتقلبات أسعار الطاقة والمحروقات والملاحة دولياً",
-        "مستجدات أسعار المواد الاستهلاكية والتدابير الحمائية الحكومية للقدرة الشرائية للأسر",
-        "تحليلات أسواق المال وأداء الأسهم والبورصات العالمية تحت المجهر هذا الأسبوع",
-        "السياسات النقدية والمصرفية المرتقبة للبنوك المركزية للحد من تداعيات التضخم",
-        "أزمة الشحن البحري وتأثيرها المباشر على تدفق السلع الأساسية والمواد الأولية",
-        "رهانات الأمن الغذائي والاكتفاء الذاتي الزراعي في ظل تقلبات المناخ الدولية"
-    ],
-    'ar_tech': [
-        "ثورة الذكاء الاصطناعي التوليدي تعيد صياغة مفاهيم الإنتاج البرمجي والويب العالمي",
-        "الأمن السيبراني وحماية البيانات الحيوية في ظل التهديدات الرقمية وحرب الحوسبة",
-        "الجيل القادم من الهواتف الذكية والأجهزة القابلة للارتداء والرقاقات الذكية لعام 2026",
-        "الحوسبة الكمومية والآفاق المستقبلية الواعدة لحل المعضلات الرياضية المعقدة في ثوانٍ",
-        "استراتيجيات التحول الرقمي الشامل للمؤسسات والمقاولات الناشئة والمتوسطة بالمملكة",
-        "تكنولوجيا الميتافيرس والواقع الممتد في مجالات التعليم الحديث والتكوين المهني"
-    ],
-    'ar_sports': [
-        "متابعة الفعاليات الرياضية الوطنية وإنجازات المنتخبات والنخب في المحافل الكبرى",
-        "تألق لافت لمراكز التكوين الوطنية في إبراز واحتضان المواهب الرياضية الجديدة والناشئة",
-        "استعدادات مكثفة للأبطال المغاربة لخوض غمار الاستحقاقات القارية والأولمبية المقبلة",
-        "الأندية الوطنية تواصل هيمنتها الصارمة على المسابقات والبطولات الإفريقية الكبرى",
-        "حصاد متميز من الميداليات الذهبية في الألعاب الفردية والفنون القتالية العالمية",
-        "جاهزية تامة للبنيات التحتية والملاعب الرياضية لاستضافة كبرى التظاهرات المونديالية"
-    ],
-    'ar_arts': [
-        "الملتقيات الثقافية الدولية تبحث حماية الهوية الوطنية والتراث في العصر الرقمي",
-        "تطور الفنون التشكيلية والمعارض المعاصرة وصعود المدارس البصرية في العالم العربي",
-        "السينما المستقلة والإنتاجات الوثائقية المبدعة تحصد جوائز التمييز في المهرجانات",
-        "صون المخطوطات التاريخية والمعالم الأثرية عبر تقنيات المسح الضوئي ثلاثي الأبعاد",
-        "المهرجانات الموسيقية التراثية تعزز قيم التسامح والتبادل والتعايش الثقافي بين الشعوب",
-        "أدب الرحلات والرواية العربية المعاصرة في مواجهة التحولات الرقمية المتسارعة للجيل"
+        {"title": "آخر الأخبار الدولية ومستجدات الحراك السياسي وملفات الأمن بمنطقة الشرق الأوسط", "content": "تشهد عواصم منطقة الشرق الأوسط حراكاً دبلوماسياً مكثفاً ولقاءات رفيعة المستوى لبناء تفاهمات مشتركة تسعى كلياً لخفض التصعيد العسكري وتأمين المعابر الحيوية وتثبيت دعائم السلم والاستقرار الاقتصادي والسياسي وحماية الملاحة الدولية الحرة."}
     ]
 }
 
-def generate_article_html(title, cat_name, category_key, index):
+def generate_article_html(title, content, cat_name, category_key, index):
     filename = f"news-{category_key}-{index}.html"
-    next_index = (index + 1) % 6
+    next_index = (index + 1) % 2 if category_key == 'ar_local' else 0
     next_filename = f"news-{category_key}-{next_index}.html"
     image_url = f"https://unsplash.com?{CATEGORIES_CONFIG[category_key]['keyword']}&sig={index}"
     current_date = datetime.now().strftime("%d/%m/2026")
     
-    # صياغة النص الصحفي البشري المطور آلياً والمقسم بأسطر فارغة واضحة تمنع الالتصاق
-    content_p1 = f"تشهد الساحة الراهنة حراكاً متسارعاً وتطورات لافتة ترتبط ارتباطاً وثيقاً بملف {cat_name}، حيث أثارت المستجدات الأخيرة اهتماماً واسعاً على الصعيدين الشعبي والمؤسساتي، نظراً لأبعادها الاستراتيجية وتأثيراتها المباشرة على المعيش اليومي والمنظومة العامة الموجهة للقطاع."
-    content_p2 = f"وفي تفاصيل هذا المشهد، يتضح أن الخلفيات المحيطة بالقضية تعود إلى تراكمات سابقة وملفات لطالما شكلت محور نقاش ساخن بين مختلف الفاعلين في الميدان. إن العنوان الأبرز اليوم المتجلي في تقرير واجهة '{title}' يضعنا أمام قراءة موضوعية تستلزم تفكيك المعطيات الميدانية والوقوف على الإحصائيات الرسمية الصادرة تماشياً مع المتغيرات الراهنة."
-    content_p3 = f"ويرى خبراء ومحللون في تصريحات متفرقة تتابعها المنصة أن التدابير المتخذة حتى الآن تظل في حاجة إلى تعزيز بآليات رقابية أكثر مرونة، خصوصاً فيما يتعلق بالملفات الحارقة، والتي تلقي بظلالها مباشرة على القدرة الشرائية وتفرض فتح قنوات حوار جادة لبلورة حلول مستدامة قادرة على الصمود أمام التحديات الجيوسياسية المتلاحقة."
-    content_p4 = f"وعلى صعيد متصل، تبرز التقارير الأخيرة حاجة القطاعات الحيوية إلى استراتيجيات تجديدية تعتمد على التكنولوجيا والتحول الرقمي الشامل، وهو ما يعكس الطموح الوطني بجعل المنظومة المحلية قطباً رائداً يتجاوز التحديات التقليدية الهيكلية، وتأهيل العنصر البشري ليكون قادراً على مواكبة الطفرة بكفاءة ومهنية عالية تضمن تكافؤ الفرص والعدالة الاجتماعية المرجوة."
-    content_p5 = f"وفي ختام هذا التحليل الإخباري المعمق، يتبين أن المرحلة الراهنة تتطلب تظافر جهود جميع المكونات لصياغة رؤية وطنية موحدة تتوافق مع التحديات وتستشرف الفرص الواعدة. وستظل شبكة نكسوس بريس مواكبة لكافة المستجدات والتطورات أولاً بأول، لتضع القارئ في قلب الحدث بصياغة مهنية رصينة تحترم دقة المعلومة وتبتعد عن النقل التقليدي تعزيزاً للصحافة الرقمية الرائدة والمستقلة."
+    # تنسيق نص المقال إلى فقرات معزولة بأسطر فارغة واضحة تمنع الالتصاق كلياً
+    paragraphs = content.split('\n\n')
+    body_p_html = ""
+    for p in paragraphs:
+        if p.strip():
+            body_p_html += f"<p class='post-p'>{p.strip()}</p>\n\n"
 
-    body_html = f"<p class='post-p'>{content_p1}</p>\n\n<div class='ad-inside-post'>Google AdSense In-Article Ad Space</div>\n\n<p class='post-p'>{content_p2}</p>\n\n<p class='post-p'>{content_p3}</p>\n\n<div class='ad-inside-post'>Google AdSense In-Article Bottom</div>\n\n<p class='post-p'>{content_p4}</p>\n\n<p class='post-p'>{content_p5}</p>"
+    # بناء الكود النصي المقفل سطر بسطر لمنع انقطاع الأقواس والكسور نهائياً
+    h = '<!DOCTYPE html>\n<html lang="ar" dir="rtl">\n<head>\n'
+    h += '    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n'
+    h += f'    <title>{title} - نكسوس بريس</title>\n    <link rel="stylesheet" href="./style.css">\n</head>\n<body>\n'
+    h += '    <div class="top-bar">\n        <div class="container-flex">\n'
+    h += '            <span class="live-ticker-date">تحديث مستمر على مدار الساعة</span>\n'
+    h += '            <div class="global-lang-wrapper">\n'
+    h += '                <span class="lang-btn" onclick="translateTo(\'ar\')">العربية</span> | \n'
+    h += '                <span class="lang-btn" onclick="translateTo(\'fr\')">Français</span> | \n'
+    h += '                <span class="lang-btn" onclick="translateTo(\'en\')">English</span>\n'
+    h += '            </div>\n        </div>\n    </div>\n'
+    h += '    <header class="main-header">\n        <div class="container-flex">\n'
+    h += '            <div class="logo-area"><a href="index.html"><img src="image_MUwSAA.png" alt="Portal" class="main-logo-img"></a></div>\n'
+    h += '            <div class="nav-links-header-top"><a href="index.html">الرئيسية</a> | <a href="about.html">من نحن</a> | <a href="contact.html">اتصل بنا</a></div>\n'
+    h += '            <div class="ad-space-header">Google AdSense Space</div>\n        </div>\n    </header>\n'
+    h += '    <main class="main-wrapper container">\n        <article class="content-area post-container">\n'
+    h += f'            <span class="category-tag">{cat_name}</span>\n            <h1 class="post-title">{title}</h1>\n'
+    h += f'            <div class="post-meta"><span>تاريخ النشر: {current_date}</span></div>\n'
+    h += f'            <div class="post-image-wrapper"><img src="{image_url}" alt="{title}" loading="eager" style="width:100%; height:auto; max-height:450px; object-fit:cover; border-radius:4px; margin:15px 0;"></div>\n'
+    h += '            <div class="ad-inside-post">Google AdSense In-Article Ad Space</div>\n'
+    h += f'            <div class="post-body-text">\n{body_p_html}</div>\n'
+    h += '            <div class="ad-inside-post">Google AdSense In-Article Bottom</div>\n'
+    h += '            <div class="navigation-arrows">\n'
+    h += '                <a href="index.html" class="nav-arrow-btn">⬅ العودة للرئيسية</a>\n'
+    h += f'                <a href="./{next_filename}" class="nav-arrow-btn">المقال الموالي ➡</a>\n'
+    h += '            </div>\n'
+    h += '            <div class="comments-section" style="margin-top: 50px; padding-top: 30px; border-top: 2px solid #e2e8f0;">\n'
+    h += '                <h3 style="margin-bottom: 20px; font-weight: 700;">شاركونا بتعليقاتكم وآرائكم</h3>\n'
+    h += '                <div id="disqus_thread"></div>\n            </div>\n        </article>\n'
+    h += '        <aside class="sidebar-area"><div class="widget-ad-box"><span>AdSense 300x600</span></div></aside>\n'
+    h += '    </main>\n'
+    h += '    <div id="google_translate_element" style="display:none;"></div>\n'
+    h += '    <script type="text/javascript">\n'
+    h += '        function googleTranslateElementInit() {\n'
+    h += '            new google.translate.TranslateElement({pageLanguage: "ar", layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, "google_translate_element");\n'
+    h += '        }\n'
+    h += '        function translateTo(lang) {\n'
+    h += '            var select = document.querySelector(".goog-te-combo");\n'
+    h += '            if (select) { select.value = lang; select.dispatchEvent(new Event("change")); }\n'
+    h += '        }\n'
+    h += '    </script>\n'
+    h += '    <script type="text/javascript" src="https://google.com"></script>\n'
+    h += '</body>\n</html>'
 
-    html_lines = [
-        '<!DOCTYPE html>',
-        '<html lang="ar" dir="rtl">',
-        '<head>',
-        '    <meta charset="UTF-8">',
-        '    <meta name="viewport" content="width=device-width, initial-scale=1.0">',
-        f'    <title>{title} - نكسوس بريس</title>',
-        '    <link rel="stylesheet" href="./style.css">',
-        '</head>',
-        '<body>',
-        '    <div class="top-bar">',
-        '        <div class="container-flex">',
-        '            <span class="live-ticker-date">تحديث مستمر على مدار الساعة</span>',
-        '            <div class="global-lang-wrapper">',
-        '                <span class="lang-btn" onclick="translateTo(\'ar\')">العربية</span> | ',
-        '                <span class="lang-btn" onclick="translateTo(\'fr\')">Français</span> | ',
-        '                <span class="lang-btn" onclick="translateTo(\'en\')">English</span>',
-        '            </div>',
-        '        </div>',
-        '    </div>',
-        '    <header class="main-header">',
-        '        <div class="container-flex">',
-        '            <div class="logo-area">',
-        '                <a href="index.html"><img src="./image_MUwSAA.png" alt="Nexus Press" class="main-logo-img"></a>',
-        '            </div>',
-        '            <div class="nav-links-header-top">',
-        '                <a href="index.html">الرئيسية</a> | <a href="about.html">من نحن</a> | <a href="contact.html">اتصل بنا</a>',
-        '            </div>',
-        '            <div class="ad-space-header">Google AdSense Space</div>',
-        '        </div>',
-        '    </header>',
-        '    <main class="main-wrapper container">',
-        '        <article class="content-area post-container">',
-        f'            <span class="category-tag">{cat_name}</span>',
-        f'            <h1 class="post-title">{title}</h1>',
-        f'            <div class="post-meta"><span>تحرير: القسم الصحفي الدولي</span> | <span>تاريخ النشر: {current_date}</span></div>',
-        f'            <div class="post-image-wrapper"><img src="{image_url}" alt="{title}" loading="eager" style="width:100%; height:auto; max-height:450px; object-fit:cover; border-radius:4px; margin:15px 0;"></div>',
-        f'            <div class="post-body-content">{body_html}</div>',
-        '            <div class="navigation-arrows">',
-        '                <a href="index.html" class="nav-arrow-btn">⬅ العودة للرئيسية</a>',
-        f'                <a href="./{next_filename}" class="nav-arrow-btn">المقال الموالي ➡</a>',
-        '            </div>',
-        '            <div class="comments-section" style="margin-top: 50px; padding-top: 30px; border-top: 2px solid #e2e8f0;">',
-        '                <h3 style="margin-bottom: 20px; font-weight: 700;">شاركونا بتعليقاتكم وآرائكم</h3>',
-        '                <div id="disqus_thread"></div>',
-        '            </div>',
-        '        </article>',
-        '        <aside class="sidebar-area">',
-        '            <div class="widget-ad-box"><span>AdSense 300x600</span></div>',
-        '        </aside>',
-        '    </main>',
-        '    <div id="google_translate_element" style="display:none;"></div>',
-        '    <script type="text/javascript">',
-        '        function googleTranslateElementInit() {',
+    with open(filename, 'w', encoding='utf-8') as f:
+        f.write(h)
+
+def main():
+    for key, config in CATEGORIES_CONFIG.items():
+        if key in ARTICLES_DATA:
+            for i, art in enumerate(ARTICLES_DATA[key]):
+                generate_article_html(art['title'], art['content'], config['name'], key, i)
+    print("Compilation terminee avec succes.")
+
+if __name__ == "__main__":
+    main()
