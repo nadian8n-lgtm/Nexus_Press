@@ -23,6 +23,11 @@ jobs:
       MAX_ARTICLES_PER_CATEGORY: '6'
       MAX_TOTAL_ARTICLES: '100'
       GENERATE_AI_IMAGES: 'true'
+      ADSENSE_CLIENT: ${{ vars.ADSENSE_CLIENT }}
+      ADSENSE_SLOT_TOP: ${{ vars.ADSENSE_SLOT_TOP }}
+      ADSENSE_SLOT_INLINE: ${{ vars.ADSENSE_SLOT_INLINE }}
+      ADSENSE_SLOT_BOTTOM: ${{ vars.ADSENSE_SLOT_BOTTOM }}
+      ADSENSE_SLOT_SIDE: ${{ vars.ADSENSE_SLOT_SIDE }}
 
     steps:
       - name: Checkout main
@@ -41,7 +46,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install feedparser requests
 
-      - name: Validate key and Python syntax
+      - name: Validate secrets and Python syntax
         shell: bash
         run: |
           set -euo pipefail
@@ -49,10 +54,13 @@ jobs:
             echo "Required Actions secret OPENAI_API_KEY is missing." >&2
             exit 1
           fi
-          python -m py_compile fetch_news.py
+          python -m py_compile fetch_news.py inject_ads.py
 
       - name: Fetch, write, and illustrate unique articles
         run: python fetch_news.py
+
+      - name: Add configured AdSense units to article pages
+        run: python inject_ads.py
 
       - name: Commit only changed files
         shell: bash
@@ -62,7 +70,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
           if git diff --cached --quiet; then
-            echo "No eligible new stories were produced."
+            echo "No eligible new stories or article updates were produced."
             exit 0
           fi
           git commit -m "Publish original source-linked articles"
