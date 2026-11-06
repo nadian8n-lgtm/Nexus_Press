@@ -2,7 +2,7 @@ name: Nexus Press hourly news publishing
 
 on:
   schedule:
-    - cron: '5 * * * *' # UTC; GitHub may delay scheduled starts
+    - cron: '5 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -54,7 +54,7 @@ jobs:
       - name: Fetch, write, and illustrate unique articles
         run: python fetch_news.py
 
-      - name: Commit only when files changed
+      - name: Commit only changed files
         shell: bash
         run: |
           set -euo pipefail
