@@ -1,29 +1,11 @@
-# Python cache and compiled files
 __pycache__/
 *.py[cod]
-*$py.class
-
-# Virtual environments
 .venv/
 venv/
-env/
-
-# Secrets and local environment files
 .env
 .env.*
 !.env.example
-
-# Test, coverage, and tool caches
 .pytest_cache/
 .coverage
-htmlcov/
-.mypy_cache/
-.ruff_cache/
-
-# Operating system and editor files
 .DS_Store
 Thumbs.db
-.vscode/
-.idea/
-*.swp
-*.swo
