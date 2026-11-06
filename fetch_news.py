@@ -2,132 +2,93 @@ import os
 import requests
 from datetime import datetime
 
-# الأقسام الـ 6 المفعلة للموقع بالكامل مع الكلمات المفتاحية للصور الذكية
 CATEGORIES_CONFIG = {
-    'ar_local': {"name": "أخبار وطنية", "keyword": "morocco,rabat,casablanca", "topics": [
-        "الداخلية ترفع سقف اعتمادات الجماعات المحلية بالمملكة لدعم التنمية واللوجستيك",
-        "عصيد ينتقد انصراف النقاشات إلى التفاصيل الهامشية بدل القضايا الأساسية والتعليم",
-        "مشاريع البنية التحتية الكبرى بالمملكة تدخل مراحل التنفيذ الميداني الفعلي",
-        "قرارات تشريعية جديدة لتبسيط المساطر الإدارية وتسهيل الاستثمار الوطني",
-        "إشادة دولية واسعة بجهود المغرب في قطاع الطاقات المتجددة والنظيفة",
-        "خطة وطنية موسعة لتحديث منظومة النقل اللوجستيكي والربط السككي بين المدن"
-    ]},
-    'ar_world': {"name": "الأخبار الدولية", "keyword": "global,politics,diplomacy", "topics": [
-        "آخر الأخبار الدولية ومستجدات الحراك السياسي وملفات الأمن بمنطقة الشرق الأوسط",
-        "آخر الأخبار الدولية والتحولات الاقتصادية والسياسية الراهنة في القارة الأوروبية",
-        "آخر الأخبار الدولية والتوجهات الاستراتيجية والتجارية الجديدة في أمريكا والبيت الأبيض",
-        "آخر الأخبار الدولية والفرص التنموية والاقتصادية الواعدة في القارة الإفريقية",
-        "آخر الأخبار الدولية وتقاطعات الدبلوماسية وأسواق الإمداد والشحن العالمية",
-        "آخر الأخبار الدولية واستشراف التوازنات الاستراتيجية المقبلة في المنطقة والعالم"
-    ]},
-    'ar_economy': {"name": "اقتصاد", "keyword": "economy,finance,oil", "topics": [
-        "مؤشرات النمو الاقتصادي وتقلبات أسعار الطاقة والمحروقات والملاحة دولياً",
-        "مستجدات أسعار المواد الاستهلاكية والتدابير الحمائية الحكومية للقدرة الشرائية للأسر",
-        "تحليلات أسواق المال وأداء الأسهم والبورصات العالمية تحت المجهر هذا الأسبوع",
-        "السياسات النقدية والمصرفية المرتقبة للبنوك المركزية للحد من تداعيات التضخم",
-        "أزمة الشحن البحري وتأثيرها المباشر على تدفق السلع الأساسية والمواد الأولية",
-        "رهانات الأمن الغذائي والاكتفاء الذاتي الزراعي في ظل تقلبات المناخ الدولية"
-    ]},
-    'ar_tech': {"name": "تكنولوجيا", "keyword": "cyber,technology,ai", "topics": [
-        "ثورة الذكاء الاصطناعي التوليدي تعيد صياغة مفاهيم الإنتاج البرمجي والويب العالمي",
-        "الأمن السيبراني وحماية البيانات الحيوية في ظل التهديدات الرقمية وحرب الحوسبة",
-        "الجيل القادم من الهواتف الذكية والأجهزة القابلة للارتداء والرقاقات الذكية لعام 2026",
-        "الحوسبة الكمومية والآفاق المستقبلية الواعدة لحل المعضلات الرياضية المعقدة في ثوانٍ",
-        "استراتيجيات التحول الرقمي الشامل للمؤسسات والمقاولات الناشئة والمتوسطة بالمملكة",
-        "تكنولوجيا الميتافيرس والواقع الممتد في مجالات التعليم الحديث والتكوين المهني"
-    ]},
-    'ar_sports': {"name": "رياضة", "keyword": "soccer,stadium,athlete", "topics": [
-        "متابعة الفعاليات الرياضية الوطنية وإنجازات المنتخبات والنخب في المحافل الكبرى",
-        "تألق لافت لمراكز التكوين الوطنية في إبراز واحتضان المواهب الرياضية الجديدة والناشئة",
-        "استعدادات مكثفة للأبطال المغاربة لخوض غمار الاستحقاقات القارية والأولمبية المقبلة",
-        "الأندية الوطنية تواصل هيمنتها الصارمة على المسابقات والبطولات الإفريقية الكبرى",
-        "حصاد متميز من الميداليات الذهبية في الألعاب الفردية والفنون القتالية العالمية",
-        "جاهزية تامة للبنيات التحتية والملاعب الرياضية لاستضافة كبرى التظاهرات المونديالية"
-    ]},
-    'ar_arts': {"name": "فن وثقافة", "keyword": "painting,culture,library", "topics": [
-        "الملتقيات الثقافية الدولية تبحث حماية الهوية الوطنية والتراث في العصر الرقمي",
-        "تطور الفنون التشكيلية والمعارض المعاصرة وصعود المدارس البصرية في العالم العربي",
-        "السينما المستقلة والإنتاجات الوثائقية المبدعة تحصد جوائز التمييز في المهرجانات",
-        "صون المخطوطات التاريخية والمعالم الأثرية عبر تقنيات المسح الضوئي ثلاثي الأبعاد",
-        "المهرجانات الموسيقية التراثية تعزز قيم التسامح والتبادل والتعايش الثقافي بين الشعوب",
-        "أدب الرحلات والرواية العربية المعاصرة في مواجهة التحولات الرقمية المتسارعة للجيل"
-    ]}
+    'ar_local': {"name": "أخبار وطنية", "keyword": "morocco,rabat"},
+    'ar_world': {"name": "الأخبار الدولية", "keyword": "global,politics"},
+    'ar_economy': {"name": "اقتصاد", "keyword": "economy,finance"},
+    'ar_tech': {"name": "تكنولوجيا", "keyword": "cyber,technology"},
+    'ar_sports': {"name": "رياضة", "keyword": "soccer,stadium"},
+    'ar_arts': {"name": "فن وثقافة", "keyword": "painting,culture"}
 }
 
-def call_openai_for_journalism(title, cat_name):
-    api_key = os.getenv("OPENAI_API_KEY")
-    if not api_key:
-        return f"تشهد الساحة الراهنة حراكاً متسارعاً وتطورات لافتة ترتبط ارتباطاً وثيقاً بملف {cat_name}، حيث أثارت المستجدات الأخيرة اهتماماً واسعاً على الصعيدين الشعبي والمؤسساتي، نظراً لأبعادها الاستراتيجية وتأثيراتها المباشرة.\nوفي تفاصيل هذا المشهد، يتضح أن الخلفيات المحيطة بالقضية تعود إلى تراكمات سابقة وملفات لطالما شكلت محور نقاش ساخن بين مختلف الفاعلين في الميدان. إن العنوان الأبرز اليوم المتجلي في تقرير واجهة '{title}' يضعنا أمام قراءة موضوعية تستلزم تفكيك المعطيات الميدانية والوقوف على الإحصائيات الرسمية الصادرة تماشياً مع المتغيرات الراهنة.\nويرى خبراء ومحللون في تصريحات متفرقة تتابعها المنصة أن التدابير المتخذة حتى الآن تظل في حاجة إلى تعزيز بآليات رقابية أكثر مرونة، خصوصاً فيما يتعلق بالملفات الحارقة، والتي تلقي بظلالها مباشرة على القدرة الشرائية وتفرض فتح قنوات حوار جادة لبلورة حلول مستدامة قادرة على الصمود أمام الأزمات الجيوسياسية المتلاحقة.\nوعلى صعيد متصل، تبرز التقارير الأخيرة حاجة القطاعات الحيوية إلى استراتيجيات تجديدية تعتمد على التكنولوجيا والتحول الرقمي الشامل، وهو ما يعكس الطموح الوطني بجعل المنظومة المحلية قطباً رائداً يتجاوز التحديات التقليدية الهيكلية، وتأهيل العنصر البشري ليكون قادراً على مواكبة الطفرة بكفاءة ومهنية عالية تضمن تكافؤ الفرص والعدالة الاجتماعية المرجوة.\nوفي ختام هذا التحليل الإخباري المعمق، يتبين أن المرحلة الراهنة تتطلب تظافر جهود جميع المكونات لصياغة رؤية وطنية موحدة تتوافق مع التحديات وتستشرف الفرص الواعدة. وستظل المنصة مواكبة لكافة المستجدات والتطورات أولاً بأول، لتضع القارئ في قلب الحدث بصياغة مهنية رصينة تحترم دقة المعلومة وتبتعد عن النقل التقليدي تعزيزاً للصحافة الرقمية الرائدة والمستقلة."
+ARTICLES_DATA = {
+    'ar_local': [
+        {"title": "الداخلية ترفع سقف اعتمادات الجماعات المحلية بالمملكة لدعم التنمية واللوجستيك", "content": "أعلنت وزارة الداخلية رسمياً عن حزمة قرارات مالية تهدف إلى الرفع من اعتمادات الميزانيات الموجهة للجماعات الترابية والمحلية في مختلف جهات المملكة، وذلك رغبة في تسريع وتيرة إنعاش المشاريع التنموية الحيوية المتوقفة وبناء البنيات اللوجستية الأساسية بالمنطقة تماشياً مع متطلبات المرحلة."},
+        {"title": "عصيد ينتقد انصراف النقاشات إلى التفاصيل الهامشية بدل القضايا الأساسية والتعليم", "content": "أثار المفكر والناشط الحقوقي أحمد عصيد نقاشاً واسعاً بتصريحاته الأخيرة التي انتقد فيها بشدة انشغال الفاعلين بالجزئيات والهوامش التحريرية، معتبراً أن المرحلة الحالية تتطلب التركيز التام على القضايا الهيكلية المباشرة كدعم التعليم والصحة والإصلاح الإداري الشامل."}
+    ],
+    'ar_world': [
+        {"title": "آخر الأخبار الدولية ومستجدات الحراك السياسي وملفات الأمن بمنطقة الشرق الأوسط", "content": "تشهد عواصم منطقة الشرق الأوسط حراكاً دبلوماسياً مكثفاً ولقاءات رفيعة المستوى لبناء تفاهمات مشتركة تسعى كلياً لخفض التصعيد العسكري وتأمين المعابر الحيوية وتثبيت دعائم السلم والاستقرار الاقتصادي والسياسي وحماية الملاحة الدولية الحرة."}
+    ],
+    'ar_economy': [
+        {"title": "مؤشرات النمو الاقتصادي وتقلبات أسعار الطاقة والمحروقات والملاحة دولياً", "content": "تواجه أسواق النفط والغاز العالمية تقلبات مستمرة تؤثر مباشرة على مؤشرات الاستهلاك الداخلي وأسعار المحروقات المحلية، مما يفرض مراجعة مستمرة للاتفاقيات وعقود الشحن لتفادي تداعيات التضخم والحفاظ على استقرار مؤشرات التنمية العمومية للبلاد."}
+    ],
+    'ar_tech': [
+        {"title": "ثورة الذكاء الاصطناعي التوليدي تعيد صياغة مفاهيم الإنتاج البرمجي والويب العالمي", "content": "تشهد الأوساط التقنية العالمية طفرة غير مسبوقة مع تسارع وتيرة نماذج الذكاء الاصطناعي التوليدي الفائقة لعام 2026، حيث دخلت الأدوات الذكية في صلب ميكنة الإنتاج وتطوير البرمجيات المعقدة والمواقع الإلكترونية عالية الدقة، مما يعيد رسم ملامح سوق الشغل والابتكار التكنولوجي."}
+    ],
+    'ar_sports': [
+        {"title": "متابعة الفعاليات الرياضية الوطنية وإنجازات المنتخبات والنخب في المحافل الكبرى", "content": "تواصل المنظومة الرياضية الوطنية تألقها الاستثنائي، حيث نجحت المنتخبات والنخب بمختلف الألعاب الجماعية في تحقيق نتائج مشرفة تعكس كفاءة الخطط الاستراتيجية والدعم المؤسساتي الموجه لتطوير القطاع الرياضي ورفع الراية الوطنية عالياً."}
+    ],
+    'ar_arts': [
+        {"title": "الملتقيات الثقافية الدولية تبحث حماية الهوية الوطنية والتراث في العصر الرقمي", "content": "انطلقت فعاليات المنتديات الثقافية النخبوية الكبرى لبناء رؤية استراتيجية واعدة تعنى بحفظ الهوية التراثية وحماية الفنون التقليدية أمام زحف العولمة الرقمية، وسلاسل الإنتاج السريع، مع التركيز على دعم المبدعين والصناعات الإبداعية المستقلة كرافعة حقيقية للتنمية المستدامة."}
+    ]
+}
 
-    try:
-        url = "https://openai.com"
-        headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
-        prompt = f"اكتب تقريراً صحفياً تحليلياً موسعاً ومفصلاً جداً باللغة العربية الفصحى وبأسلوب كبار الكتاب التحريريين، بدون أخطاء إملائية، وخالٍ تماماً من الانتحال والنسخ، بناءً على هذا العنوان الإخباري: {title}. القسم: {cat_name}. قسم النص إلى 5 فقرات واضحة ومطولة تفصلها ميزة الأسطر الفارغة المريحة للعين."
-        data = {"model": "gpt-4", "messages": [{"role": "user", "content": prompt}], "temperature": 0.7}
-        response = requests.post(url, headers=headers, json=data, timeout=50)
-        if response.status_code == 200:
-            return response.json()['choices']['message']['content']
-    except Exception as e:
-        print(f"تعذر الاتصال بالذكاء الاصطناعي، جاري ضخ البنية التحريرية البديلة: {e}")
-    return f"تقرير صحفي موسع ومحترف حول {title}. يوضح كافة تفاصيل هذا الملف الساخن على الساحة الحالية تماشياً مع معايير نكسوس بريس."
-
-def generate_ai_image(title, keywords):
-    api_key = os.getenv("OPENAI_API_KEY")
-    if not api_key:
-        return f"https://unsplash.com?{keywords}"
-    try:
-        url = "https://openai.com"
-        headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
-        prompt = f"Professional realistic editorial photograph for a journalism website representing this concept: {title}. Corporate crisp lighting, clean look."
-        data = {"model": "dall-e-3", "prompt": prompt, "n": 1, "size": "1024x1024", "quality": "standard", "style": "natural"}
-        response = requests.post(url, headers=headers, json=data, timeout=30)
-        if response.status_code == 200:
-            return response.json()['data']['url']
-    except Exception as e:
-        print(f"جاري السحب التلقائي الآمن للصور: {e}")
+def generate_ai_image(keywords):
     return f"https://unsplash.com?{keywords}"
 
-def generate_article_html(title, cat_name, category_key, filename, keywords):
-    journalistic_text = call_openai_for_journalism(title, cat_name)
-    image_url = generate_ai_image(title, keywords)
+def generate_article_html(title, content, cat_name, filename, keywords):
+    image_url = generate_ai_image(keywords)
     current_date = datetime.now().strftime("%d/%m/2026")
     
-    paragraphs = journalistic_text.split('\n')
-    formatted_paragraphs = ""
-    for idx, p in enumerate(paragraphs):
-        if p.strip():
-            formatted_paragraphs += f"<p class='post-p'>{p.strip()}</p>\n\n"
-            if idx == 1:
-                formatted_paragraphs += '<div class="ad-inside-post">Google AdSense In-Article Ad Space (أعلى الفقرات)</div>\n\n'
-            elif idx == 3:
-                formatted_paragraphs += '<div class="ad-inside-post">Google AdSense In-Article Ad Space (وسط الفقرات)</div>\n\n'
+    # بناء هيكل الصفحة بالاعتماد على مصفوفات نصوص واضحة ومغلقة بدون تداخل f-string مع الجافا سكريبت
+    html_lines = [
+        '<!DOCTYPE html>',
+        '<html lang="ar" dir="rtl">',
+        '<head>',
+        '    <meta charset="UTF-8">',
+        '    <meta name="viewport" content="width=device-width, initial-scale=1.0">',
+        f'    <title>{title} - نكسوس بريس</title>',
+        '    <link rel="stylesheet" href="./style.css">',
+        '</head>',
+        '<body>',
+        '    <header class="main-header" style="background:#e0f2fe !important;">',
+        '        <div class="container-flex">',
+        '            <a href="index.html"><img src="image_MUwSAA.png" alt="Portal" class="main-logo-img"></a>',
+        '            <div class="ad-space-header">مساحة إعلانية مجهزة (Google AdSense 728x90)</div>',
+        '        </div>',
+        '    </header>',
+        '    <main class="main-wrapper container">',
+        '        <article class="content-area post-container">',
+        f'            <span class="category-tag">{cat_name}</span>',
+        f'            <h1 class="post-title">{title}</h1>',
+        f'            <div class="post-meta"><span>تحرير: القسم الصحفي الدولي</span> | <span>تاريخ النشر: {current_date}</span></div>',
+        f'            <div class="post-image-wrapper"><img src="{image_url}" alt="{title}" loading="eager" style="width:100%; height:auto; max-height:450px; object-fit:cover; border-radius:4px; margin:15px 0;"></div>',
+        '            <div class="ad-inside-post">Google AdSense In-Article Ad Space (أعلى الفقرات)</div>',
+        f'            <p class="post-p">{content}</p>',
+        '            <div class="ad-inside-post">Google AdSense In-Article Ad Space (أسفل المقال)</div>',
+        '            <div class="comments-section" style="margin-top: 50px; padding-top: 30px; border-top: 2px solid #e2e8f0;">',
+        '                <h3 style="margin-bottom: 20px; font-weight: 700; color: #071c35;">شاركونا بتعليقاتكم وآرائكم حول الموضوع</h3>',
+        '                <div id="disqus_thread"></div>',
+        '            </div>',
+        '        </article>',
+        '        <aside class="sidebar-area">',
+        '            <div class="widget-ad-box"><span>مساحة إعلانية عمودية بجانب المقال (AdSense 300x600)</span></div>',
+        '        </aside>',
+        '    </main>',
+        '</body>',
+        '</html>'
+    ]
+    
+    with open(filename, 'w', encoding='utf-8') as f:
+        f.write('\n'.join(html_lines))
 
-    # استخدام التكنيك البرمجي الصافي والمستقر كلياً لتفادي مشاكل الأقواس والجافا سكريبت نهائياً
-    template = """<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>__TITLE__ - نكسوس بريس</title>
-    <meta name="robots" content="index, follow">
-    <link href="https://googleapis.com" rel="stylesheet">
-    <link rel="stylesheet" href="./style.css">
-</head>
-<body>
-    <header class="main-header" style="background:#e0f2fe !important;">
-        <div class="container-flex">
-            <a href="index.html"><img src="image_MUwSAA.png" alt="Portal" class="main-logo-img"></a>
-            <div class="ad-space-header">مساحة إعلانية مجهزة (Google AdSense 728x90)</div>
-        </div>
-    </header>
-    <main class="main-wrapper container">
-        <article class="content-area post-container">
-            <span class="category-tag">__CAT_NAME__</span>
-            <h1 class="post-title">__TITLE__</h1>
-            <div class="post-meta"><span>تحرير: القسم الصحفي الدولي</span> | <span>تاريخ النشر: __DATE__</span></div>
-            <div class="post-image-wrapper"><img src="__IMAGE_URL__" alt="__TITLE__" loading="eager" style="width:100%; height:auto; max-height:450px; object-fit:cover; border-radius:4px; margin:15px 0;"></div>
-            
-            <div class="post-body">__BODY__</div>
-            
-            <div class="ad-inside-post">Google AdSense In-Article Ad Space (أسفل المقال)</div>
-            
+def main():
+    for key, config in CATEGORIES_CONFIG.items():
+        if key in ARTICLES_DATA:
+            for i, art in enumerate(ARTICLES_DATA[key]):
+                filename = f"news-{key}-{i}.html"
+                generate_article_html(art['title'], art['content'], config['name'], filename, config['keyword'])
+                print(f"[Success]: {filename} compiled cleanly.")
+
+if __name__ == "__main__":
+    main()
