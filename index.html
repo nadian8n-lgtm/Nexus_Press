@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نكسوس بريس | Nexus Press - المنصة الإخبارية العالمية الشاملة</title>
-    <meta name="description" content="بوابة إخبارية دولية تقدم تغطية شاملة ومستقلة للأحداث الراهنة والتريندات العالمية بكل موضوعية ومهنية على مدار الساعة.">
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
     <link href="https://googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
@@ -16,8 +15,9 @@
         <div class="container-flex">
             <span class="live-ticker-date">تحديث مستمر على مدار الساعة</span>
             <div class="global-lang-wrapper">
-                <span class="world-icon" id="world-lang-btn" style="cursor:pointer; font-weight: bold;">🌐 تفعيل الترجمة / Translate</span>
-                <div id="google_translate_element" style="display:none;"></div>
+                <span class="lang-btn" onclick="translateTo('ar')">العربية</span> | 
+                <span class="lang-btn" onclick="translateTo('fr')">Français</span> | 
+                <span class="lang-btn" onclick="translateTo('en')">English</span>
             </div>
         </div>
     </div>
@@ -26,6 +26,9 @@
         <div class="container-flex">
             <div class="logo-area">
                 <a href="index.html"><img src="./image_MUwSAA.png" alt="Nexus Press" class="main-logo-img"></a>
+            </div>
+            <div class="nav-links-header-top">
+                <a href="index.html">الرئيسية</a> | <a href="about.html">من نحن</a> | <a href="contact.html">اتصل بنا</a>
             </div>
             <div class="ad-space-header">مساحة إعلانية مجهزة (Google AdSense 728x90)</div>
         </div>
@@ -48,66 +51,51 @@
     <div class="breaking-news-bar">
         <div class="breaking-title">عاجل</div>
         <div class="breaking-content">
-            <marquee behavior="scroll" direction="right" scrollamount="5">
-                • شبكة نكسوس بريس تطلق منظومتها الرقمية المحدثة لمواكبة الأنباء والتحليلات الدولية والوطنية والتكنولوجية أولاً بأول.
+            <marquee behavior="scroll" direction="right" scrollamount="6">
+                • الداخلية ترفع سقف اعتمادات الجماعات المحلية بالمملكة لدعم التنمية واللوجستيك • ثورة الذكاء الاصطناعي التوليدي تعيد صياغة مفاهيم الإنتاج البرمجي العالمي • آخر الأخبار الدولية ومستجدات الحراك السياسي بمنطقة الشرق الأوسط
             </marquee>
         </div>
     </div>
 
-    <div class="container" style="margin-top: 25px;">
-        <div class="slider-wrapper">
-            <div class="main-slider">
-                <div class="slide active">
-                    <img src="https://unsplash.com" alt="سلايدر 1">
-                    <div class="slide-caption"><h2>نكسوس بريس تبدأ ضخ التغطيات الحصرية والتحليلات السياسية الشاملة لعام 2026</h2></div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="container text-center" style="margin-top: 20px;"><div class="ad-in-content">مساحة إعلانية علوية (Google AdSense 728x90)</div></div>
 
     <main class="main-wrapper container">
         <div class="content-area">
             <h3 class="block-title" id="section-view-title">كافة المستجدات الراهنة</h3>
             <section class="grid-stories-hub">
-                <!-- أخبار وطنية -->
                 <div class="news-card filter-item local card-animate"><a href="./news-ar_local-0.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="وطنية"></div><div class="card-info"><span class="badge">أخبار وطنية</span><h3>الداخلية ترفع سقف اعتمادات الجماعات المحلية بالمملكة لدعم التنمية</h3></div></a></div>
                 <div class="news-card filter-item local card-animate"><a href="./news-ar_local-1.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="وطنية"></div><div class="card-info"><span class="badge">أخبار وطنية</span><h3>عصيد ينتقد انصراف النقاشات إلى التفاصيل الهامشية بدل القضايا الأساسية</h3></div></a></div>
-                
-                <!-- الأخبار الدولية -->
                 <div class="news-card filter-item world card-animate"><a href="./news-ar_world-0.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="سياسة"></div><div class="card-info"><span class="badge">الأخبار الدولية</span><h3>آخر الأخبار الدولية ومستجدات الأوضاع في الشرق الأوسط</h3></div></a></div>
-                
-                <!-- اقتصاد -->
-                <div class="news-card filter-item economy card-animate"><a href="./news-ar_economy-0.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="اقتصاد"></div><div class="card-info"><span class="badge">اقتصاد</span><h3>مؤشرات النمو الاقتصادي وتقلبات أسعار الطاقة والمحروقات دولياً</h3></div></a></div>
-
-                <!-- تكنولوجيا -->
-                <div class="news-card filter-item tech card-animate"><a href="./news-ar_tech-0.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="تكنولوجيا"></div><div class="card-info"><span class="badge">تكنولوجيا</span><h3>ثورة الذكاء الاصطناعي التوليدي تعيد صياغة مفاهيم الإنتاج البرمجي العالمي</h3></div></a></div>
-
-                <!-- رياضة -->
-                <div class="news-card filter-item sports card-animate"><a href="./news-ar_sports-0.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="رياضة"></div><div class="card-info"><span class="badge">رياضة</span><h3>متابعة الفعاليات الرياضية الوطنية وإنجازات المنتخبات في المحافل الكبرى</h3></div></a></div>
-
-                <!-- فن وثقافة -->
-                <div class="news-card filter-item arts card-animate"><a href="./news-ar_arts-0.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="فنون"></div><div class="card-info"><span class="badge">فن وثقافة</span><h3>الملتقيات الثقافية الدولية تبحث حماية الهوية والتراث في العصر الرقمي</h3></div></a></div>
+                <div class="news-card filter-item world card-animate"><a href="./news-ar_world-1.html"><div class="card-img-holder"><img src="https://unsplash.com" alt="سياسة"></div><div class="card-info"><span class="badge">الأخبار الدولية</span><h3>آخر الأخبار الدولية والتحولات الاقتصادية والسياسية في القارة الأوروبية</h3></div></a></div>
             </section>
         </div>
 
         <aside class="sidebar-area">
             <div class="widget">
-                <h4 class="widget-title">مواقيت الصلاة بالمملكة والعالم</h4>
-                <ul class="prayer-times-list">
-                    <li>الفجر <span>05:24</span></li>
-                    <li>الظهر <span>12:20</span></li>
-                    <li>العصر <span>15:15</span></li>
-                    <li>المغرب <span>17:35</span></li>
-                    <li>العشاء <span>18:55</span></li>
-                </ul>
-            </div>
-            <div class="widget">
-                <h4 class="widget-title">حالة الطقس العالمية</h4>
-                <div class="weather-info">
-                    <div class="weather-city">الرباط <span>22°C ☀️</span></div>
-                    <div class="weather-city">باريس <span>12°C ☁️</span></div>
+                <h4 class="widget-title">مواقيت الصلاة وحالة الطقس</h4>
+                <div style="margin-bottom:15px;">
+                    <select id="city-selector" onchange="updateWeatherAndPrayer()" style="width:100%; padding:8px; font-family:'Cairo';">
+                        <option value="rabat">الرباط (المغرب)</option>
+                        <option value="paris">باريس (فرنسا)</option>
+                        <option value="cairo">القاهرة (مصر)</option>
+                    </select>
+                </div>
+                <div id="dynamic-widget-data">
+                    <p><b>الفجر:</b> 05:24 | <b>المغرب:</b> 17:35</p>
+                    <p style="margin-top:10px; color: #0b3c7a;"><b>الطقس الحالي:</b> 22°C ☀️ صافي</p>
                 </div>
             </div>
+
+            <div class="widget">
+                <h4 class="widget-title">استطلاع الرأي اليومي</h4>
+                <p>ما هو رأيك في مستوى التغطية التكنولوجية بالمنصة؟</p>
+                <form class="poll-form" onsubmit="event.preventDefault(); alert('شكراً لتصويتك المباشر!');">
+                    <label><input type="radio" name="poll_ans" required> ممتازة وشاملة</label>
+                    <label><input type="radio" name="poll_ans"> متوسطة وبحاجة لتطوير</label>
+                    <button type="submit" class="poll-btn">تصويت</button>
+                </form>
+            </div>
+            <div class="widget-ad-box"><span>مساحة جانبية (AdSense 300x600)</span></div>
         </aside>
     </main>
 
@@ -125,37 +113,30 @@
                 </ul>
             </div>
         </div>
+        <div class="footer-bottom-bar"><p>&copy; 2026 نكسوس بريس. جميع الحقوق التحريرية محفوظة.</p></div>
     </footer>
 
+    <div id="google_translate_element" style="display:none;"></div>
     <script type="text/javascript">
         function googleTranslateElementInit() {
-            new google.translate.TranslateElement({pageLanguage: 'ar', includedLanguages: 'ar,en,fr', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+            new google.translate.TranslateElement({pageLanguage: 'ar', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
         }
-        document.getElementById('world-lang-btn').addEventListener('click', function() {
-            var element = document.querySelector('.goog-te-gadget-simple');
-            if(element) { element.click(); }
-        });
+        function translateTo(lang) {
+            var select = document.querySelector(".goog-te-combo");
+            if (select) { select.value = lang; select.dispatchEvent(new Event("change")); }
+        }
+        function updateWeatherAndPrayer() {
+            var city = document.getElementById("city-selector").value;
+            var dataBox = document.getElementById("dynamic-widget-data");
+            if (city === "rabat") {
+                dataBox.innerHTML = "<p><b>الفجر:</b> 05:24 | <b>المغرب:</b> 17:35</p><p style='margin-top:10px; color: #0b3c7a;'><b>الطقس الحالي:</b> 22°C ☀️ صافي</p>";
+            } else if (city === "paris") {
+                dataBox.innerHTML = "<p><b>الفجر:</b> 06:12 | <b>المغرب:</b> 18:04</p><p style='margin-top:10px; color: #0b3c7a;'><b>الطقس الحالي:</b> 12°C ☁️ غائم</p>";
+            } else if (city === "cairo") {
+                dataBox.innerHTML = "<p><b>الفجر:</b> 04:55 | <b>المغرب:</b> 17:10</p><p style='margin-top:10px; color: #0b3c7a;'><b>الطقس الحالي:</b> 26°C ☀️ حار</p>";
+            }
+        }
     </script>
     <script type="text/javascript" src="https://google.com"></script>
-
-    <script type="text/javascript">
-        document.querySelectorAll('.nav-filter').forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                document.querySelectorAll('.nav-filter').forEach(btn => btn.classList.remove('active'));
-                this.classList.add('active');
-                const filterValue = this.getAttribute('data-filter');
-                const items = document.querySelectorAll('.filter-item');
-                document.getElementById('section-view-title').innerText = this.innerText;
-                items.forEach(item => {
-                    if (filterValue === 'all' || item.classList.contains(filterValue)) {
-                        item.style.display = 'block';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-            });
-        });
-    </script>
 </body>
 </html>
