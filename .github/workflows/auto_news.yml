@@ -2,8 +2,8 @@ name: Nexus Press Auto Publisher
 
 on:
   schedule:
-    - cron: '0 * * * *' # يعمل تلقائياً على رأس كل ساعة طيلة الـ 24 ساعة بدون توقف لمواكبة الحدث الفوري بنظام الـ 42 مقالاً
-  workflow_dispatch: # يتيح لك تشغيله يدوياً بضغطة زر واحدة في أي وقت من لوحة التحكم لتجربة الموقع فوراً
+    - cron: '0 * * * *' # يعمل تلقائياً رأس كل ساعة طيلة الـ 24 ساعة بدون توقف لمواكبة الأحداث الفورية
+  workflow_dispatch: # يتيح لك تشغيله يدوياً بضغطة زر واحدة في أي وقت من لوحة التحكم
 
 jobs:
   build:
@@ -21,7 +21,7 @@ jobs:
 
     - name: Install Dependencies
       run: |
-        # تثبيت حزم الاعتماد لضمان قراءة الأخبار وسحب مصفوفات الصور وهندسة الأوامر بالذكاء الاصطناعي
+        # تثبيت حزم الاعتماد لضمان قراءة الأخبار وسحب الصور وهندسة الأوامر بالذكاء الاصطناعي
         pip install feedparser requests
 
     - name: Run Robot Journalist
@@ -30,14 +30,14 @@ jobs:
         SCRIPT_PATH=$(find . -name "*fetch_news*.py" | head -n 1)
         python "$SCRIPT_PATH"
       env:
-        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} # الربط السري الآمن مع مفتاح التوليد لصور ومقالات الذكاء الاصطناعي
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} # الربط السري الآمن مع مفتاح التوليد
 
     - name: Commit and Push Updates
       run: |
         git config --global user.name "NexusPress-Bot"
         git config --global user.email "bot@nexuspress.com"
         
-        # 1. حفظ المقالات الـ 42 المحدثة والمنظمة بالصور والتعليقات والأدوات التفاعلية وتفريغ الـ Index
+        # 1. حفظ المقالات الـ 42 المحدثة والمنظمة بالصور والتعليقات والأدوات التفاعلية
         git add .
         git diff-index --quiet HEAD || git commit -m "تحديث تلقائي رأس الساعة: صياغة ونشر آخر الأخبار والتحليلات لجريدة نكسوس بريس"
         
