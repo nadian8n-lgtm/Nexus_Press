@@ -33,6 +33,6 @@ jobs:
         git config --global user.name "NexusPress-Bot"
         git config --global user.email "bot@nexuspress.com"
         git add .
-        git diff-index --quiet HEAD || git commit -m "تحديث تلقائي مستقر وشامل لجريدة نكسوس بريس"
+        git diff-index --quiet HEAD || git commit -m "تحديث تلقائي مستقر لجريدة نكسوس بريس"
         git pull --rebase origin main
         git push origin main
