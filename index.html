@@ -8,17 +8,9 @@
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
     <link href="https://googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
-    <style>
-        /* إخفاء شريط ترجمة جوجل وأي عناصر متطفلة قسرياً لحماية التصميم */
-        .goog-te-banner-frame, .goog-te-banner, .skiptranslate, #goog-gt-tt, .goog-te-balloon-frame, .goog-te-gadget {
-            display: none !important;
-        }
-        body { top: 0px !important; }
-    </style>
 </head>
 <body>
 
-    <!-- شريط اللغات والترجمة الفورية الفعال بنقرة واحدة -->
     <div class="top-bar">
         <div class="container-flex">
             <span class="live-ticker-date">تحديث مستمر على مدار الساعة | 2026</span>
@@ -31,7 +23,6 @@
         </div>
     </div>
 
-    <!-- هيدر الجريدة باللون السماوي المتوسط لإبراز اللوغو بوضوح -->
     <header class="main-header">
         <div class="container-flex">
             <div class="logo-area">
@@ -41,7 +32,6 @@
         </div>
     </header>
 
-    <!-- شريط الأقسام والقوائم المفعّلة للتنقل السلس الشغال دائماً -->
     <nav class="main-nav">
         <div class="container main-nav-container">
             <ul class="nav-menu">
@@ -56,33 +46,26 @@
         </div>
     </nav>
 
-    <!-- شريط عاجل الإخباري المتحرك تلقائياً بالعناوين الساخنة -->
     <div class="breaking-news-bar">
         <div class="breaking-title">عاجل</div>
         <div class="breaking-content">
             <marquee behavior="scroll" direction="right" scrollamount="6" id="breaking-marquee">
-                • الداخلية ترفع سقف اعتمادات الجماعات المحلية بالمملكة لدعم التنمية واللوجستيك البنيوي الشامل لعام 2026 • ثورة الذكاء الاصطناعي التوليدي تعيد صياغة مفاهيم الإنتاج البرمجي وتطوير الويب العالمي
+                • الداخلية ترفع سقف اعتمادات الجماعات المحلية بالمملكة لدعم التنمية واللوجستيك البنيوي الشامل لعام 2026 • خطة وطنية موسعة لتحديث منظومة النقل اللوجستيكي والربط السككي الفوري بين المدن والأقاليم
             </marquee>
         </div>
     </div>
 
-    <!-- الواجهة الرئيسية للمنصة -->
     <div id="homepage-view" class="container">
-        <!-- سلايدر الأخبار الساخنة التلقائي التعاقبي الفاخر -->
         <div class="slider-wrapper">
             <div class="main-slider" id="slider-container"></div>
         </div>
-
         <div class="text-center" style="margin-top: 20px;"><div class="ad-in-content">مساحة إعلانية علوية (Google AdSense 728x90)</div></div>
-
         <main class="main-wrapper">
             <div class="content-area">
                 <h3 class="block-title" id="section-view-title">كافة المستجدات الراهنة</h3>
                 <section class="grid-stories-hub" id="articles-grid"></section>
             </div>
-
             <aside class="sidebar-area">
-                <!-- أداة البحث العالمية الحية لمواقيت الصلاة والطقس لكل مدن ودول العالم -->
                 <div class="widget">
                     <h4 class="widget-title">مواقيت الصلاة وحالة الطقس العالمية</h4>
                     <div style="margin-bottom:12px;">
@@ -95,13 +78,11 @@
                         <p style="margin-top:8px; color:#0284c7;"><b>الطقس الحالي:</b> 22°C ☀️ صافي ومستقر</p>
                     </div>
                 </div>
-
-                <!-- استطلاع الرأي اليومي المتجدد تلقائياً -->
                 <div class="widget">
                     <h4 class="widget-title">استطلاع الرأي اليومي</h4>
-                    <p id="poll-question-text" style="font-size:14px; font-weight:600; color:#4a5568; margin-bottom:12px;">كيف تقيم دقة التحليل الصحفي والعمق التحريري للمقالات المعروضة اليوم؟</p>
+                    <p id="poll-question-text" style="font-size:14px; font-weight:600; color:#4a5568; margin-bottom:12px;">كيف تقيم دقة التغطية الإخبارية والعمق التحليلي للمقالات المعروضة اليوم؟</p>
                     <form class="poll-form" onsubmit="event.preventDefault(); alert('شكراً لمشاركتكم الفورية في الاستطلاع!');">
-                        <label style="display:block; margin-bottom:8px; font-size:13px; font-weight:bold;"><input type="radio" name="poll_ans" required> احترافي مائة بالمائة ويشذ الانتباه</label>
+                        <label style="display:block; margin-bottom:8px; font-size:13px; font-weight:bold;"><input type="radio" name="poll_ans" required> احترافي وممتاز ويشذ الانتباه</label>
                         <label style="display:block; margin-bottom:12px; font-size:13px; font-weight:bold;"><input type="radio" name="poll_ans"> ممتاز ويفوق المواقع المنافسة</label>
                         <button type="submit" class="poll-btn" style="width:100%; padding:10px; background:#0b3c7a; color:#fff; border:none; border-radius:4px; font-family:'Cairo'; font-weight:bold; cursor:pointer;">تصويت ممتد</button>
                     </form>
@@ -111,7 +92,6 @@
         </main>
     </div>
 
-    <!-- واجهة قراءة المقال الداخلي الطويل -->
     <div id="article-view" class="container" style="display:none; margin-top:30px;">
         <main class="main-wrapper">
             <div class="content-area" id="single-article-content"></div>
@@ -119,7 +99,6 @@
         </main>
     </div>
 
-    <!-- فوتر الجريدة المتضمن للروابط والصفحات القانونية في الأسفل دائماً بشكل ثابت -->
     <footer class="main-footer">
         <div class="container grid-footer">
             <div class="footer-about">
@@ -138,11 +117,8 @@
         <div class="footer-bottom-bar"><p>&copy; 2026 نكسوس بريس. جميع الحقوق التحريرية محفوظة.</p></div>
     </footer>
 
-    <!-- حاوية مخفية لمحرك جوجل للترجمة السحابية -->
     <div id="google_translate_element" style="display:none;"></div>
-
     <script type="text/javascript">
-        // قاعدة البيانات الثابتة الشاملة لـ 36 مقالاً احترافياً طويلاً (6 مقالات لكل قسم) لمنع تعطل المحرك السحابي
         const localDatabase = {
             'ar_local': [
                 "الداخلية ترفع سقف اعتمادات الجماعات المحلية بالمملكة لدعم التنمية واللوجستيك البنيوي",
@@ -158,7 +134,19 @@
                 "آخر الأخبار الدولية والتوجهات الاستراتيجية والتجارية الجديدة في أمريكا ودهاليز البيت الأبيض",
                 "آخر الأخبار الدولية والفرص التنموية والاقتصادية الرقمية الواعدة في قارات افريقيا الصاعدة",
                 "آخر الأخبار الدولية وتقاطعات الدبلوماسية وأسواق الإمداد وحركة الشحن العالمية عبر البحار",
-                "آخر الأخبار الدولية واستشراف التوازنات الاستراتيجية المقبلة in المنطقة والعالم الراهن"
+                "آخر الأخبار الدولية واستشراف التوازنات الاستراتيجية المقبلة في المنطقة والعالم الراهن"
             ],
             'ar_economy': [
                 "مؤشرات النمو الاقتصادي وتقلبات أسعار الطاقة والمحروقات والملاحة اللوجستيكية دولياً",
+                "مستجدات أسعار المواد الاستهلاكية والتدابير الحمائية الحكومية لدعم القدرة الشرائية للأسر",
+                "تحليلات أسواق المال وأداء الأسهم والبورصات العالمية تحت مجهر الخبراء هذا الأسبوع",
+                "السياسات النقدية والمصرفية المرتقبة للبنوك المركزية للحد من التداعيات والتضخم المستورد",
+                "أزمة الشحن البحري وتأثيرها المباشر على وتيرة تدفق السلع الأساسية والمواد الأولية للأسواق",
+                "رهانات الأمن الغذائي الجسيمة والاكتفاء الذاتي الزراعي في ظل تقلبات المناخ الدولية المستمرة"
+            ],
+            'ar_tech': [
+                "ثورة الأنظمة الرقمية تعيد صياغة مفاهيم الإنتاج البرمجي وتطوير الويب العالمي",
+                "الأمن السيبراني وحماية البيانات الحيوية في ظل التهديدات الرقمية المتسارعة وحرب الحوسبة",
+                "الجيل القادم من الهواتف الذكية والأجهزة القابلة للارتداء وطفرة الرقاقات الإلكترونية لعام 2026",
+                "الحوسبة الكمومية والآفاق المستقبلية الواعدة لحل المعضلات الرياضية والمعادلات المعقدة",
+                "استراتيجيات التحول الرقمي الشامل للمؤسسات والمقاولات الناشئة لتعزيز التنافسية بالمملكة",
