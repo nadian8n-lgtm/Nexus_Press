@@ -28,6 +28,6 @@ jobs:
         git config --global user.name "NexusPress-Bot"
         git config --global user.email "bot@nexuspress.com"
         git add .
-        git diff-index --quiet HEAD || git commit -m "تحديث سحابي مستقر 100%"
+        git diff-index --quiet HEAD || git commit -m "تحديث سحابي شامل ومستقر 100%"
         git pull --rebase origin main
         git push origin main
