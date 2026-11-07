@@ -1,148 +1,52 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>اتصل بنا | Nexus Press</title>
-  <meta name="description" content="تواصل مع فريق نكسوس بريس للاستفسارات، التعاون، والإعلانات.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --navy: #071c35;
-      --blue: #0b3c7a;
-      --page: #f3f6fa;
-      --white: #ffffff;
-      --muted: #5b697a;
-      --line: #e2e8f0;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background: var(--page);
-      font-family: "Cairo", sans-serif;
-      color: var(--navy);
-      padding: 40px 20px;
-    }
-    .container {
-      max-width: 760px;
-      margin: 0 auto;
-      background: var(--white);
-      border: 1px solid var(--line);
-      border-top: 5px solid var(--blue);
-      border-radius: 16px;
-      padding: clamp(24px, 5vw, 42px);
-      box-shadow: 0 10px 30px rgba(7, 28, 53, 0.05);
-    }
-    .brand {
-      text-align: center;
-      padding-bottom: 18px;
-      margin-bottom: 22px;
-      border-bottom: 1px solid var(--line);
-    }
-    .brand img {
-      display: block;
-      width: auto;
-      height: 72px;
-      margin: 0 auto 12px;
-    }
-    h1 {
-      margin: 0 0 8px;
-      font-size: clamp(1.8rem, 3vw, 2.4rem);
-      color: var(--blue);
-    }
-    p {
-      color: var(--muted);
-      line-height: 1.9;
-      margin: 0 0 20px;
-      text-align: justify;
-    }
-    .form-block {
-      display: grid;
-      gap: 16px;
-    }
-    .field {
-      display: grid;
-      gap: 8px;
-    }
-    label {
-      font-weight: 700;
-      color: var(--navy);
-    }
-    input, textarea {
-      width: 100%;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 12px 14px;
-      font: inherit;
-      background: #f9fbfd;
-      color: var(--navy);
-    }
-    input:focus, textarea:focus {
-      outline: 2px solid rgba(11, 60, 122, 0.15);
-      border-color: var(--blue);
-      background: var(--white);
-    }
-    textarea { min-height: 140px; resize: vertical; }
-    .btn {
-      border: 0;
-      background: var(--blue);
-      color: var(--white);
-      padding: 12px 18px;
-      border-radius: 10px;
-      font: inherit;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .btn:hover { background: var(--navy); }
-    .link-row {
-      margin-top: 22px;
-      text-align: center;
-    }
-    .link-row a {
-      color: var(--blue);
-      text-decoration: none;
-      font-weight: 700;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="brand">
-      <img src="./image_MUwSAA.png" alt="Nexus Press">
-      <h1>اتصل بنا</h1>
-    </div>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>اتصل بنا | نكسوس بريس</title>
+<meta name="description" content="اتصل بنا - نكسوس بريس">
+<meta property="og:title" content="اتصل بنا | نكسوس بريس"><meta property="og:description" content="اتصل بنا - نكسوس بريس"><meta property="og:type" content="website"><link rel="canonical" href="https://nadian8n-lgtm.github.io/Nexus_Press/contact.html">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 
-    <p>يسعدنا استقبال أسئلتكم ومقترحاتكم، سواء كان ذلك بشأن التعاون، الإعلان، أو أي استفسار متعلق بالمحتوى الذي نقدمـه.</p>
-
-    <form class="form-block" onsubmit="event.preventDefault(); alert('تم إرسال رسالتك بنجاح. سنقوم بالتواصل معك في أقرب وقت.'); this.reset();">
-      <div class="field">
-        <label for="name">الاسم الكامل</label>
-        <input id="name" type="text" placeholder="اكتب اسمك الكامل" required>
-      </div>
-
-      <div class="field">
-        <label for="email">البريد الإلكتروني</label>
-        <input id="email" type="email" placeholder="example@mail.com" required>
-      </div>
-
-      <div class="field">
-        <label for="subject">عنوان الرسالة</label>
-        <input id="subject" type="text" placeholder="موضوع الرسالة" required>
-      </div>
-
-      <div class="field">
-        <label for="message">نص الرسالة</label>
-        <textarea id="message" placeholder="اكتب رسالتك هنا..." required></textarea>
-      </div>
-
-      <button type="submit" class="btn">إرسال الرسالة</button>
-    </form>
-
-    <div class="link-row">
-      <a href="./index.html">العودة إلى الصفحة الرئيسية</a>
-    </div>
-  </div>
-</body>
-</html>
+</head><body>
+<div class="top-bar notranslate"><div class="container flex">
+<span>🔴 تحديث مستمر على مدار الساعة</span>
+<div class="lang-box" translate="no"><span>🌐</span>
+<button class="lang-btn" data-l="ar">العربية</button>|<button class="lang-btn" data-l="fr">Français</button>|<button class="lang-btn" data-l="en">English</button></div>
+</div></div>
+<header class="main-header"><div class="container flex">
+<a href="index.html" class="notranslate"><img src="image_MUwSAA.png" alt="Nexus Press"></a>
+<div class="header-tag">أخبار العالم لحظة بلحظة</div></div></header>
+<nav class="main-nav"><div class="container"><ul class="nav-menu"><li><a href="index.html">الرئيسية</a></li><li><a href="category-ar_local.html">أخبار وطنية</a></li><li><a href="category-ar_world.html">الأخبار الدولية</a></li><li><a href="category-ar_economy.html">اقتصاد</a></li><li><a href="category-ar_tech.html">تكنولوجيا</a></li><li><a href="category-ar_sports.html">رياضة</a></li><li><a href="category-ar_arts.html">فن وثقافة</a></li></ul></div></nav>
+<div class="breaking"><b>عاجل</b><div><span class="ticker">نكسوس بريس — أخبار العالم على مدار الساعة</span></div></div><div class="container"><div class="page"><h1>اتصل بنا</h1><p>للاستفسارات والاقتراحات وطلبات التصحيح والتعاون الإعلاني، راسلنا على البريد: <a href="mailto:"><b dir="ltr"></b></a></p>
+<form action="mailto:" method="post" enctype="text/plain">
+<input name="name" placeholder="الاسم الكامل" required><input name="email" type="email" placeholder="البريد الإلكتروني" required>
+<input name="subject" placeholder="موضوع الرسالة" required><textarea name="message" rows="6" placeholder="نص الرسالة" required></textarea>
+<button class="btn" type="submit">إرسال</button></form></div></div><footer class="footer"><div class="container footer-grid">
+<div><h4>نكسوس بريس | Nexus Press</h4><p>جريدة إلكترونية تتابع أبرز أحداث العالم في السياسة والاقتصاد والتكنولوجيا والرياضة والثقافة.</p></div>
+<div><h4>الأقسام</h4><ul><li><a href="category-ar_local.html">أخبار وطنية</a></li><li><a href="category-ar_world.html">الأخبار الدولية</a></li><li><a href="category-ar_economy.html">اقتصاد</a></li><li><a href="category-ar_tech.html">تكنولوجيا</a></li><li><a href="category-ar_sports.html">رياضة</a></li><li><a href="category-ar_arts.html">فن وثقافة</a></li></ul></div>
+<div><h4>معلومات</h4><ul><li><a href="about.html">من نحن</a></li><li><a href="contact.html">اتصل بنا</a></li><li><a href="privacy-policy.html">سياسة الخصوصية</a></li></ul></div>
+</div><div class="footer-bottom">© 2026 نكسوس بريس. جميع الحقوق محفوظة.</div></footer>
+<div id="google_translate_element" style="display:none"></div>
+<script>
+(function(){
+  var m=document.cookie.match(/googtrans=\/ar\/(\w+)/),cur=m?m[1]:'ar';
+  if(cur!=='ar'){document.documentElement.dir='ltr';document.documentElement.lang=cur;}
+  document.querySelectorAll('.lang-btn').forEach(function(b){
+    if(b.dataset.l===cur)b.classList.add('on');
+    b.onclick=function(){
+      var l=b.dataset.l,h=location.hostname,past='expires=Thu, 01 Jan 1970 00:00:00 GMT';
+      if(l==='ar'){document.cookie='googtrans=;path=/;'+past;document.cookie='googtrans=;path=/;domain='+h+';'+past;}
+      else{document.cookie='googtrans=/ar/'+l+';path=/';document.cookie='googtrans=/ar/'+l+';path=/;domain='+h;}
+      location.reload();
+    };
+  });
+  var s=document.querySelectorAll('.slide'),i=0;
+  if(s.length>1)setInterval(function(){s[i].classList.remove('active');i=(i+1)%s.length;s[i].classList.add('active');},5000);
+})();
+function googleTranslateElementInit(){new google.translate.TranslateElement({pageLanguage:'ar',includedLanguages:'ar,fr,en',autoDisplay:false},'google_translate_element');}
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body></html>

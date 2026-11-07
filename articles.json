@@ -1,1 +1,18 @@
-{"categories":{},"articles":{}}
+{
+ "categories": {
+  "ar_local": "أخبار وطنية",
+  "ar_world": "الأخبار الدولية",
+  "ar_economy": "اقتصاد",
+  "ar_tech": "تكنولوجيا",
+  "ar_sports": "رياضة",
+  "ar_arts": "فن وثقافة"
+ },
+ "articles": {
+  "ar_local": [],
+  "ar_world": [],
+  "ar_economy": [],
+  "ar_tech": [],
+  "ar_sports": [],
+  "ar_arts": []
+ }
+}
