@@ -151,7 +151,88 @@ def build():
         hero = '<div class="slider"><div class="hero-fallback">جاري تجهيز أحدث الأخبار…</div></div>'
     sections, shown = "", 0
     for k, name in CATEGORIES.items():
-        if data[k]:
-            sections += (f'<h2 class="block-title" style="margin-top:30px">{e(name)}</h2><div class="grid">'
-                         + "".join(card(a, "", k) for a in data[k][:6]) + "</div>"
-                         + f'<p style="margin-top:12px"><a class="badge"
+        if not data[k]:
+            continue
+        cards_html = "".join(card(a, "", k) for a in data[k][:6])
+        more_link = '<p style="margin-top:12px"><a class="badge" href="category-' + k + '.html">كل مقالات ' + e(name) + ' ←</a></p>'
+        sections += '<h2 class="block-title" style="margin-top:30px">' + e(name) + '</h2>'
+        sections += '<div class="grid">' + cards_html + '</div>' + more_link
+        shown += 1
+        if shown % 2 == 0:
+            sections += ad("middle")
+    if not sections:
+        sections = '<div class="empty">لا توجد مقالات منشورة بعد.</div>'
+    page = (head("نكسوس بريس | Nexus Press - أخبار العالم على مدار الساعة", "جريدة نكسوس بريس: تغطية موسعة وتحليلات لأبرز الأخبار العالمية والعربية في السياسة والاقتصاد والتكنولوجيا والرياضة والثقافة.", "", base + "/" if base else "")
+            + header("", data, "home")
+            + f'<div class="container">{ad("top")}{hero}{ad("under_slider")}<div class="layout"><main>{sections}</main>{sidebar("", data)}</div>{ad("bottom")}</div>'
+            + footer(""))
+    (ROOT / "index.html").write_text(page, encoding="utf-8")
+
+    # categories + articles
+    for k, name in CATEGORIES.items():
+        cards = "".join(card(a, "", k) for a in data[k]) or '<div class="empty">لا توجد مقالات في هذا القسم بعد.</div>'
+        page = (head(f"{name} | نكسوس بريس", f"آخر مقالات قسم {name} في جريدة نكسوس بريس.", "", f"{base}/category-{k}.html" if base else "")
+                + header("", data, k)
+                + f'<div class="container">{ad("top")}<div class="layout"><main><h1 class="block-title">{e(name)}</h1><div class="grid">{cards}</div>{ad("middle")}</main>{sidebar("", data)}</div>{ad("bottom")}</div>'
+                + footer(""))
+        (ROOT / f"category-{k}.html").write_text(page, encoding="utf-8")
+
+        for a in data[k]:
+            src = "".join(f'<li><a href="{e(s["url"])}" rel="nofollow noopener" target="_blank">{e(s.get("publisher", s["url"]))}</a></li>' for s in a.get("sources", []))
+            src_html = f'<div class="sources"><b>المصادر والمراجع:</b><ul>{src}</ul></div>' if src else ""
+            related = "".join(card(r, "../", k) for r in [x for x in data[k] if x["id"] != a["id"]][:3])
+            url = f"{base}/articles/{a['id']}.html" if base else ""
+            ld = json.dumps({"@context": "https://schema.org", "@type": "NewsArticle", "headline": a["title"], "datePublished": a["date"],
+                             "image": [f"{base}/{a['image']}" if base else a["image"]], "publisher": {"@type": "Organization", "name": "نكسوس بريس"},
+                             "author": {"@type": "Organization", "name": "هيئة تحرير نكسوس بريس"}}, ensure_ascii=False)
+            page = (head(f'{a["title"]} | نكسوس بريس', a.get("summary", a["title"]), "../", url, f"{base}/{a['image']}" if base else "")
+                    + f'<script type="application/ld+json">{ld}</script>'
+                    + header("../", data, k)
+                    + f"""<div class="container">{ad("top")}<div class="layout"><main><article class="article">
+<span class="badge">{e(name)}</span><h1>{e(a["title"])}</h1>
+<div class="meta">هيئة تحرير نكسوس بريس · {e(a["date"][:10])}</div>
+{ad("article_top")}
+<img class="hero" src="../{e(a["image"])}" alt="{e(a.get("image_alt", a["title"]))}">
+<div class="article-body">
+
+{render_body(a["content"])}
+
+</div>{ad("article_bottom")}{src_html}{comments_block()}</article>
+<section class="related"><h2 class="block-title">مقالات ذات صلة</h2><div class="grid">{related}</div></section></main>{sidebar("../", data)}</div>{ad("bottom")}</div>"""
+                    + footer("../"))
+            (ROOT / "articles" / f"{a['id']}.html").write_text(page, encoding="utf-8")
+            urls.append(f"articles/{a['id']}.html")
+
+    # legal pages
+    legal = {
+        "about.html": ("من نحن", """<p>نكسوس بريس جريدة إلكترونية عربية تتابع أبرز أحداث العالم في السياسة والاقتصاد والتكنولوجيا والرياضة والثقافة، وتقدمها للقارئ بلغة واضحة وسياق كافٍ لفهم الخبر وليس مجرد نقله.</p>
+<h2>كيف نعمل</h2><p>نعتمد على وكالات الأنباء والصحف والمؤسسات الإعلامية المعروفة مصادرَ للمعلومة، ونعيد تقديم الخبر بصياغتنا الخاصة مع الإشارة إلى مصادره في أسفل كل مقال. تمر المواد عبر مراجعة تحريرية قبل النشر.</p>
+<h2>التزاماتنا</h2><ul><li>الدقة والتحقق من المعلومة قبل نشرها.</li><li>الفصل بين الخبر والرأي.</li><li>تصحيح الأخطاء بسرعة وشفافية عند اكتشافها.</li><li>احترام حقوق الملكية الفكرية وعدم نسخ محتوى الآخرين.</li></ul>
+<h2>تصحيح الأخطاء</h2><p>إذا لاحظت خطأً في أي مقال فراسلنا عبر صفحة <a href="contact.html">اتصل بنا</a> وسنراجعه فوراً.</p>"""),
+        "contact.html": ("اتصل بنا", f"""<p>للاستفسارات والاقتراحات وطلبات التصحيح والتعاون الإعلاني، راسلنا على البريد: <a href="mailto:{e(CONTACT_EMAIL)}"><b dir="ltr">{e(CONTACT_EMAIL)}</b></a></p>
+<form action="mailto:{e(CONTACT_EMAIL)}" method="post" enctype="text/plain">
+<input name="name" placeholder="الاسم الكامل" required><input name="email" type="email" placeholder="البريد الإلكتروني" required>
+<input name="subject" placeholder="موضوع الرسالة" required><textarea name="message" rows="6" placeholder="نص الرسالة" required></textarea>
+<button class="btn" type="submit">إرسال</button></form>"""),
+        "privacy-policy.html": ("سياسة الخصوصية", f"""<p>آخر تحديث: {datetime.now().strftime('%Y-%m-%d')}. توضح هذه السياسة كيف يتعامل موقع نكسوس بريس مع بيانات الزوار.</p>
+<h2>1. البيانات التي نجمعها</h2><p>قد تُجمع بيانات تقنية مجهولة مثل نوع المتصفح والجهاز والصفحات التي تمت زيارتها وعنوان IP، لتحليل الأداء وتحسين الموقع. لا نطلب منك بيانات شخصية لتصفح الموقع.</p>
+<h2>2. ملفات تعريف الارتباط (Cookies)</h2><p>نستخدم ملفات تعريف الارتباط لحفظ تفضيلاتك مثل لغة العرض، ولأغراض الإعلانات والتحليلات كما هو موضح أدناه. يمكنك تعطيلها من إعدادات متصفحك.</p>
+<h2>3. الإعلانات وجوجل أدسنس</h2><p>قد نعرض إعلانات عبر Google AdSense. تستخدم Google وشركاؤها ملفات تعريف الارتباط لعرض إعلانات بناءً على زياراتك السابقة لهذا الموقع أو لمواقع أخرى. يمكنك إلغاء الإعلانات المخصصة من <a href="https://adssettings.google.com" rel="noopener" target="_blank">إعدادات إعلانات Google</a> أو زيارة <a href="https://www.aboutads.info" rel="noopener" target="_blank">aboutads.info</a>. للمزيد: <a href="https://policies.google.com/technologies/partner-sites" rel="noopener" target="_blank">كيف تستخدم Google البيانات</a>.</p>
+<h2>4. الخدمات الخارجية</h2><p>يستخدم الموقع خدمة Google Translate لترجمة الصفحات، وخدمة Utterances (GitHub) للتعليقات، وخطوط Google. لهذه الجهات سياساتها الخاصة في الخصوصية. التعليقات المنشورة عبر GitHub تكون عامة وتخضع لسياسة GitHub.</p>
+<h2>5. حماية الأطفال</h2><p>الموقع غير موجه للأطفال دون 13 سنة ولا نجمع عنهم بيانات عن قصد.</p>
+<h2>6. حقوقك</h2><p>يمكنك طلب الاطلاع على بياناتك أو حذفها بمراسلتنا عبر <a href="contact.html">صفحة الاتصال</a>.</p>
+<h2>7. تعديل السياسة</h2><p>قد نحدّث هذه السياسة من وقت لآخر، وسيظهر تاريخ آخر تحديث أعلاها."""),
+    }
+    for fname, (title, body) in legal.items():
+        page = (head(f"{title} | نكسوس بريس", f"{title} - نكسوس بريس", "", f"{base}/{fname}" if base else "")
+                + header("", data, "") + f'<div class="container"><div class="page"><h1>{title}</h1>{body}</div></div>' + footer(""))
+        (ROOT / fname).write_text(page, encoding="utf-8")
+
+    if base:
+        sm = "".join(f"<url><loc>{base}/{u}</loc></url>" for u in urls)
+        (ROOT / "sitemap.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{sm}</urlset>', encoding="utf-8")
+    print(f"site built: {sum(len(v) for v in data.values())} articles")
+
+
+if __name__ == "__main__":
+    build()
