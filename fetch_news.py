@@ -141,9 +141,8 @@ def tokens(t):
 
 def main():
     if not KEY:
-        print("OPENAI_API_KEY missing: rebuilding site only.")
         build_site.build()
-        return
+        raise SystemExit("ERROR: OPENAI_API_KEY is empty. Add it in Settings > Secrets and variables > Actions > Secrets (exact name OPENAI_API_KEY).")
     jf, sf = ROOT / "articles.json", ROOT / "news-state.json"
     data = json.loads(jf.read_text(encoding="utf-8")) if jf.exists() else {}
     arts = {k: data.get("articles", {}).get(k, []) for k in build_site.CATEGORIES}
@@ -190,6 +189,8 @@ def main():
     jf.write_text(json.dumps({"categories": build_site.CATEGORIES, "articles": arts}, ensure_ascii=False, indent=1), encoding="utf-8")
     sf.write_text(json.dumps({"used": sorted(used)[-3000:]}), encoding="utf-8")
     build_site.build()
+    if made == 0 and MAX_PER_RUN > 0:
+        raise SystemExit("ERROR: no article was generated. Read the lines above: 'feed failed', 'generation failed' or 'image failed' show the cause.")
 
 
 if __name__ == "__main__":
