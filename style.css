@@ -1,7 +1,7 @@
 :root {
     --main-color: #0b3c7a;
     --dark-color: #071c35;
-    --sky-blue-medium: #0284c7; /* اللون السماوي المتوسط الفاخر المناسب للشعار برمجياً */
+    --sky-blue-medium: #0284c7; /* درجة السماوي المتوسطة المثالية لظهور اللوغو بوضوح */
     --light-bg: #f8fafc;
     --white: #ffffff;
     --accent-red: #c2185b;
@@ -10,36 +10,37 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Cairo', sans-serif; background-color: var(--light-bg); color: #1e293b; top: 0px !important; }
+
 .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
 .container-flex { max-width: 1200px; margin: 0 auto; padding: 0 15px; display: flex; justify-content: space-between; align-items: center; }
 
-/* شريط الترجمة العلوي النظيف بأيقونة العالم الصافية */
+/* شريط لغات الترجمة الفورية النظيفة */
 .top-bar { background: var(--dark-color); color: #f8fafc; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
 .live-ticker-date { font-weight: 700; font-size: 13px; }
 .global-lang-wrapper { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.07); padding: 6px 16px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.15); }
-.world-icon { font-size: 15px; }
+.world-icon { font-size: 16px; }
 .lang-btn { cursor: pointer; color: #e2e8f0; font-weight: bold; font-size: 13px; transition: var(--transition); }
 .lang-btn:hover { color: #38bdf8; }
 
-/* هيدر الجريدة باللون السماوي المتوسط لإبراز لافتة اللوغو بوضوح */
+/* هيدر الجريدة بالسماوي المتوسط المطلوب */
 .main-header { background: var(--sky-blue-medium) !important; padding: 30px 0; border-bottom: 3px solid #0369a1; }
 .main-logo-img { height: 95px; width: auto; display: block; }
 .ad-space-header { width: 728px; height: 90px; background: rgba(255, 255, 255, 0.15); display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 13px; font-weight: bold; border: 2px dashed rgba(255,255,255,0.3); border-radius: 6px; }
 
-/* شريط الأقسام (ثابت ومثبت ويظهر في المقالات وفي الواجهة) */
+/* شريط الأقسام الثابت */
 .main-nav { background: var(--dark-color); position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
 .nav-menu { list-style: none; display: flex; flex-wrap: wrap; }
 .nav-menu li a { display: block; padding: 18px 24px; color: var(--white); font-weight: 700; font-size: 15px; text-decoration: none; transition: var(--transition); }
 .nav-menu li a:hover, .nav-menu li a.active { background: var(--main-color); }
 
-/* شريط عاجل الإخباري */
+/* عاجل التلقائي */
 .breaking-news-bar { display: flex; background: var(--accent-red); color: var(--white); font-weight: bold; align-items: center; }
 .breaking-title { background: #880e4f; padding: 14px 35px; font-size: 16px; }
 .breaking-content { width: 100%; overflow: hidden; }
 .breaking-content marquee { color: var(--white) !important; font-size: 15px; font-weight: 700; }
 
 /* سلايدر واجهة الأخبار الساخنة */
-.slider-wrapper { position: relative; width: 100%; height: 440px; overflow: hidden; border-radius: 8px; box-shadow: 0 12px 30px rgba(0,0,0,0.15); background: #000; }
+.slider-wrapper { position: relative; width: 100%; height: 440px; overflow: hidden; border-radius: 8px; box-shadow: 0 12px 30px rgba(0,0,0,0.15); background: #000; margin-top: 25px; }
 .main-slider { width: 100%; height: 100%; position: relative; }
 .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.8s ease-in-out; z-index: 1; }
 .slide.active { opacity: 1; z-index: 2; }
@@ -47,38 +48,36 @@ body { font-family: 'Cairo', sans-serif; background-color: var(--light-bg); colo
 .slide-caption { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(transparent, rgba(7, 28, 53, 0.98)); padding: 50px 35px 25px; color: var(--white); }
 .slide-caption h2 { font-size: 24px; font-weight: 900; line-height: 1.4; }
 
-/* هيكلية الشبكة الـ 36 */
+/* هيكلية توزيع المقالات الـ 36 والأدوات */
 .main-wrapper { display: grid; grid-template-columns: 3fr 1fr; gap: 35px; margin-top: 40px; }
 .content-area { display: flex; flex-direction: column; gap: 40px; }
 .block-title { font-size: 24px; font-weight: 900; color: var(--dark-color); border-right: 6px solid var(--main-color); padding-right: 14px; }
 .grid-stories-hub { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 30px; }
-.news-card { background: var(--white); border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; transition: var(--transition); }
+.news-card { background: var(--white); border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; transition: var(--transition); cursor: pointer; }
 .news-card:hover { transform: translateY(-6px); border-color: var(--main-color); box-shadow: 0 12px 25px rgba(0,0,0,0.08); }
-.card-img-holder { height: 190px; overflow: hidden; }
-.card-img-holder img { width: 100%; height: 100%; object-fit: cover; }
+.card-img-holder { height: 190px; overflow: hidden; background: #e2e8f0; }
+.card-img-holder img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .card-info { padding: 22px; }
 .badge { background: var(--main-color); color: var(--white); padding: 4px 10px; font-size: 11px; border-radius: 4px; display: inline-block; margin-bottom: 12px; font-weight: bold; }
 .news-card h3 { font-size: 16px; font-weight: 700; line-height: 1.5; color: var(--dark-color); }
 
-/* صفحات المقالات وتأمين ترك سطر فارغ ميكانيكياً لمنع الالتصاق كلياً */
+/* صفحات تفاصيل المقال الداخلي */
 .post-container { background: var(--white); padding: 45px; border-radius: 8px; border: 1px solid #e2e8f0; }
 .post-title { font-size: 32px; font-weight: 900; color: var(--dark-color); margin-bottom: 25px; line-height: 1.4; }
 .post-meta { font-size: 13px; color: #64748b; margin-bottom: 30px; border-bottom: 1px solid #e2e8f0; padding-bottom: 18px; }
-.post-image-wrapper { width: 100%; height: auto; border-radius: 6px; overflow: hidden; margin-bottom: 25px; }
-.article-main-img { width: 100%; height: auto; max-height: 465px; object-fit: cover; display: block; }
+.post-main-img { width: 100%; height: auto; max-height: 450px; object-fit: cover; border-radius: 6px; margin-bottom: 25px; display: block; }
 
-/* عزل وتنسيق الفقرات لترك سطر فارغ واضح جداً برمجياً */
-.post-p { font-size: 18px; line-height: 2.1; color: #334155; margin-bottom: 35px !important; text-align: justify; display: block; }
+/* عزل الفقرات التحريرية بسطر كامل فارغ ميكانيكياً لراحة العين والسيو البشري */
+.post-p { font-size: 18px; line-height: 2.2; color: #334155; margin-bottom: 35px !important; text-align: justify; display: block; }
 
-/* مساحات إعلانات أدسينس النظيفة المعترف بها سيو */
+/* مساحات إعلانات أدسينس الشاملة */
 .ad-in-content { background: var(--white); padding: 25px; text-align: center; color: #94a3b8; border: 1px dashed #cbd5e1; border-radius: 6px; font-weight: bold; }
 .ad-inside-post { background: #f8fafc; border: 1px dashed #cbd5e1; padding: 22px; text-align: center; color: #94a3b8; margin: 30px 0; border-radius: 6px; font-weight: bold; }
 
 .navigation-arrows { display: flex; justify-content: space-between; margin-top: 40px; padding: 20px 0; border-top: 1px solid #e2e8f0; }
-.nav-arrow-btn { display: inline-block; background: var(--main-color); color: var(--white); padding: 12px 24px; border-radius: 4px; font-weight: bold; font-size: 14px; text-decoration: none; }
-.nav-arrow-btn:hover { background: var(--dark-color); }
+.nav-arrow-btn { display: inline-block; background: var(--main-color); color: var(--white); padding: 12px 24px; border-radius: 4px; font-weight: bold; font-size: 14px; text-decoration: none; cursor: pointer; }
 
-/* الوجت والأدوات الجانبية */
+/* الأدوات الجانبية */
 .widget { background: var(--white); padding: 25px; border-radius: 6px; margin-bottom: 30px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.01); }
 .widget-title { font-size: 17px; font-weight: 900; color: var(--dark-color); border-bottom: 3px solid var(--main-color); padding-bottom: 10px; margin-bottom: 18px; }
 .prayer-times-list { list-style: none; }
@@ -87,7 +86,7 @@ body { font-family: 'Cairo', sans-serif; background-color: var(--light-bg); colo
 .poll-btn { background: var(--main-color); color: var(--white); border: none; padding: 12px; width: 100%; border-radius: 4px; font-weight: bold; cursor: pointer; font-family: 'Cairo'; font-size: 14px; }
 .widget-ad-box { background: var(--white); border: 1px dashed #cbd5e1; height: 600px; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 13px; font-weight: bold; border-radius: 6px; }
 
-/* فوتر الموقع (يحتوي على الروابط القانونية أسفل الموقع دائماً حصرياً) */
+/* فوتر الجريدة (يحتوي حصرياً على الروابط القانونية في الأسفل دائماً) */
 .main-footer { background: var(--dark-color); color: #cbd5e1; padding: 50px 0 30px 0; margin-top: 60px; border-top: 4px solid var(--main-color); }
 .grid-footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px; padding-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.06); }
 .footer-about h3, .footer-legal-links h4 { color: var(--white); font-weight: 900; margin-bottom: 15px; }
@@ -96,6 +95,6 @@ body { font-family: 'Cairo', sans-serif; background-color: var(--light-bg); colo
 .footer-legal-links ul li a:hover { color: var(--white); text-decoration: underline; }
 .footer-bottom-bar { text-align: center; padding-top: 25px; font-size: 13px; color: #64748b; }
 
-/* الحظر النهائي والصارم لإخفاء وحظر شريط راية ترجمة جوجل المتطفل */
+/* حظر وإخفاء لافتة وبانر ترجمة جوجل العلوية قسرياً */
 .goog-te-banner-frame, .goog-te-banner, .skiptranslate, #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
 .goog-te-gadget { display: none !important; }
