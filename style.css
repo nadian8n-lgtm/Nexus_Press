@@ -1,11 +1,11 @@
 /* ==========================================================================
-   Nexus Press - Architecture CSS Professionnelle (Mise à jour 2026)
+   Nexus Press - Feuille de Style Professionnelle Optimisée (2026)
    ========================================================================== */
 
 :root {
     --main-color: #0b3c7a;
     --dark-color: #071c35;
-    --deep-sky: #0369a1; /* Bleu ciel foncé de qualité premium */
+    --sky-blue-medium: #0284c7; /* لون سماوي متوسط فاخر متناسق مع الشعار */
     --light-bg: #f8fafc;
     --white: #ffffff;
     --accent-red: #c2185b;
@@ -22,10 +22,10 @@ body {
     font-family: 'Cairo', sans-serif; 
     background-color: var(--light-bg); 
     color: #1e293b; 
-    top: 0px !important; /* Empêche Google Translate de décaler la mise en page */
+    top: 0px !important; /* منع الإزاحة القسرية من ترجمة جوجل */
 }
 
-/* Structure globale */
+/* بنية الحاويات */
 .container { 
     max-width: 1200px; 
     margin: 0 auto; 
@@ -41,7 +41,7 @@ body {
     align-items: center; 
 }
 
-/* Top Bar & Sélection des Langues */
+/* شريط الترجمة العلوي الاحترافي بنقرة واحدة */
 .top-bar { 
     background: var(--dark-color); 
     color: #f8fafc; 
@@ -76,11 +76,11 @@ body {
     color: #38bdf8; 
 }
 
-/* Header & Zone Logo */
+/* هيدر الجريدة باللون السماوي المتوسط لإبراز اللوغو */
 .main-header { 
-    background: var(--deep-sky) !important; 
+    background: var(--sky-blue-medium) !important; 
     padding: 30px 0; 
-    border-bottom: 3px solid #0284c7; 
+    border-bottom: 3px solid #0369a1; 
 }
 
 .main-logo-img { 
@@ -92,7 +92,7 @@ body {
 .ad-space-header { 
     width: 728px; 
     height: 90px; 
-    background: rgba(255, 255, 255, 0.12); 
+    background: rgba(255, 255, 255, 0.15); 
     display: flex; 
     align-items: center; 
     justify-content: center; 
@@ -103,7 +103,7 @@ body {
     border-radius: 6px; 
 }
 
-/* Navigation principale & Catégories */
+/* شريط الأقسام (يظهر في الرئيسية وفي كل صفحات المقالات) */
 .main-nav { 
     background: var(--dark-color); 
     position: sticky; 
@@ -132,7 +132,7 @@ body {
     background: var(--main-color); 
 }
 
-/* Bandeau d'informations défilant */
+/* شريط عاجل الإخباري */
 .breaking-news-bar { 
     display: flex; 
     background: var(--accent-red); 
@@ -158,11 +158,11 @@ body {
     font-weight: 700; 
 }
 
-/* Slider de couverture automatique (Carrousel) */
+/* سلايدر الأخبار الساخنة التلقائي الفاخر */
 .slider-wrapper { 
     position: relative; 
     width: 100%; 
-    height: 420px; 
+    height: 440px; 
     overflow: hidden; 
     border-radius: 8px; 
     box-shadow: 0 12px 30px rgba(0,0,0,0.15); 
@@ -213,7 +213,7 @@ body {
     line-height: 1.4;
 }
 
-/* Grille d'affichage des actualités (36 articles) */
+/* شبكة التوزيع (36 مقال) */
 .main-wrapper { 
     display: grid; 
     grid-template-columns: 3fr 1fr; 
@@ -288,7 +288,7 @@ body {
     color: var(--dark-color); 
 }
 
-/* Conteneur des articles individuels & Typographie */
+/* صفحات المقالات الداخلية وتنسيق الفقرات بسطر فارغ */
 .post-container { 
     background: var(--white); 
     padding: 45px; 
@@ -312,17 +312,17 @@ body {
     padding-bottom: 18px; 
 }
 
-/* Structure des paragraphes : Espacement strict d'une ligne complète */
+/* فرض ترك سطر فارغ كامل بين الفقرات لراحة العين والسيو الصحفي */
 .post-p { 
     font-size: 18px; 
     line-height: 2.1; 
     color: #334155; 
-    margin-bottom: 35px !important; /* Maintient un saut de ligne parfait entre chaque paragraphe */
+    margin-bottom: 35px !important; /* عزل الفقرات بسطر كامل */
     text-align: justify; 
     display: block; 
 }
 
-/* Espaces Publicitaires Google AdSense */
+/* مساحات إعلانات أدسينس */
 .ad-in-content { 
     background: var(--white); 
     padding: 25px; 
@@ -344,7 +344,7 @@ body {
     font-weight: bold;
 }
 
-/* Boutons de navigation */
+/* أدوات التنقل والأسهم أسفل المقال */
 .navigation-arrows { 
     display: flex; 
     justify-content: space-between; 
@@ -368,7 +368,7 @@ body {
     background: var(--dark-color); 
 }
 
-/* Widgets Latéraux (Prière, Météo, Sondages) */
+/* الأدوات الجانبية التفاعلية */
 .widget { 
     background: var(--white); 
     padding: 25px; 
@@ -435,7 +435,7 @@ body {
     border-radius: 6px; 
 }
 
-/* Footer Professionnel (Contient exclusivement les liens légaux en bas) */
+/* الفوتر الاحترافي (يحتوي حصرياً على الروابط القانونية في الأسفل دائماً) */
 .main-footer { 
     background: var(--dark-color); 
     color: #cbd5e1; 
@@ -485,8 +485,10 @@ body {
     color: #64748b;
 }
 
-/* Masquage total et forcé des éléments superposés natifs de Google Translate */
+/* حظر وإخفاء شريط وراية ترجمة جوجل العلوية لجمالية الموقع */
 .goog-te-banner-frame, .goog-te-banner, .skiptranslate, #goog-gt-tt, .goog-te-balloon-frame {
     display: none !important;
 }
 .goog-te-gadget {
+    display: none !important;
+}
