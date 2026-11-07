@@ -1,11 +1,11 @@
 /* ==========================================================================
-   Nexus Press - Professional CSS Architecture (Updated 2026)
+   Nexus Press - Architecture CSS Professionnelle (Mise à jour 2026)
    ========================================================================== */
 
 :root {
     --main-color: #0b3c7a;
     --dark-color: #071c35;
-    --deep-sky: #0369a1; /* اللون السماوي الغامق الفاخر المطلوب برمجياً */
+    --deep-sky: #0369a1; /* Bleu ciel foncé de qualité premium */
     --light-bg: #f8fafc;
     --white: #ffffff;
     --accent-red: #c2185b;
@@ -22,10 +22,10 @@ body {
     font-family: 'Cairo', sans-serif; 
     background-color: var(--light-bg); 
     color: #1e293b; 
-    top: 0px !important; /* منع جوجل من إزاحة الموقع لأسفل */
+    top: 0px !important; /* Empêche Google Translate de décaler la mise en page */
 }
 
-/* بنية الحاويات */
+/* Structure globale */
 .container { 
     max-width: 1200px; 
     margin: 0 auto; 
@@ -41,7 +41,7 @@ body {
     align-items: center; 
 }
 
-/* شريط العالم والترجمة الفورية العلوي */
+/* Top Bar & Sélection des Langues */
 .top-bar { 
     background: var(--dark-color); 
     color: #f8fafc; 
@@ -64,21 +64,6 @@ body {
     border: 1px solid rgba(255,255,255,0.15); 
 }
 
-.world-icon-btn { 
-    font-size: 16px; 
-    font-weight: 900; 
-    color: var(--white); 
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.lang-menu-dropdown {
-    display: flex;
-    gap: 8px;
-}
-
 .lang-btn { 
     cursor: pointer; 
     color: #e2e8f0; 
@@ -91,7 +76,7 @@ body {
     color: #38bdf8; 
 }
 
-/* هيدر الجريدة بالخلفية السماوية الغامقة المطلوبة */
+/* Header & Zone Logo */
 .main-header { 
     background: var(--deep-sky) !important; 
     padding: 30px 0; 
@@ -118,7 +103,7 @@ body {
     border-radius: 6px; 
 }
 
-/* شريط الأقسام والقوائم المفعّلة التفاعلية */
+/* Navigation principale & Catégories */
 .main-nav { 
     background: var(--dark-color); 
     position: sticky; 
@@ -139,6 +124,7 @@ body {
     color: var(--white); 
     font-weight: 700; 
     font-size: 15px; 
+    text-decoration: none;
     transition: var(--transition);
 }
 
@@ -146,7 +132,7 @@ body {
     background: var(--main-color); 
 }
 
-/* شريط عاجل التلقائي من اليمين إلى اليسار */
+/* Bandeau d'informations défilant */
 .breaking-news-bar { 
     display: flex; 
     background: var(--accent-red); 
@@ -172,11 +158,11 @@ body {
     font-weight: 700; 
 }
 
-/* سلايدر الأخبار الساخنة التلقائي الفاخر */
+/* Slider de couverture automatique (Carrousel) */
 .slider-wrapper { 
     position: relative; 
     width: 100%; 
-    height: 460px; 
+    height: 420px; 
     overflow: hidden; 
     border-radius: 8px; 
     box-shadow: 0 12px 30px rgba(0,0,0,0.15); 
@@ -222,12 +208,12 @@ body {
 }
 
 .slide-caption h2 { 
-    font-size: 26px; 
+    font-size: 24px; 
     font-weight: 900; 
     line-height: 1.4;
 }
 
-/* شبكة التوزيع الإخباري والمقالات الـ 36 */
+/* Grille d'affichage des actualités (36 articles) */
 .main-wrapper { 
     display: grid; 
     grid-template-columns: 3fr 1fr; 
@@ -302,7 +288,7 @@ body {
     color: var(--dark-color); 
 }
 
-/* صفحات المقالات الداخلية وبنية الفقرات المنعزلة بسطر فارغ */
+/* Conteneur des articles individuels & Typographie */
 .post-container { 
     background: var(--white); 
     padding: 45px; 
@@ -311,7 +297,7 @@ body {
 }
 
 .post-title { 
-    font-size: 34px; 
+    font-size: 32px; 
     font-weight: 900; 
     color: var(--dark-color); 
     margin-bottom: 25px; 
@@ -326,17 +312,17 @@ body {
     padding-bottom: 18px; 
 }
 
-/* عزل وتفجير الفقرات لإبراز المساحات الفارغة والسيو التحريري البشري */
+/* Structure des paragraphes : Espacement strict d'une ligne complète */
 .post-p { 
     font-size: 18px; 
-    line-height: 2.2; 
+    line-height: 2.1; 
     color: #334155; 
-    margin-bottom: 35px !important; /* فرض تباعد الفقرات بسطر كامل فارغ */
+    margin-bottom: 35px !important; /* Maintient un saut de ligne parfait entre chaque paragraphe */
     text-align: justify; 
     display: block; 
 }
 
-/* مساحات إعلانات أدسينس الشاملة */
+/* Espaces Publicitaires Google AdSense */
 .ad-in-content { 
     background: var(--white); 
     padding: 25px; 
@@ -358,6 +344,7 @@ body {
     font-weight: bold;
 }
 
+/* Boutons de navigation */
 .navigation-arrows { 
     display: flex; 
     justify-content: space-between; 
@@ -374,13 +361,14 @@ body {
     border-radius: 4px; 
     font-weight: bold; 
     font-size: 14px; 
+    text-decoration: none;
 }
 
 .nav-arrow-btn:hover { 
     background: var(--dark-color); 
 }
 
-/* الوجت والأدوات الجانبية المتفاعلة (الصلاة والطقس والاستطلاع) */
+/* Widgets Latéraux (Prière, Météo, Sondages) */
 .widget { 
     background: var(--white); 
     padding: 25px; 
@@ -399,17 +387,16 @@ body {
     margin-bottom: 18px; 
 }
 
+.prayer-times-list {
+    list-style: none;
+}
+
 .prayer-times-list li { 
     display: flex; 
     justify-content: space-between; 
     padding: 10px 0; 
     border-bottom: 1px solid #f1f5f9; 
     font-size: 14px; 
-    font-weight: 700;
-}
-
-.weather-city-box {
-    font-size: 14px;
     font-weight: 700;
 }
 
@@ -435,10 +422,6 @@ body {
     font-size: 14px; 
 }
 
-.poll-btn:hover { 
-    background: var(--dark-color); 
-}
-
 .widget-ad-box { 
     background: var(--white); 
     border: 1px dashed #cbd5e1; 
@@ -452,7 +435,7 @@ body {
     border-radius: 6px; 
 }
 
-/* فوتر الموقع مدمجاً به الصفحات القانونية في الأسفل حصرياً */
+/* Footer Professionnel (Contient exclusivement les liens légaux en bas) */
 .main-footer { 
     background: var(--dark-color); 
     color: #cbd5e1; 
@@ -470,13 +453,7 @@ body {
     border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
-.footer-about h3 {
-    color: var(--white);
-    font-weight: 900;
-    margin-bottom: 15px;
-}
-
-.footer-legal-links h4 {
+.footer-about h3, .footer-legal-links h4 {
     color: var(--white);
     font-weight: 900;
     margin-bottom: 15px;
@@ -494,7 +471,6 @@ body {
     text-decoration: none; 
     font-weight: bold; 
     font-size: 14px; 
-    transition: var(--transition);
 }
 
 .footer-legal-links ul li a:hover { 
@@ -503,3 +479,14 @@ body {
 }
 
 .footer-bottom-bar { 
+    text-align: center;
+    padding-top: 25px;
+    font-size: 13px;
+    color: #64748b;
+}
+
+/* Masquage total et forcé des éléments superposés natifs de Google Translate */
+.goog-te-banner-frame, .goog-te-banner, .skiptranslate, #goog-gt-tt, .goog-te-balloon-frame {
+    display: none !important;
+}
+.goog-te-gadget {
