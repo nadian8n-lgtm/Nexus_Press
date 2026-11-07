@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
     <link href="https://googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
+    <script src="https://puter.com"></script>
 </head>
 <body>
 
@@ -61,7 +62,7 @@
 
     <!-- الواجهة الرئيسية للمنصة -->
     <div id="homepage-view" class="container">
-        <!-- سلايدر الأخبار الساخنة التلقائي التعاقبي الفاخر -->
+        <!-- سلايدر الأخبار الساخنة التلقائي التعاقبي الفاخر المدمج بـ image-use -->
         <div class="slider-wrapper">
             <div class="main-slider" id="slider-container"></div>
         </div>
@@ -80,7 +81,7 @@
                     <h4 class="widget-title">مواقيت الصلاة وحالة الطقس العالمية</h4>
                     <div style="margin-bottom:12px;">
                         <input type="text" id="city-search-input" placeholder="اكتب اسم أي مدينة أو دولة في العالم..." style="width:100%; padding:10px; font-family:'Cairo'; font-weight:bold; border:1px solid #cbd5e1; border-radius:4px;">
-                        <button onclick="searchGlobalCity()" class="poll-btn" style="margin-top:8px; padding:12px;">بحث فوري 🔍</button>
+                        <button onclick="searchGlobalCity()" class="poll-btn" style="margin-top:8px; padding:12px; width:100%; background:#0b3c7a; color:#fff; border:none; border-radius:4px; font-family:'Cairo'; font-weight:bold; cursor:pointer;">بحث فوري 🔍</button>
                     </div>
                     <div id="dynamic-widget-data">
                         <p style="color:#0b3c7a; font-weight:900;" id="widget-city-name">المدينة الحالية: الرباط (المغرب)</p>
@@ -96,7 +97,7 @@
                     <form class="poll-form" onsubmit="event.preventDefault(); alert('شكراً لمشاركتكم الفورية في الاستطلاع! تقييمكم يدعم تميزنا وصدارتنا التحريرية.');">
                         <label style="display:block; margin-bottom:8px; font-size:13px; font-weight:bold;"><input type="radio" name="poll_ans" required> احترافي مائة بالمائة ويشذ الانتباه</label>
                         <label style="display:block; margin-bottom:12px; font-size:13px; font-weight:bold;"><input type="radio" name="poll_ans"> ممتاز ويفوق المواقع المنافسة</label>
-                        <button type="submit" class="poll-btn">تصويت ممتد</button>
+                        <button type="submit" class="poll-btn" style="width:100%; padding:10px; background:#0b3c7a; color:#fff; border:none; border-radius:4px; font-family:'Cairo'; font-weight:bold; cursor:pointer;">تصويت ممتد</button>
                     </form>
                 </div>
                 <div class="widget-ad-box"><span>مساحة إعلانية عمودية جانبية (AdSense 300x600)</span></div>
@@ -155,8 +156,3 @@
                 "مستجدات أسعار المواد الاستهلاكية والتدابير الحمائية الحكومية لدعم القدرة الشرائية للأسر",
                 "تحليلات أسواق المال وأداء الأسهم والبورصات العالمية تحت مجهر الخبراء هذا الأسبوع",
                 "السياسات النقدية والمصرفية المرتقبة للبنوك المركزية للحد من التداعيات والتضخم المستورد",
-                "أزمة الشحن البحري وتأثيرها المباشر على وتيرة تدفق السلع الأساسية والمواد الأولية للأسواق",
-                "رهانات الأمن الغذائي الجسيمة والاكتفاء الذاتي الزراعي في ظل تقلبات المناخ الدولية المستمرة"
-            ],
-            'ar_tech': [
-                "ثورة الذكاء الاصطناعي التوليدي تعيد صياغة مفاهيم الإنتاج البرمجي وتطوير الويب العالمي",
