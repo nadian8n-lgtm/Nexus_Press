@@ -2,36 +2,43 @@ name: Nexus Press Auto Publisher
 
 on:
   schedule:
-    - cron: '0 * * * *' # يعمل تلقائياً على رأس كل ساعة طيلة الـ 24 ساعة دون توقف
-  workflow_dispatch: # زر التشغيل اليدوي المباشر بنقرة واحدة داخل الـ Actions
+    - cron: '0 * * * *'   # كل ساعة
+  workflow_dispatch:
+    inputs:
+      count:
+        description: 'عدد المقالات في هذه الدورة (اكتب 36 لأول تشغيل)'
+        default: '2'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nexus-publish
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 340
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0 # جلب كامل التاريخ البرمجي للمستودع لمنع تعارض الـ Rebase
-
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.x'
-
-    - name: Run Robot Journalist
-      run: |
-        # تشغيل سكريبت بايثون النظيف لتوليد ملف المقالات المشترك بنجاح تام
-        SCRIPT_PATH=$(find . -name "*fetch_news*.py" | head -n 1)
-        python "$SCRIPT_PATH"
-
-    - name: Commit and Push Updates
-      run: |
-        git config --global user.name "NexusPress-Bot"
-        git config --global user.email "bot@nexuspress.com"
-        
-        git add .
-        git diff-index --quiet HEAD || git commit -m "تحديث تلقائي مستقر لجريدة نكسوس بريس: ضخ المقالات وتحديث البيانات الحية"
-        
-        git pull --rebase origin main
-        git push origin main
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pillow
+      - name: Generate articles and build site
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL }}
+          MAX_PER_RUN: ${{ github.event.inputs.count || '2' }}
+          ADSENSE_CLIENT: ${{ vars.ADSENSE_CLIENT }}
+          CONTACT_EMAIL: ${{ vars.CONTACT_EMAIL }}
+        run: python fetch_news.py
+      - name: Commit and push
+        run: |
+          git config user.name "NexusPress-Bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || git commit -m "نشر تلقائي: مقالات جديدة"
+          git pull --rebase origin main
+          git push origin main
