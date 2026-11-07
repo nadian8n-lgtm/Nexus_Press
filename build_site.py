@@ -1,7 +1,7 @@
 """Builds the whole static site from articles.json.
 
 Outputs: index.html, category-<key>.html, articles/<id>.html,
-about.html, contact.html, privacy-policy.html, sitemap.xml, robots.txt
+about.html, contact.html, privacy-policy.html, sitemap.xml
 """
 import html
 import json
@@ -14,6 +14,7 @@ ROOT = Path(__file__).parent
 REPO = os.getenv("GITHUB_REPOSITORY", "")  # e.g. user/Nexus_Press (set automatically in Actions)
 SITE_URL = os.getenv("SITE_URL") or (
     f"https://{REPO.split('/')[0]}.github.io/{REPO.split('/')[1]}" if "/" in REPO else "")
+CONTACT_EMAIL = os.getenv("CONTACT_EMAIL") or "nadia.bouizgarne1@gmail.com"
 ADSENSE_CLIENT = os.getenv("ADSENSE_CLIENT", "")  # ca-pub-XXXXXXXXXXXXXXXX after approval
 
 CATEGORIES = {
@@ -206,30 +207,16 @@ def build():
 <h2>كيف نعمل</h2><p>نعتمد على وكالات الأنباء والصحف والمؤسسات الإعلامية المعروفة مصادرَ للمعلومة، ونعيد تقديم الخبر بصياغتنا الخاصة مع الإشارة إلى مصادره في أسفل كل مقال.</p>
 <h2>التزاماتنا</h2><ul><li>الدقة والتحقق من المعلومة قبل نشرها.</li><li>الفصل بين الخبر والرأي.</li><li>تصحيح الأخطاء بسرعة وشفافية عند اكتشافها.</li><li>احترام حقوق الملكية الفكرية وعدم نسخ محتوى الآخرين.</li></ul>
 <h2>تصحيح الأخطاء</h2><p>إذا لاحظت خطأً في أي مقال فراسلنا عبر صفحة <a href="contact.html">اتصل بنا</a> وسنراجعه فوراً.</p>"""),
-        "contact.html": ("اتصل بنا", """<p>يسعدنا تواصلك معنا لأي استفسار أو اقتراح أو طلب تصحيح. أرسل رسالتك من النموذج أدناه، وسيصلك ردنا هنا على الموقع نفسه: بعد الإرسال تحصل على <b>رمز متابعة</b>، أدخله في خانة «متابعة رسالتك» لقراءة الرد.</p>
-<div id="contact-box">
-<form id="cf" class="cform" novalidate>
-<label>الاسم الكامل<input id="c-name" maxlength="100" required></label>
-<label>البريد الإلكتروني (اختياري)<input id="c-email" type="email" maxlength="150" dir="ltr"></label>
-<label>موضوع الرسالة<input id="c-subject" maxlength="150" required></label>
-<label>نص الرسالة<textarea id="c-message" rows="6" maxlength="3000" required></textarea></label>
-<input id="c-web" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px">
-<button class="btn" type="submit">إرسال</button>
-<div id="cf-msg" role="status"></div>
-</form>
-<h2>متابعة رسالتك</h2>
-<form id="tf" class="cform" novalidate>
-<label>رمز المتابعة<input id="t-id" dir="ltr" maxlength="20"></label>
-<button class="btn" type="submit">عرض الحالة والرد</button>
-<div id="tf-msg" role="status"></div>
-</form>
-</div>
-<script type="module" src="contact.js"></script>"""),
+        "contact.html": ("اتصل بنا", f"""<p>للاستفسارات والاقتراحات وطلبات التصحيح والتعاون الإعلاني، يمكنك مراسلتنا مباشرة على البريد الإلكتروني: <a href="mailto:{e(CONTACT_EMAIL)}"><b dir="ltr">{e(CONTACT_EMAIL)}</b></a>. نحرص على الرد في أقرب وقت ممكن.</p>
+<form action="mailto:{e(CONTACT_EMAIL)}" method="post" enctype="text/plain">
+<input name="name" placeholder="الاسم الكامل" required><input name="email" type="email" placeholder="البريد الإلكتروني" required>
+<input name="subject" placeholder="موضوع الرسالة" required><textarea name="message" rows="6" placeholder="نص الرسالة" required></textarea>
+<button class="btn" type="submit">إرسال</button></form>"""),
         "privacy-policy.html": ("سياسة الخصوصية", f"""<p>آخر تحديث: {datetime.now().strftime('%Y-%m-%d')}. توضح هذه السياسة كيف يتعامل موقع نكسوس بريس مع بيانات الزوار.</p>
-<h2>1. البيانات التي نجمعها</h2><p>قد تُجمع بيانات تقنية مجهولة مثل نوع المتصفح والجهاز والصفحات التي تمت زيارتها وعنوان IP، لتحليل الأداء وتحسين الموقع. لا نطلب منك بيانات شخصية لتصفح الموقع. وعند استخدام نموذج الاتصال نحفظ الاسم والموضوع والرسالة والبريد الإلكتروني (إن أدخلته) لنتمكن من الرد عليك، ولا نشاركها مع أي طرف آخر.</p>
+<h2>1. البيانات التي نجمعها</h2><p>قد تُجمع بيانات تقنية مجهولة مثل نوع المتصفح والجهاز والصفحات التي تمت زيارتها وعنوان IP، لتحليل الأداء وتحسين الموقع. لا نطلب منك بيانات شخصية لتصفح الموقع. وعند مراسلتنا عبر البريد الإلكتروني نستخدم بياناتك (الاسم والبريد ومحتوى الرسالة) للرد عليك فقط، ولا نشاركها مع أي طرف آخر.</p>
 <h2>2. ملفات تعريف الارتباط (Cookies)</h2><p>نستخدم ملفات تعريف الارتباط لحفظ تفضيلاتك مثل لغة العرض، ولأغراض الإعلانات والتحليلات كما هو موضح أدناه. يمكنك تعطيلها من إعدادات متصفحك.</p>
 <h2>3. الإعلانات وجوجل أدسنس</h2><p>قد نعرض إعلانات عبر Google AdSense. تستخدم Google وشركاؤها ملفات تعريف الارتباط لعرض إعلانات بناءً على زياراتك السابقة لهذا الموقع أو لمواقع أخرى. يمكنك إلغاء الإعلانات المخصصة من <a href="https://adssettings.google.com" rel="noopener" target="_blank">إعدادات إعلانات Google</a> أو زيارة <a href="https://www.aboutads.info" rel="noopener" target="_blank">aboutads.info</a>. للمزيد: <a href="https://policies.google.com/technologies/partner-sites" rel="noopener" target="_blank">كيف تستخدم Google البيانات</a>.</p>
-<h2>4. الخدمات الخارجية</h2><p>يستخدم الموقع خدمة Google Translate لترجمة الصفحات، وخدمة Utterances (GitHub) للتعليقات، وخدمة Google Firebase لحفظ رسائل نموذج الاتصال، وخطوط Google. لهذه الجهات سياساتها الخاصة في الخصوصية. التعليقات المنشورة عبر GitHub تكون عامة وتخضع لسياسة GitHub.</p>
+<h2>4. الخدمات الخارجية</h2><p>يستخدم الموقع خدمة Google Translate لترجمة الصفحات، وخدمة Utterances (GitHub) للتعليقات، وخطوط Google. لهذه الجهات سياساتها الخاصة في الخصوصية. التعليقات المنشورة عبر GitHub تكون عامة وتخضع لسياسة GitHub.</p>
 <h2>5. حماية الأطفال</h2><p>الموقع غير موجه للأطفال دون 13 سنة ولا نجمع عنهم بيانات عن قصد.</p>
 <h2>6. حقوقك</h2><p>يمكنك طلب الاطلاع على بياناتك أو حذفها بمراسلتنا عبر <a href="contact.html">صفحة الاتصال</a>.</p>
 <h2>7. تعديل السياسة</h2><p>قد نحدّث هذه السياسة من وقت لآخر، وسيظهر تاريخ آخر تحديث أعلاها.</p>"""),
@@ -240,7 +227,7 @@ def build():
         (ROOT / fname).write_text(page, encoding="utf-8")
 
     if base:
-        (ROOT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nDisallow: /admin.html\n\nSitemap: {base}/sitemap.xml\n", encoding="utf-8")
+        (ROOT / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {base}/sitemap.xml\n", encoding="utf-8")
         sm = "".join(f"<url><loc>{base}/{u}</loc></url>" for u in urls)
         (ROOT / "sitemap.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{sm}</urlset>', encoding="utf-8")
     print(f"site built: {sum(len(v) for v in data.values())} articles")
