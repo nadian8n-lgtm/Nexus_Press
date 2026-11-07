@@ -2,8 +2,8 @@ name: Nexus Press Auto Publisher
 
 on:
   schedule:
-    - cron: '0 * * * *'
-  workflow_dispatch:
+    - cron: '0 * * * *' # يعمل ميكانيكياً رأس كل ساعة طيلة الـ 24 ساعة دون توقف لمواكبة الأنباء
+  workflow_dispatch: # تفعيل خيار زر التشغيل اليدوي بنقرة واحدة لتجربة المنصة فوراً
 
 jobs:
   build:
@@ -19,7 +19,7 @@ jobs:
       with:
         python-version: '3.x'
 
-    - name: Run Robot Journalist
+    - name: Run Core Clean Validation
       run: |
         python fetch_news.py
 
@@ -28,6 +28,6 @@ jobs:
         git config --global user.name "NexusPress-Bot"
         git config --global user.email "bot@nexuspress.com"
         git add .
-        git diff-index --quiet HEAD || git commit -m "تحديث سحابي شامل ومستقر 100%"
+        git diff-index --quiet HEAD || git commit -m "مزامنة سحابية مستقرة وشاملة 100%"
         git pull --rebase origin main
         git push origin main
