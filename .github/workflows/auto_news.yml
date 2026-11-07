@@ -2,8 +2,8 @@ name: Nexus Press Auto Publisher
 
 on:
   schedule:
-    - cron: '0 * * * *' # السيرفر يستيقظ ويعمل تلقائياً رأس كل ساعة طيلة الـ 24 ساعة بدون انقطاع
-  workflow_dispatch: # زر التشغيل اليدوي المباشر بنقرة واحدة داخل الـ Actions
+    - cron: '0 * * * *' # Exécution automatique au début de chaque heure
+  workflow_dispatch: # Activation du bouton bleu de lancement manuel dans l'onglet Actions
 
 jobs:
   build:
@@ -12,7 +12,7 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
       with:
-        fetch-depth: 0 # سحب كامل التاريخ البرمجي للمستودع لمنع أي تعارض أثناء الرفع الميكانيكي
+        fetch-depth: 0 # Historique complet pour éviter les erreurs de rebase lors du push
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -21,12 +21,10 @@ jobs:
 
     - name: Install Dependencies
       run: |
-        # تثبيت المكتبات الحاكمة لبناء المقالات وسحب مصفوفات الصور الفوتوغرافية للويب
         pip install feedparser requests
 
     - name: Run Robot Journalist
       run: |
-        # الكشف التلقائي الآمن عن ملف الروبوت التحريري وتشغيله لبناء وتحديث صفحات المقالات الـ 36
         SCRIPT_PATH=$(find . -name "*fetch_news*.py" | head -n 1)
         python "$SCRIPT_PATH"
 
@@ -35,12 +33,8 @@ jobs:
         git config --global user.name "NexusPress-Bot"
         git config --global user.email "bot@nexuspress.com"
         
-        # 1. حفظ المقالات المنوعة كلياً، وتحديثات الأدوات التفاعلية وملف الأندكس بمسارات التوجيه الجديدة
         git add .
-        git diff-index --quiet HEAD || git commit -m "تحديث تلقائي مستقر لجريدة نكسوس بريس: ضخ المقالات وتحديث الأدوات الحية رأس الساعة"
+        git diff-index --quiet HEAD || git commit -m "Mise à jour automatique : Publication des articles et rafraîchissement des widgets"
         
-        # 2. المزامنة الآمنة المانعة لتعارض الـ Git Rebase مع ملفات أدسينس وصفحات الخصوصية بالفوتر
         git pull --rebase origin main
-        
-        # 3. دفع التحديثات مباشرة لتنشيط الموقع الإلكتروني على شبكة الويب العالمية فوراً
         git push origin main
