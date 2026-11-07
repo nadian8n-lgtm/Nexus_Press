@@ -34,7 +34,6 @@ jobs:
           MAX_PER_RUN: ${{ github.event.inputs.count || '2' }}
           ADSENSE_CLIENT: ${{ vars.ADSENSE_CLIENT }}
           ADSENSE_SLOT: ${{ vars.ADSENSE_SLOT }}
-          CONTACT_EMAIL: ${{ vars.CONTACT_EMAIL }}
         run: python fetch_news.py
       - name: Commit and push
         run: |
