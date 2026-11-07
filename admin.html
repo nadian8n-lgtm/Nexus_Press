@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>لوحة الرسائل | نكسوس بريس</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.wrap{max-width:900px;margin:30px auto;padding:0 15px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:18px}
+.msg{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px;margin-bottom:16px}
+.msg.new{border-right:6px solid var(--red)}
+.msg.replied{border-right:6px solid #16a34a}
+.msg h3{font-size:17px;margin-bottom:4px}
+.msg .meta{margin-bottom:10px}
+.msg pre{white-space:pre-wrap;font-family:inherit;background:#f8fafc;border-radius:8px;padding:12px;margin-bottom:10px}
+.msg textarea,.login input,.bar select{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:6px;font:inherit;margin-bottom:8px}
+.bar select{width:auto;margin:0}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.btn.alt{background:#475569}.btn.del{background:#b91c1c}
+.login{max-width:380px;margin:60px auto;background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:24px}
+.err{color:#b91c1c;font-weight:700}
+</style>
+</head>
+<body>
+<div class="login" id="login" hidden>
+  <h1 style="font-size:22px;margin-bottom:14px">دخول الأدمن</h1>
+  <input id="em" type="email" placeholder="البريد الإلكتروني" dir="ltr" autocomplete="username">
+  <input id="pw" type="password" placeholder="كلمة المرور" dir="ltr" autocomplete="current-password">
+  <button class="btn" id="go">دخول</button>
+  <p class="err" id="lerr"></p>
+</div>
+
+<div class="wrap" id="panel" hidden>
+  <div class="bar">
+    <h1 style="font-size:24px">📬 رسائل الزوار <span id="count"></span></h1>
+    <div class="row">
+      <select id="filter"><option value="all">الكل</option><option value="new">الجديدة</option><option value="read">المقروءة</option><option value="replied">تم الرد</option></select>
+      <button class="btn alt" id="refresh">تحديث</button>
+      <button class="btn alt" id="out">خروج</button>
+    </div>
+  </div>
+  <div id="list"></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, getDocs, query, orderBy, limit, doc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { firebaseConfig } from "./firebase-config.js";
+
+const $ = (id) => document.getElementById(id);
+if (String(firebaseConfig.apiKey).startsWith("PASTE")) {
+  document.body.innerHTML = '<p style="padding:40px;text-align:center">أكمل إعداد ملف firebase-config.js أولاً.</p>';
+  throw new Error("firebase not configured");
+}
+const app = initializeApp(firebaseConfig), auth = getAuth(app), db = getFirestore(app);
+let all = [];
+
+function el(tag, cls, text) { const n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; }
+const LABEL = { new: "جديدة", read: "مقروءة", replied: "تم الرد" };
+
+$("go").onclick = async () => {
+  $("lerr").textContent = "";
+  try { await signInWithEmailAndPassword(auth, $("em").value.trim(), $("pw").value); }
+  catch (e) { $("lerr").textContent = "بيانات الدخول غير صحيحة."; }
+};
+$("out").onclick = () => signOut(auth);
+$("refresh").onclick = load;
+$("filter").onchange = render;
+
+onAuthStateChanged(auth, (user) => {
+  $("login").hidden = !!user;
+  $("panel").hidden = !user;
+  if (user) load();
+});
+
+async function load() {
+  try {
+    const snap = await getDocs(query(collection(db, "messages"), orderBy("createdAt", "desc"), limit(200)));
+    all = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    render();
+  } catch (e) {
+    console.error(e);
+    $("list").replaceChildren(el("p", "err", "لا تملك صلاحية قراءة الرسائل. تأكد أن UID الأدمن مكتوب في قواعد Firestore."));
+  }
+}
+
+function render() {
+  const f = $("filter").value, list = $("list");
+  const items = all.filter((m) => f === "all" || m.status === f);
+  $("count").textContent = "(" + all.filter((m) => m.status === "new").length + " جديدة)";
+  list.replaceChildren();
+  if (!items.length) list.appendChild(el("p", "", "لا توجد رسائل."));
+  items.forEach((m) => {
+    const card = el("div", "msg " + m.status);
+    card.appendChild(el("h3", "", m.subject));
+    const when = m.createdAt && m.createdAt.toDate ? m.createdAt.toDate().toLocaleString("ar") : "";
+    card.appendChild(el("div", "meta", `${m.name}${m.email ? " · " + m.email : ""} · ${when} · ${LABEL[m.status] || m.status}`));
+    card.appendChild(el("pre", "", m.message));
+    card.appendChild(el("div", "meta", "رمز المتابعة: " + m.id));
+    const ta = el("textarea"); ta.rows = 4; ta.placeholder = "اكتب ردك هنا (سيراه الزائر برمز المتابعة)"; ta.value = m.reply || "";
+    card.appendChild(ta);
+    const row = el("div", "row");
+    const save = el("button", "btn", "حفظ الرد");
+    save.onclick = async () => {
+      if (!ta.value.trim()) return alert("اكتب الرد أولاً.");
+      await updateDoc(doc(db, "messages", m.id), { reply: ta.value.trim(), status: "replied", repliedAt: serverTimestamp() });
+      load();
+    };
+    row.appendChild(save);
+    if (m.status === "new") {
+      const rd = el("button", "btn alt", "تمت القراءة");
+      rd.onclick = async () => { await updateDoc(doc(db, "messages", m.id), { status: "read" }); load(); };
+      row.appendChild(rd);
+    }
+    if (m.email) {
+      const a = el("a", "btn alt", "رد بالبريد");
+      a.href = "mailto:" + encodeURIComponent(m.email).replace("%40", "@") + "?subject=" + encodeURIComponent("رد: " + m.subject) + "&body=" + encodeURIComponent(ta.value);
+      row.appendChild(a);
+    }
+    const del = el("button", "btn del", "حذف");
+    del.onclick = async () => { if (confirm("حذف هذه الرسالة نهائياً؟")) { await deleteDoc(doc(db, "messages", m.id)); load(); } };
+    row.appendChild(del);
+    card.appendChild(row);
+    list.appendChild(card);
+  });
+}
+</script>
+</body>
+</html>
