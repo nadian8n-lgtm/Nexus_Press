@@ -2,8 +2,8 @@ name: Nexus Press Auto Publisher
 
 on:
   schedule:
-    - cron: '0 * * * *' # السيرفر يعمل تلقائياً رأس كل ساعة طيلة اليوم لمواكبة الأحداث الحصرية
-  workflow_dispatch: # تفعيل خيار التشغيل اليدوي بنقرة واحدة من تبويب Actions لتجربة الموقع فوراً
+    - cron: '0 * * * *'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -12,7 +12,7 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0 # سحب كامل التاريخ البرمجي للمستودع لمنع تعارض المزامنة
+        fetch-depth: 0
 
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -21,17 +21,13 @@ jobs:
 
     - name: Run Robot Journalist
       run: |
-        # تشغيل سكريبت بايثون الصافي لتوليد وتحديث ملف البيانات المشترك بنجاح تام وبدون بلوك
-        SCRIPT_PATH=$(find . -name "*fetch_news*.py" | head -n 1)
-        python "$SCRIPT_PATH"
+        python fetch_news.py
 
     - name: Commit and Push Updates
       run: |
         git config --global user.name "NexusPress-Bot"
         git config --global user.email "bot@nexuspress.com"
-        
         git add .
-        git diff-index --quiet HEAD || git commit -m "تحديث تلقائي مستقر لجريدة نكسوس بريس: ضخ المقالات وتحديث أدسينس والأدوات الحية"
-        
+        git diff-index --quiet HEAD || git commit -m "تحديث سحابي مستقر 100%"
         git pull --rebase origin main
         git push origin main
