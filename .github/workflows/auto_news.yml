@@ -2,8 +2,8 @@ name: Nexus Press Auto Publisher
 
 on:
   schedule:
-    - cron: '0 * * * *' # تشغيل تلقائي رأس كل ساعة طيلة اليوم لمواكبة الحدث الفوري
-  workflow_dispatch:
+    - cron: '0 * * * *' # يعمل تلقائياً على رأس كل ساعة طيلة الـ 24 ساعة دون توقف
+  workflow_dispatch: # زر التشغيل اليدوي المباشر بنقرة واحدة داخل الـ Actions
 
 jobs:
   build:
@@ -12,20 +12,16 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
       with:
-        fetch-depth: 0
+        fetch-depth: 0 # جلب كامل التاريخ البرمجي للمستودع لمنع تعارض الـ Rebase
 
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.x'
 
-    - name: Install Dependencies
-      run: |
-        pip install feedparser requests
-
     - name: Run Robot Journalist
       run: |
-        # الكشف عن ملف الروبوت التحريري المحدث وتشغيله لبناء صفحات المقالات الـ 36
+        # تشغيل سكريبت بايثون النظيف لتوليد ملف المقالات المشترك بنجاح تام
         SCRIPT_PATH=$(find . -name "*fetch_news*.py" | head -n 1)
         python "$SCRIPT_PATH"
 
@@ -35,7 +31,7 @@ jobs:
         git config --global user.email "bot@nexuspress.com"
         
         git add .
-        git diff-index --quiet HEAD || git commit -m "تحديث تلقائي مستقر لجريدة نكسوس بريس: ضخ المقالات وتحديث أدسينس والأدوات التفاعلية"
+        git diff-index --quiet HEAD || git commit -m "تحديث تلقائي مستقر لجريدة نكسوس بريس: ضخ المقالات وتحديث البيانات الحية"
         
         git pull --rebase origin main
         git push origin main
