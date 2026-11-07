@@ -8,13 +8,16 @@
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
     <link href="https://googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
+    <!-- استدعاء حزمة Puter.js المدمجة بناءً على مستودع unlimited-claude-AI لضمان العمل المجاني المستقر -->
+    <script src="https://puter.com"></script>
 </head>
 <body>
 
+    <!-- شريط لغات الترجمة الفورية النظيف المدمج بأيقونة كرة العالم التفاعلية -->
     <div class="top-bar">
         <div class="container-flex">
             <span class="live-ticker-date">تحديث مستمر على مدار الساعة | 2026</span>
-            <div class="global-lang-wrapper" style="cursor: pointer;">
+            <div class="global-lang-wrapper" id="world-lang-trigger">
                 <span class="world-icon">🌐</span>
                 <span class="lang-btn" onclick="translateTo('ar')">العربية</span> | 
                 <span class="lang-btn" onclick="translateTo('fr')">Français</span> | 
@@ -23,6 +26,7 @@
         </div>
     </div>
 
+    <!-- هيدر الجريدة باللون السماوي المتوسط المتناسق لإبراز اللوغو بوضوح تام فوقه -->
     <header class="main-header">
         <div class="container-flex">
             <div class="logo-area">
@@ -32,6 +36,7 @@
         </div>
     </header>
 
+    <!-- شريط الأقسام المفعّل والثابت للظهور دائماً في الواجهة وداخل المقالات للتنقل السلس -->
     <nav class="main-nav">
         <div class="container main-nav-container">
             <ul class="nav-menu">
@@ -46,17 +51,19 @@
         </div>
     </nav>
 
+    <!-- شريط العناوين الساخنة والمقالات التي تتحرك تلقائياً من اليمين إلى اليسار لشذ الانتباه -->
     <div class="breaking-news-bar">
         <div class="breaking-title">عاجل</div>
         <div class="breaking-content">
             <marquee behavior="scroll" direction="right" scrollamount="6" id="breaking-marquee">
-                جاري جلب المستجدات الصحفية الحصرية والتحليلات الفورية لشبكة نكسوس بريس...
+                • الداخلية ترفع سقف اعتمادات الجماعات المحلية بالمملكة لدعم التنمية واللوجستيك البنيوي • ثورة الذكاء الاصطناعي التوليدي تعيد صياغة مفاهيم الإنتاج البرمجي العالمي • آخر الأخبار الدولية ومستجدات الحراك السياسي بمنطقة الشرق الأوسط
             </marquee>
         </div>
     </div>
 
+    <!-- الواجهة الرئيسية للمنصة (36 مقال مجهز بالكامل وصور مخصصة حسب العنوان) -->
     <div id="homepage-view" class="container">
-        <!-- السلايدر التعاقبي التلقائي للصور الساخنة في واجهة الموقع -->
+        <!-- السلايدر التعاقبي الأوتوماتيكي لصور الأخبار الساخنة -->
         <div class="slider-wrapper">
             <div class="main-slider" id="slider-container"></div>
         </div>
@@ -70,14 +77,16 @@
             </div>
 
             <aside class="sidebar-area">
+                <!-- أداة مواقيت الصلاة والطقس الديناميكية الحية لكل مدن ودول العالم -->
                 <div class="widget">
                     <h4 class="widget-title">مواقيت الصلاة وحالة الطقس العالمية</h4>
                     <div style="margin-bottom:15px;">
-                        <select id="city-selector" onchange="updateWeatherAndPrayer()" style="width:100%; padding:8px; font-family:'Cairo'; font-weight: bold; border: 1px solid #cbd5e1; border-radius: 4px;">
+                        <select id="city-selector" onchange="updateWeatherAndPrayer()" style="width:100%; padding:10px; font-family:'Cairo'; font-weight: bold; border: 1px solid #cbd5e1; border-radius: 4px;">
                             <option value="rabat">الرباط (المغرب)</option>
                             <option value="paris">باريس (فرنسا)</option>
                             <option value="london">لندن (بريطانيا)</option>
                             <option value="cairo">القاهرة (مصر)</option>
+                            <option value="dubai">دبي (الإمارات)</option>
                         </select>
                     </div>
                     <div id="dynamic-widget-data">
@@ -86,30 +95,30 @@
                     </div>
                 </div>
 
+                <!-- استطلاع الرأي اليومي المتغير تلقائياً لزيادة مكوث وتفاعل الزوار -->
                 <div class="widget">
-                    <h4 class="widget-title">استطلاع الرأي اليومي للمنصة</h4>
-                    <p style="font-size:14px; font-weight:600; color:#4a5568; margin-bottom:12px;">كيف تقيم دقة التحليل الصحفي والعمق التحريري للمقالات المعروضة اليوم؟</p>
+                    <h4 class="widget-title">استطلاع الرأي اليومي</h4>
+                    <p id="poll-question-text" style="font-size:14px; font-weight:600; color:#4a5568; margin-bottom:12px;">كيف تقيم دقة التحليل الصحفي والعمق التحريري للمقالات المعروضة اليوم؟</p>
                     <form class="poll-form" onsubmit="event.preventDefault(); alert('شكراً لمشاركتكم الفورية في الاستطلاع!');">
-                        <label style="display:block; margin-bottom:8px; font-size:13px; font-weight:bold;"><input type="radio" name="poll_ans" required> احترافي مائة بالمائة ويشذ الانتباه</label>
-                        <label style="display:block; margin-bottom:12px; font-size:13px; font-weight:bold;"><input type="radio" name="poll_ans"> ممتاز ويفوق المواقع المنافسة</label>
+                        <label><input type="radio" name="poll_ans" required> احترافي مائة بالمائة ويشذ الانتباه</label>
+                        <label><input type="radio" name="poll_ans"> ممتاز ويفوق المواقع المنافسة</label>
                         <button type="submit" class="poll-btn">تصويت</button>
                     </form>
                 </div>
-                <div class="widget-ad-box"><span>مساحة إعلانية عمودية متجاوبة (AdSense 300x600)</span></div>
+                <div class="widget-ad-box"><span>مساحة إعلانية عمودية جانبية (AdSense 300x600)</span></div>
             </aside>
         </main>
     </div>
 
-    <!-- واجهة القراءة الحرة المنعزلة بفقرات وسطور تفاعلية كاملة مع بقاء القوائم والفوتر في الأسفل دائماً -->
+    <!-- واجهة قراءة المقال الداخلي الطويل بصورته المخصصة ونظام التعليقات في نفس الصفحة -->
     <div id="article-view" class="container" style="display:none; margin-top:30px;">
         <main class="main-wrapper">
             <div class="content-area" id="single-article-content"></div>
-            <aside class="sidebar-area">
-                <div class="widget-ad-box"><span>مساحة إعلانية عمودية متجاوبة (AdSense 300x600)</span></div>
-            </aside>
+            <aside class="sidebar-area"><div class="widget-ad-box"><span>AdSense 300x600</span></div></aside>
         </main>
     </div>
 
+    <!-- فوتر الجريدة الإلكترونية متضمناً الروابط القانونية في أسفل الموقع دائماً بشكل ثابت -->
     <footer class="main-footer">
         <div class="container grid-footer">
             <div class="footer-about">
@@ -128,64 +137,28 @@
         <div class="footer-bottom-bar"><p>&copy; 2026 نكسوس بريس. جميع الحقوق التحريرية محفوظة.</p></div>
     </footer>
 
+    <!-- محرك الترجمة الفورية الصافي من غير طبقة جوجل العلوية المشوهة -->
     <div id="google_translate_element" style="display:none;"></div>
     <script type="text/javascript">
-        let globalData = null;
-
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement({pageLanguage: 'ar', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
-        }
-        function translateTo(lang) {
-            var select = document.querySelector(".goog-te-combo");
-            if (select) { select.value = lang; select.dispatchEvent(new Event("change")); }
-        }
-
-        fetch('articles.json')
-            .then(res => res.json())
-            .then(data => {
-                globalData = data;
-                renderTheme(data);
-            });
-
-        function renderTheme(data) {
-            const grid = document.getElementById("articles-grid");
-            const slider = document.getElementById("slider-container");
-            grid.innerHTML = ""; slider.innerHTML = "";
-            let marqueeText = ""; let slideCount = 0;
-
-            for (const [catKey, config] of Object.entries(data.categories)) {
-                const articles = data.articles[catKey] || [];
-                articles.forEach((art, index) => {
-                    const imgUrl = `https://unsplash.com{config.keyword}&sig=${catKey}_${index}`;
-                    marqueeText += ` • ${art.title} `;
-
-                    if (slideCount < 3) {
-                        slider.innerHTML += `
-                            <div class="slide ${slideCount === 0 ? 'active' : ''}">
-                                <img src="${imgUrl}" alt="${art.title}">
-                                <div class="slide-caption"><h2>${art.title}</h2></div>
-                            </div>`;
-                        slideCount++;
-                    }
-
-                    grid.innerHTML += `
-                        <div class="news-card filter-item ${catKey}" onclick="readArticle('${catKey}', ${index})">
-                            <div class="card-img-holder"><img src="${imgUrl}" alt="${art.title}"></div>
-                            <div class="card-info">
-                                <span class="badge">${config.name}</span>
-                                <h3>${art.title}</h3>
-                            </div>
-                        </div>`;
-                });
-            }
-            document.getElementById("breaking-marquee").innerText = marqueeText;
-            startSlider();
-        }
-
-        function filterCategory(cat, element) {
-            if (element) {
-                document.querySelectorAll('.nav-menu a').forEach(btn => btn.classList.remove('active'));
-                element.classList.add('active');
-            }
-            showHome();
-            document.querySelectorAll('.news-card').forEach(card => {
+        // مصفوفة الـ 36 مقالاً الموزعة بالتساوي (6 مقالات لكل قسم) والمجهزة بعناوينها الفريدة
+        const localDatabase = {
+            'ar_local': [
+                "الداخلية ترفع سقف اعتمادات الجماعات المحلية بالمملكة لدعم التنمية واللوجستيك البنيوي",
+                "عصيد ينتقد انصراف النقاشات إلى التفاصيل الهامشية بدل القضايا الأساسية والتعليم والاصلاح",
+                "مشاريع البنية التحتية الكبرى بالمملكة تدخل مراحل التنفيذ الميداني الفعلي والربط القاري",
+                "قرارات تشريعية جديدة لتبسيط المساطر الإدارية وتسهيل الاستثمار الوطني والأجنبي بالمملكة",
+                "إشادة دولية واسعة بجهود المغرب في قطاع الطاقات المتجددة النظيفة واستثمارات الهيدروجين الأخضر",
+                "خطة وطنية موسعة لتحديث منظومة النقل اللوجستيكي والربط السككي الفوري بين المدن والأقاليم"
+            ],
+            'ar_world': [
+                "آخر الأخبار الدولية ومستجدات الحراك السياسي وملفات الأمن والاستقرار بمنطقة الشرق الأوسط",
+                "آخر الأخبار الدولية والتحولات الاقتصادية والسياسية الراهنة والمؤثرة في القارة الأوروبية",
+                "آخر الأخبار الدولية والتوجهات الاستراتيجية والتجارية الجديدة في أمريكا ودهاليز البيت الأبيض",
+                "آخر الأخبار الدولية والفرص التنموية والاقتصادية الرقمية الواعدة في قارات افريقيا الصاعدة",
+                "آخر الأخبار الدولية وتقاطعات الدبلوماسية وأسواق الإمداد وحركة الشحن العالمية عبر البحار",
+                "آخر الأخبار الدولية واستشراف التوازنات الاستراتيجية المقبلة في المنطقة والعالم الراهن"
+            ],
+            'ar_economy': [
+                "مؤشرات النمو الاقتصادي وتقلبات أسعار الطاقة والمحروقات والملاحة اللوجستيكية دولياً",
+                "مستجدات أسعار المواد الاستهلاكية والتدابير الحمائية الحكومية لدعم القدرة الشرائية للأسر",
+                "تحليلات أسواق المال وأداء الأسهم والبورصات العالمية تحت مجهر الخبراء هذا الأسبوع",
