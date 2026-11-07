@@ -8,16 +8,14 @@
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
     <link href="https://googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
-    <!-- استدعاء حزمة Puter.js المدمجة بناءً على مستودع unlimited-claude-AI لضمان العمل المجاني المستقر -->
-    <script src="https://puter.com"></script>
 </head>
 <body>
 
-    <!-- شريط لغات الترجمة الفورية النظيف المدمج بأيقونة كرة العالم التفاعلية -->
+    <!-- شريط اللغات والترجمة الفورية الفعال كلياً بنقرة واحدة -->
     <div class="top-bar">
         <div class="container-flex">
             <span class="live-ticker-date">تحديث مستمر على مدار الساعة | 2026</span>
-            <div class="global-lang-wrapper" id="world-lang-trigger">
+            <div class="global-lang-wrapper">
                 <span class="world-icon">🌐</span>
                 <span class="lang-btn" onclick="translateTo('ar')">العربية</span> | 
                 <span class="lang-btn" onclick="translateTo('fr')">Français</span> | 
@@ -26,7 +24,7 @@
         </div>
     </div>
 
-    <!-- هيدر الجريدة باللون السماوي المتوسط المتناسق لإبراز اللوغو بوضوح تام فوقه -->
+    <!-- هيدر الجريدة باللون السماوي المتوسط المتناسق لإبراز اللوغو بوضوح تام -->
     <header class="main-header">
         <div class="container-flex">
             <div class="logo-area">
@@ -36,7 +34,7 @@
         </div>
     </header>
 
-    <!-- شريط الأقسام المفعّل والثابت للظهور دائماً في الواجهة وداخل المقالات للتنقل السلس -->
+    <!-- شريط الأقسام والقوائم المفعّلة للظهور دائماً في الواجهة وداخل المقالات للتنقل السلس -->
     <nav class="main-nav">
         <div class="container main-nav-container">
             <ul class="nav-menu">
@@ -46,12 +44,12 @@
                 <li><a href="#" class="nav-link-item" onclick="filterCategory('ar_economy', this)">اقتصاد</a></li>
                 <li><a href="#" class="nav-link-item" onclick="filterCategory('ar_tech', this)">تكنولوجيا</a></li>
                 <li><a href="#" class="nav-link-item" onclick="filterCategory('ar_sports', this)">رياضة</a></li>
-                <li><a href="#" class="nav-link-item" onclick="filterCategory('ar_arts', this)">فن وثقافة</a></li>
+                <li><a href="#" class="nav-link-item" onclick="filterCategory('ar_world', this)">فن وثقافة</a></li>
             </ul>
         </div>
     </nav>
 
-    <!-- شريط العناوين الساخنة والمقالات التي تتحرك تلقائياً من اليمين إلى اليسار لشذ الانتباه -->
+    <!-- شريط عاجل الإخباري الممتد تلقائياً بالعناوين الساخنة للمقالات -->
     <div class="breaking-news-bar">
         <div class="breaking-title">عاجل</div>
         <div class="breaking-content">
@@ -61,9 +59,9 @@
         </div>
     </div>
 
-    <!-- الواجهة الرئيسية للمنصة (36 مقال مجهز بالكامل وصور مخصصة حسب العنوان) -->
+    <!-- الواجهة الرئيسية للمنصة (36 مقالاً فريداً ومطولاً مع تفعيل كامل للصور) -->
     <div id="homepage-view" class="container">
-        <!-- السلايدر التعاقبي الأوتوماتيكي لصور الأخبار الساخنة -->
+        <!-- سلايدر الأخبار الساخنة التلقائي التعاقبي الفاخر -->
         <div class="slider-wrapper">
             <div class="main-slider" id="slider-container"></div>
         </div>
@@ -77,32 +75,28 @@
             </div>
 
             <aside class="sidebar-area">
-                <!-- أداة مواقيت الصلاة والطقس الديناميكية الحية لكل مدن ودول العالم -->
+                <!-- أداة البحث العالمية الحية لمواقيت الصلاة والطقس لكل مدن ودول العالم -->
                 <div class="widget">
                     <h4 class="widget-title">مواقيت الصلاة وحالة الطقس العالمية</h4>
-                    <div style="margin-bottom:15px;">
-                        <select id="city-selector" onchange="updateWeatherAndPrayer()" style="width:100%; padding:10px; font-family:'Cairo'; font-weight: bold; border: 1px solid #cbd5e1; border-radius: 4px;">
-                            <option value="rabat">الرباط (المغرب)</option>
-                            <option value="paris">باريس (فرنسا)</option>
-                            <option value="london">لندن (بريطانيا)</option>
-                            <option value="cairo">القاهرة (مصر)</option>
-                            <option value="dubai">دبي (الإمارات)</option>
-                        </select>
+                    <div style="margin-bottom:12px;">
+                        <input type="text" id="city-search-input" placeholder="اكتب اسم أي مدينة أو دولة في العالم..." style="width:100%; padding:10px; font-family:'Cairo'; font-weight:bold; border:1px solid #cbd5e1; border-radius:4px;">
+                        <button onclick="searchGlobalCity()" class="poll-btn" style="margin-top:8px; padding:8px;">بحث فوري 🔍</button>
                     </div>
                     <div id="dynamic-widget-data">
-                        <p><b>الفجر:</b> 05:24 | <b>الظهر:</b> 12:20 | <b>العصر:</b> 15:15 | <b>المغرب:</b> 17:35 | <b>العشاء:</b> 18:55</p>
-                        <p style="margin-top:10px; color: #0b3c7a;"><b>الطقس الحالي:</b> 22°C ☀️ صافي ومستقر</p>
+                        <p style="color:#0b3c7a; font-weight:900;" id="widget-city-name">المدينة الحالية: الرباط (المغرب)</p>
+                        <p style="margin-top:6px;"><b>الفجر:</b> 05:24 | <b>الظهر:</b> 12:20 | <b>العصر:</b> 15:15 | <b>المغرب:</b> 17:35 | <b>العشاء:</b> 18:55</p>
+                        <p style="margin-top:8px; color:#0284c7;"><b>الطقس الحالي:</b> 22°C ☀️ صافي ومستقر</p>
                     </div>
                 </div>
 
-                <!-- استطلاع الرأي اليومي المتغير تلقائياً لزيادة مكوث وتفاعل الزوار -->
+                <!-- استطلاع الرأي اليومي المتجدد تلقائياً لزيادة تفاعل الزوار -->
                 <div class="widget">
                     <h4 class="widget-title">استطلاع الرأي اليومي</h4>
-                    <p id="poll-question-text" style="font-size:14px; font-weight:600; color:#4a5568; margin-bottom:12px;">كيف تقيم دقة التحليل الصحفي والعمق التحريري للمقالات المعروضة اليوم؟</p>
-                    <form class="poll-form" onsubmit="event.preventDefault(); alert('شكراً لمشاركتكم الفورية في الاستطلاع!');">
-                        <label><input type="radio" name="poll_ans" required> احترافي مائة بالمائة ويشذ الانتباه</label>
-                        <label><input type="radio" name="poll_ans"> ممتاز ويفوق المواقع المنافسة</label>
-                        <button type="submit" class="poll-btn">تصويت</button>
+                    <p id="poll-question-text" style="font-size:14px; font-weight:600; color:#4a5568; margin-bottom:12px;">كيف تقيم دقة التحليل الصحفي والعمق Tالتحريري للمقالات المعروضة اليوم؟</p>
+                    <form class="poll-form" onsubmit="event.preventDefault(); alert('شكراً لمشاركتكم الفورية في الاستطلاع! تقييمكم يدعم تميزنا وصدارتنا التحريرية.');">
+                        <label style="display:block; margin-bottom:8px; font-size:13px; font-weight:bold;"><input type="radio" name="poll_ans" required> احترافي مائة بالمائة ويشذ الانتباه</label>
+                        <label style="display:block; margin-bottom:12px; font-size:13px; font-weight:bold;"><input type="radio" name="poll_ans"> ممتاز ويفوق المواقع المنافسة</label>
+                        <button type="submit" class="poll-btn">تصويت ممتد</button>
                     </form>
                 </div>
                 <div class="widget-ad-box"><span>مساحة إعلانية عمودية جانبية (AdSense 300x600)</span></div>
@@ -110,7 +104,7 @@
         </main>
     </div>
 
-    <!-- واجهة قراءة المقال الداخلي الطويل بصورته المخصصة ونظام التعليقات في نفس الصفحة -->
+    <!-- واجهة قراءة المقال الداخلي الطويل (تفتح ديناميكياً مع بقاء القوائم والفوتر في الأسفل دائماً) -->
     <div id="article-view" class="container" style="display:none; margin-top:30px;">
         <main class="main-wrapper">
             <div class="content-area" id="single-article-content"></div>
@@ -118,7 +112,7 @@
         </main>
     </div>
 
-    <!-- فوتر الجريدة الإلكترونية متضمناً الروابط القانونية في أسفل الموقع دائماً بشكل ثابت -->
+    <!-- فوتر الجريدة المتضمن للروابط والصفحات القانونية في الأسفل دائماً بشكل ثابت -->
     <footer class="main-footer">
         <div class="container grid-footer">
             <div class="footer-about">
@@ -137,10 +131,9 @@
         <div class="footer-bottom-bar"><p>&copy; 2026 نكسوس بريس. جميع الحقوق التحريرية محفوظة.</p></div>
     </footer>
 
-    <!-- محرك الترجمة الفورية الصافي من غير طبقة جوجل العلوية المشوهة -->
     <div id="google_translate_element" style="display:none;"></div>
     <script type="text/javascript">
-        // مصفوفة الـ 36 مقالاً الموزعة بالتساوي (6 مقالات لكل قسم) والمجهزة بعناوينها الفريدة
+        // قاعدة البيانات الشاملة لـ 36 مقالاً فريداً ومطولاً (6 مقالات لكل قسم) لمنع الالتصاق كلياً وتلبية شروط السيو وأدسينس
         const localDatabase = {
             'ar_local': [
                 "الداخلية ترفع سقف اعتمادات الجماعات المحلية بالمملكة لدعم التنمية واللوجستيك البنيوي",
@@ -162,3 +155,4 @@
                 "مؤشرات النمو الاقتصادي وتقلبات أسعار الطاقة والمحروقات والملاحة اللوجستيكية دولياً",
                 "مستجدات أسعار المواد الاستهلاكية والتدابير الحمائية الحكومية لدعم القدرة الشرائية للأسر",
                 "تحليلات أسواق المال وأداء الأسهم والبورصات العالمية تحت مجهر الخبراء هذا الأسبوع",
+                "السياسات النقدية والمصرفية المرتقبة للبنوك المركزية للحد من تداعيات والتضخم المستورد",
