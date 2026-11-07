@@ -2,8 +2,8 @@ name: Nexus Press Auto Publisher
 
 on:
   schedule:
-    - cron: '0 * * * *' # تشغيل ميكانيكي تلقائي رأس كل ساعة طيلة اليوم لمواكبة الحدث الفوري
-  workflow_dispatch: # تفعيل خيار التشغيل اليدوي بنقرة واحدة في أي وقت
+    - cron: '0 * * * *' # تشغيل تلقائي رأس كل ساعة طيلة اليوم لمواكبة الحدث الفوري
+  workflow_dispatch:
 
 jobs:
   build:
@@ -12,7 +12,7 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
       with:
-        fetch-depth: 0 # سحب كامل التاريخ البرمجي للمستودع لمنع تعارض الـ Git Rebase
+        fetch-depth: 0
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -25,7 +25,7 @@ jobs:
 
     - name: Run Robot Journalist
       run: |
-        # الكشف عن ملف الروبوت التحريري وتشغيله لبناء وتوليد وتحديث الـ 36 مقالاً المحدثة بالكامل
+        # الكشف عن ملف الروبوت التحريري المحدث وتشغيله لبناء صفحات المقالات الـ 36
         SCRIPT_PATH=$(find . -name "*fetch_news*.py" | head -n 1)
         python "$SCRIPT_PATH"
 
