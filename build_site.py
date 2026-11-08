@@ -1,7 +1,7 @@
 """Builds the whole static site from articles.json.
 
 Outputs: index.html, category-<key>.html, articles/<id>.html,
-about.html, contact.html, privacy-policy.html, sitemap.xml
+about.html, contact.html, privacy-policy.html, sitemap.xml, robots.txt
 """
 import html
 import json
@@ -59,7 +59,9 @@ def head(title, desc, pre, canonical="", image=""):
 <meta name="description" content="{e(desc)}">
 <meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:type" content="website">{og}{can}
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap"></noscript>
+<meta name="theme-color" content="#0b3c7a">
 <link rel="stylesheet" href="{pre}style.css">
 {ads}
 </head>"""
@@ -89,13 +91,12 @@ def footer(pre):
 <div><h4>معلومات</h4><ul><li><a href="{pre}about.html">من نحن</a></li><li><a href="{pre}contact.html">اتصل بنا</a></li><li><a href="{pre}privacy-policy.html">سياسة الخصوصية</a></li></ul></div>
 </div><div class="footer-bottom">© {datetime.now().year} نكسوس بريس. جميع الحقوق محفوظة.</div></footer>
 <div id="google_translate_element" style="display:none"></div>
-<script src="{pre}site.js"></script>
-<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script src="{pre}site.js" defer></script>
 </body></html>"""
 
 
 def card(a, pre, cat):
-    return (f'<a class="card" href="{pre}articles/{a["id"]}.html"><img loading="lazy" src="{pre}{e(a["image"])}" alt="{e(a.get("image_alt", a["title"]))}">'
+    return (f'<a class="card" href="{pre}articles/{a["id"]}.html"><img loading="lazy" decoding="async" src="{pre}{e(a["image"])}" alt="{e(a.get("image_alt", a["title"]))}">'
             f'<div class="info"><span class="badge">{e(CATEGORIES[cat])}</span><h3>{e(a["title"])}</h3><p>{e(a["date"][:10])}</p></div></a>')
 
 
@@ -123,8 +124,7 @@ def render_body(content):
 def comments_block():
     if not REPO:
         return '<div class="comments"><h3>💬 التعليقات</h3><p>سيظهر مربع التعليقات بعد رفع الموقع على GitHub.</p></div>'
-    return f"""<div class="comments notranslate"><h3>💬 شاركنا رأيك</h3>
-<script src="https://utteranc.es/client.js" repo="{e(REPO)}" issue-term="pathname" label="comment" theme="github-light" crossorigin="anonymous" async></script></div>"""
+    return f'<div class="comments notranslate" data-repo="{e(REPO)}"><h3>💬 شاركنا رأيك</h3></div>'
 
 
 def build():
@@ -139,10 +139,13 @@ def build():
     allart = sorted(((k, a) for k in CATEGORIES for a in data[k]), key=lambda t: t[1]["date"], reverse=True)
     top = allart[:5]
     if top:
-        slides = "".join(
-            f'<a class="slide{" active" if i == 0 else ""}" href="articles/{a["id"]}.html"><img src="{e(a["image"])}" alt="{e(a["title"])}">'
-            f'<div class="cap"><span class="hot">🔥 رائج</span><span class="badge">{e(CATEGORIES[k])}</span><h2>{e(a["title"])}</h2></div></a>'
-            for i, (k, a) in enumerate(top))
+        slides = ""
+        for i, (k, a) in enumerate(top):
+            active = " active" if i == 0 else ""
+            img_attr = ' fetchpriority="high"' if i == 0 else ' loading="lazy"'
+            slides += (f'<a class="slide{active}" href="articles/{a["id"]}.html">'
+                       f'<img src="{e(a["image"])}" alt="{e(a["title"])}"{img_attr}>'
+                       f'<div class="cap"><span class="hot">🔥 رائج</span><span class="badge">{e(CATEGORIES[k])}</span><h2>{e(a["title"])}</h2></div></a>')
         dots = "".join(f'<span class="dot{" on" if i == 0 else ""}"></span>' for i in range(len(top)))
         hero = f'<div class="slider">{slides}<button class="nav" id="sl-prev" aria-label="السابق">›</button><button class="nav" id="sl-next" aria-label="التالي">‹</button><div class="dots">{dots}</div></div>'
     else:
@@ -202,24 +205,59 @@ def build():
             urls.append(f"articles/{a['id']}.html")
 
     # legal pages
+    cats_li = "".join(f"<li>{e(v)}</li>" for v in CATEGORIES.values())
+    today = datetime.now().strftime("%Y-%m-%d")
     legal = {
-        "about.html": ("من نحن", """<p>نكسوس بريس جريدة إلكترونية عربية تتابع أبرز أحداث العالم في السياسة والاقتصاد والتكنولوجيا والرياضة والثقافة، وتقدمها للقارئ بلغة واضحة وسياق كافٍ لفهم الخبر وليس مجرد نقله.</p>
-<h2>كيف نعمل</h2><p>نعتمد على وكالات الأنباء والصحف والمؤسسات الإعلامية المعروفة مصادرَ للمعلومة، ونعيد تقديم الخبر بصياغتنا الخاصة مع الإشارة إلى مصادره في أسفل كل مقال.</p>
-<h2>التزاماتنا</h2><ul><li>الدقة والتحقق من المعلومة قبل نشرها.</li><li>الفصل بين الخبر والرأي.</li><li>تصحيح الأخطاء بسرعة وشفافية عند اكتشافها.</li><li>احترام حقوق الملكية الفكرية وعدم نسخ محتوى الآخرين.</li></ul>
-<h2>تصحيح الأخطاء</h2><p>إذا لاحظت خطأً في أي مقال فراسلنا عبر صفحة <a href="contact.html">اتصل بنا</a> وسنراجعه فوراً.</p>"""),
-        "contact.html": ("اتصل بنا", f"""<p>للاستفسارات والاقتراحات وطلبات التصحيح والتعاون الإعلاني، يمكنك مراسلتنا مباشرة على البريد الإلكتروني: <a href="mailto:{e(CONTACT_EMAIL)}"><b dir="ltr">{e(CONTACT_EMAIL)}</b></a>. نحرص على الرد في أقرب وقت ممكن.</p>
-<form action="mailto:{e(CONTACT_EMAIL)}" method="post" enctype="text/plain">
-<input name="name" placeholder="الاسم الكامل" required><input name="email" type="email" placeholder="البريد الإلكتروني" required>
-<input name="subject" placeholder="موضوع الرسالة" required><textarea name="message" rows="6" placeholder="نص الرسالة" required></textarea>
+        "about.html": ("من نحن", f"""<p>مرحباً بك في <b>نكسوس بريس</b>، جريدة إلكترونية عربية تُعنى بتغطية أبرز أحداث العالم على مدار الساعة، وتقديمها للقارئ بلغة واضحة وسياق كافٍ يساعده على فهم ما وراء الخبر، وليس مجرد قراءة عنوانه.</p>
+<h2>رسالتنا</h2><p>أن نقدّم للقارئ العربي خبراً مفهوماً وموثوقاً، يُعرض بدقة وبصياغة أصيلة، بعيداً عن الإثارة والتضليل.</p>
+<h2>ماذا نغطي؟</h2><ul>{cats_li}</ul>
+<h2>كيف نعمل؟</h2><p>نتابع كبرى وكالات الأنباء والصحف والمؤسسات الإعلامية المعروفة، ونستخلص منها الوقائع المؤكدة، ثم نعيد عرضها بصياغتنا الخاصة مع إضافة الخلفية والسياق اللازمين. ونستعين بأدوات تقنية حديثة في إعداد المحتوى وتنظيمه ونشره. ونشير في أسفل كل مقال إلى المصادر التي اعتمدنا عليها، ولا ننسخ نصوص الآخرين.</p>
+<h2>معاييرنا التحريرية</h2><ul>
+<li><b>الدقة:</b> نعتمد على مصادر معروفة ولا ننشر معلومة لا سند لها.</li>
+<li><b>الوضوح:</b> نفصل بين الخبر والتحليل، ونكتب بلغة سليمة ومباشرة.</li>
+<li><b>الشفافية:</b> نذكر مصادرنا ونعلن عن أي تصحيح.</li>
+<li><b>احترام الملكية الفكرية:</b> نعيد الصياغة ولا ننقل، ونستخدم صوراً توضيحية مولّدة خصيصاً للموقع.</li></ul>
+<h2>التصحيحات</h2><p>إذا لاحظت خطأً في أي مقال فراسلنا عبر صفحة <a href="contact.html">اتصل بنا</a>، وسنراجع الملاحظة ونصحح الخطأ بأسرع وقت.</p>
+<h2>الإعلانات والتمويل</h2><p>قد يعرض الموقع إعلانات (مثل Google AdSense) للمساعدة في تغطية تكاليف التشغيل، ولا تؤثر الإعلانات على محتوانا التحريري. راجع <a href="privacy-policy.html">سياسة الخصوصية</a> لمعرفة كيفية التعامل مع البيانات.</p>
+<h2>إخلاء المسؤولية</h2><p>المحتوى المنشور مخصص للإعلام والمعرفة العامة، ولا يُعد نصيحة قانونية أو مالية أو استثمارية أو طبية. نوصي بالرجوع إلى مختص قبل اتخاذ أي قرار بناءً على ما يرد في الموقع.</p>"""),
+
+        "contact.html": ("اتصل بنا", f"""<p>يسعدنا تواصلك معنا. للاستفسارات والاقتراحات وطلبات التصحيح والتعاون الإعلاني، راسلنا مباشرة على البريد الإلكتروني:</p>
+<p style="font-size:20px"><a href="mailto:{e(CONTACT_EMAIL)}"><b dir="ltr">{e(CONTACT_EMAIL)}</b></a></p>
+<h2>متى نرد؟</h2><p>نحرص على الرد خلال أيام عمل قليلة. وإذا كانت رسالتك تخص تصحيح معلومة في مقال، فنرجو ذكر عنوان المقال ورابطه لنتمكن من المراجعة بسرعة.</p>
+<h2>أرسل رسالة</h2><p>عند الضغط على «إرسال» سيُفتح برنامج البريد لديك بالرسالة جاهزة للإرسال.</p>
+<form id="contact-form" action="mailto:{e(CONTACT_EMAIL)}" method="post" enctype="text/plain">
+<input name="الاسم" placeholder="الاسم الكامل" required>
+<input name="البريد" type="email" placeholder="بريدك الإلكتروني" required>
+<input name="الموضوع" placeholder="موضوع الرسالة" required>
+<textarea name="الرسالة" rows="6" placeholder="نص الرسالة" required></textarea>
 <button class="btn" type="submit">إرسال</button></form>"""),
-        "privacy-policy.html": ("سياسة الخصوصية", f"""<p>آخر تحديث: {datetime.now().strftime('%Y-%m-%d')}. توضح هذه السياسة كيف يتعامل موقع نكسوس بريس مع بيانات الزوار.</p>
-<h2>1. البيانات التي نجمعها</h2><p>قد تُجمع بيانات تقنية مجهولة مثل نوع المتصفح والجهاز والصفحات التي تمت زيارتها وعنوان IP، لتحليل الأداء وتحسين الموقع. لا نطلب منك بيانات شخصية لتصفح الموقع. وعند مراسلتنا عبر البريد الإلكتروني نستخدم بياناتك (الاسم والبريد ومحتوى الرسالة) للرد عليك فقط، ولا نشاركها مع أي طرف آخر.</p>
-<h2>2. ملفات تعريف الارتباط (Cookies)</h2><p>نستخدم ملفات تعريف الارتباط لحفظ تفضيلاتك مثل لغة العرض، ولأغراض الإعلانات والتحليلات كما هو موضح أدناه. يمكنك تعطيلها من إعدادات متصفحك.</p>
-<h2>3. الإعلانات وجوجل أدسنس</h2><p>قد نعرض إعلانات عبر Google AdSense. تستخدم Google وشركاؤها ملفات تعريف الارتباط لعرض إعلانات بناءً على زياراتك السابقة لهذا الموقع أو لمواقع أخرى. يمكنك إلغاء الإعلانات المخصصة من <a href="https://adssettings.google.com" rel="noopener" target="_blank">إعدادات إعلانات Google</a> أو زيارة <a href="https://www.aboutads.info" rel="noopener" target="_blank">aboutads.info</a>. للمزيد: <a href="https://policies.google.com/technologies/partner-sites" rel="noopener" target="_blank">كيف تستخدم Google البيانات</a>.</p>
-<h2>4. الخدمات الخارجية</h2><p>يستخدم الموقع خدمة Google Translate لترجمة الصفحات، وخدمة Utterances (GitHub) للتعليقات، وخطوط Google. لهذه الجهات سياساتها الخاصة في الخصوصية. التعليقات المنشورة عبر GitHub تكون عامة وتخضع لسياسة GitHub.</p>
-<h2>5. حماية الأطفال</h2><p>الموقع غير موجه للأطفال دون 13 سنة ولا نجمع عنهم بيانات عن قصد.</p>
-<h2>6. حقوقك</h2><p>يمكنك طلب الاطلاع على بياناتك أو حذفها بمراسلتنا عبر <a href="contact.html">صفحة الاتصال</a>.</p>
-<h2>7. تعديل السياسة</h2><p>قد نحدّث هذه السياسة من وقت لآخر، وسيظهر تاريخ آخر تحديث أعلاها.</p>"""),
+
+        "privacy-policy.html": ("سياسة الخصوصية", f"""<p>آخر تحديث: {today}</p>
+<p>نحترم خصوصيتك في <b>نكسوس بريس</b>. توضح هذه الصفحة أي معلومات قد تُجمع عند زيارتك للموقع، وكيف نستخدمها، وما هي خياراتك.</p>
+<h2>1. المعلومات التي قد نجمعها</h2>
+<ul><li><b>بيانات تقنية تلقائية:</b> مثل عنوان IP ونوع المتصفح ونظام التشغيل والصفحات التي تزورها ووقت الزيارة، وتُسجَّل عادةً لدى مزودي الاستضافة والخدمات الخارجية الموضحة أدناه.</li>
+<li><b>رسائل البريد:</b> إذا راسلتنا فسنحصل على اسمك وبريدك ومحتوى رسالتك، ونستخدمها للرد عليك فقط.</li>
+<li><b>التعليقات:</b> التعليقات على المقالات تُنشر عبر حساب GitHub الخاص بك، وهي عامة وتخضع لسياسة GitHub.</li></ul>
+<h2>2. كيف نستخدم المعلومات</h2><p>نستخدمها لتشغيل الموقع وتحسين أدائه وتجربة القراءة، وللرد على رسائلك، ولعرض الإعلانات، ولحماية الموقع من إساءة الاستخدام. نحن لا نبيع بياناتك الشخصية.</p>
+<h2>3. ملفات تعريف الارتباط (Cookies)</h2><p>قد يستخدم الموقع وشركاؤه ملفات تعريف الارتباط لحفظ تفضيلاتك (مثل لغة العرض) ولأغراض الإعلانات والتحليلات. يمكنك حذفها أو منعها من إعدادات متصفحك، وقد لا تعمل بعض الميزات كما ينبغي إذا عطّلتها.</p>
+<h2>4. الإعلانات وGoogle AdSense</h2>
+<p>قد نستخدم خدمة Google AdSense لعرض الإعلانات. تستخدم Google وشركاؤها ملفات تعريف الارتباط (ومنها ملف DoubleClick) لعرض إعلانات استناداً إلى زياراتك السابقة لهذا الموقع أو لمواقع أخرى. وبفضل استخدام ملفات تعريف الارتباط الإعلانية تستطيع Google وشركاؤها عرض إعلانات مناسبة لك.</p>
+<ul><li>يمكنك إلغاء الإعلانات المخصصة من <a href="https://adssettings.google.com" rel="noopener" target="_blank">إعدادات إعلانات Google</a>.</li>
+<li>يمكنك أيضاً إلغاء استخدام ملفات تعريف الارتباط لدى بعض الجهات الإعلانية عبر <a href="https://www.aboutads.info" rel="noopener" target="_blank">aboutads.info</a>.</li>
+<li>لمعرفة كيف تستخدم Google البيانات: <a href="https://policies.google.com/technologies/partner-sites" rel="noopener" target="_blank">سياسة Google للمواقع الشريكة</a>.</li></ul>
+<p>إذا كنت في المنطقة الاقتصادية الأوروبية أو المملكة المتحدة أو سويسرا فقد تُعرض عليك أداة لإدارة الموافقة على ملفات تعريف الارتباط الإعلانية، ولك أن تقبل أو ترفض.</p>
+<h2>5. خدمات الأطراف الثالثة</h2>
+<ul><li><b>GitHub Pages:</b> استضافة الموقع، وقد تسجّل بيانات الزيارة التقنية.</li>
+<li><b>Utterances (GitHub):</b> نظام التعليقات على المقالات.</li>
+<li><b>Google Translate:</b> ترجمة الصفحات عند اختيارك الفرنسية أو الإنجليزية، ويُحمَّل فقط عند طلبك ذلك.</li>
+<li><b>Google Fonts:</b> تحميل خط الموقع.</li>
+<li><b>روابط خارجية:</b> قد نشير إلى مصادر الأخبار؛ ولا نتحمل مسؤولية سياسات الخصوصية في تلك المواقع.</li></ul>
+<h2>6. مدة الاحتفاظ بالبيانات</h2><p>نحتفظ بالرسائل البريدية مدة لازمة للرد والمتابعة، ثم نحذفها عند عدم الحاجة إليها. أما بيانات الخدمات الخارجية فتخضع لسياساتها.</p>
+<h2>7. حقوقك</h2><p>يحق لك طلب الاطلاع على بياناتك الشخصية التي بحوزتنا أو تصحيحها أو حذفها، والاعتراض على معالجتها وفق القوانين المعمول بها، ومنها القانون المغربي رقم 09-08 المتعلق بحماية الأشخاص الذاتيين تجاه معالجة المعطيات ذات الطابع الشخصي، ولوائح حماية البيانات الأوروبية إن كانت تنطبق عليك. لممارسة هذه الحقوق راسلنا عبر <a href="contact.html">صفحة الاتصال</a>.</p>
+<h2>8. حماية الأطفال</h2><p>الموقع غير موجه للأطفال دون 13 سنة، ولا نجمع بيانات عنهم عن قصد. إذا علمت أن طفلاً قدّم لنا بيانات فراسلنا لنحذفها.</p>
+<h2>9. الأمان</h2><p>نتخذ إجراءات معقولة لحماية المعلومات، ومع ذلك لا توجد وسيلة نقل أو تخزين إلكتروني آمنة بنسبة 100%.</p>
+<h2>10. تعديل هذه السياسة</h2><p>قد نحدّث هذه السياسة من وقت لآخر، وسيظهر تاريخ آخر تحديث في أعلى الصفحة. استمرارك في استخدام الموقع يعني موافقتك على النسخة المحدّثة.</p>
+<h2>11. اتصل بنا</h2><p>لأي استفسار عن هذه السياسة راسلنا على: <a href="mailto:{e(CONTACT_EMAIL)}" dir="ltr">{e(CONTACT_EMAIL)}</a></p>"""),
     }
     for fname, (title, body) in legal.items():
         page = (head(f"{title} | نكسوس بريس", f"{title} - نكسوس بريس", "", f"{base}/{fname}" if base else "")
