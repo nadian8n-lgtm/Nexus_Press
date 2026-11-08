@@ -29,12 +29,17 @@ jobs:
       - name: Generate articles and build site
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           GEMINI_TEXT_MODEL: ${{ vars.GEMINI_TEXT_MODEL }}
           GEMINI_IMAGE_MODEL: ${{ vars.GEMINI_IMAGE_MODEL }}
+          IMAGE_PROVIDERS: ${{ vars.IMAGE_PROVIDERS }}
           MAX_PER_RUN: ${{ github.event.inputs.count || '2' }}
           ADSENSE_CLIENT: ${{ vars.ADSENSE_CLIENT }}
           ADSENSE_SLOT: ${{ vars.ADSENSE_SLOT }}
         run: python fetch_news.py
+      - name: Check site (links, images, core files)
+        run: python check_site.py
       - name: Commit and push
         run: |
           git config user.name "NexusPress-Bot"
