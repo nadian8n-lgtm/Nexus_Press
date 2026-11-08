@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://nadian8n-lgtm.github.io/Nexus_Press/sitemap.xml

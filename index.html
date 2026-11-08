@@ -1,161 +1,32 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نكسوس بريس | Nexus Press - المنصة الإخبارية العالمية الشاملة</title>
-    <link rel="preconnect" href="https://googleapis.com">
-    <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./style.css">
-    <!-- دمج مكتبة Puter.js الرسمية المستوحاة من مستودع unlimited-claude-AI لتشغيل المنصة مجاناً وسحابياً بالكامل -->
-    <script src="https://puter.com"></script>
-    <style>
-        /* حظر وإخفاء أي بنرات أو أشرطة متطفلة تلقائياً لحماية الهوية البصرية للموقع */
-        .goog-te-banner-frame, .goog-te-banner, .skiptranslate, #goog-gt-tt, .goog-te-balloon-frame, .goog-te-gadget {
-            display: none !important;
-        }
-        body { top: 0px !important; }
-    </style>
-</head>
-<body>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>نكسوس بريس | Nexus Press - أخبار العالم على مدار الساعة</title>
+<meta name="description" content="جريدة نكسوس بريس: تغطية موسعة وتحليلات لأبرز الأخبار العالمية والعربية في السياسة والاقتصاد والتكنولوجيا والرياضة والثقافة.">
+<meta property="og:title" content="نكسوس بريس | Nexus Press - أخبار العالم على مدار الساعة"><meta property="og:description" content="جريدة نكسوس بريس: تغطية موسعة وتحليلات لأبرز الأخبار العالمية والعربية في السياسة والاقتصاد والتكنولوجيا والرياضة والثقافة."><meta property="og:type" content="website"><link rel="canonical" href="https://nadian8n-lgtm.github.io/Nexus_Press/">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap"></noscript>
+<meta name="theme-color" content="#0b3c7a">
+<link rel="stylesheet" href="style.css">
 
-    <!-- شريط اللغات والترجمة الفورية الفعال بنقرة واحدة -->
-    <div class="top-bar">
-        <div class="container-flex">
-            <span class="live-ticker-date">تحديث مستمر على مدار الساعة | 2026</span>
-            <div class="global-lang-wrapper" style="cursor: pointer;">
-                <span class="world-icon">🌐</span>
-                <span class="lang-btn" onclick="translateTo('ar')">العربية</span> | 
-                <span class="lang-btn" onclick="translateTo('fr')">Français</span> | 
-                <span class="lang-btn" onclick="translateTo('en')">English</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- هيدر الجريدة باللون السماوي المتوسط المتناسق لإبراز اللوغو بوضوح تام -->
-    <header class="main-header">
-        <div class="container-flex">
-            <div class="logo-area">
-                <a href="#" onclick="showHome()"><img src="./image_MUwSAA.png" alt="Nexus Press" class="main-logo-img"></a>
-            </div>
-            <div class="ad-space-header">مساحة إعلانية مجهزة (Google AdSense 728x90)</div>
-        </div>
-    </header>
-
-    <!-- شريط الأقسام والقوائم المفعّلة للتنقل السلس الشغال دائماً -->
-    <nav class="main-nav">
-        <div class="container main-nav-container">
-            <ul class="nav-menu">
-                <li><a href="#" class="nav-link-item active" onclick="filterCategory('all', this)">الرئيسية</a></li>
-                <li><a href="#" class="nav-link-item" onclick="filterCategory('ar_local', this)">أخبار وطنية</a></li>
-                <li><a href="#" class="nav-link-item" onclick="filterCategory('ar_world', this)">الأخبار الدولية</a></li>
-                <li><a href="#" class="nav-link-item" onclick="filterCategory('ar_economy', this)">اقتصاد</a></li>
-                <li><a href="#" class="nav-link-item" onclick="filterCategory('ar_tech', this)">تكنولوجيا</a></li>
-                <li><a href="#" class="nav-link-item" onclick="filterCategory('ar_sports', this)">رياضة</a></li>
-                <li><a href="#" class="nav-link-item" onclick="filterCategory('ar_arts', this)">فن وثقافة</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <!-- شريط عاجل الإخباري المتحرك تلقائياً بالعناوين الساخنة -->
-    <div class="breaking-news-bar">
-        <div class="breaking-title">عاجل</div>
-        <div class="breaking-content">
-            <marquee behavior="scroll" direction="right" scrollamount="6" id="breaking-marquee">
-                • الداخلية ترفع سقف اعتمادات الجماعات المحلية بالمملكة لدعم التنمية واللوجستيك البنيوي الشامل لعام 2026 • خطة وطنية موسعة لتحديث منظومة النقل اللوجستيكي والربط السككي الفوري بين المدن والأقاليم
-            </marquee>
-        </div>
-    </div>
-
-    <!-- الواجهة الرئيسية للمنصة -->
-    <div id="homepage-view" class="container">
-        <!-- سلايدر الأخبار الساخنة التلقائي التعاقبي الفاخر المدمج بـ image-use -->
-        <div class="slider-wrapper">
-            <div class="main-slider" id="slider-container"></div>
-        </div>
-
-        <div class="text-center" style="margin-top: 20px;"><div class="ad-in-content">مساحة إعلانية علوية (Google AdSense 728x90)</div></div>
-
-        <main class="main-wrapper">
-            <div class="content-area">
-                <h3 class="block-title" id="section-view-title">كافة المستجدات الراهنة</h3>
-                <section class="grid-stories-hub" id="articles-grid"></section>
-            </div>
-
-            <aside class="sidebar-area">
-                <!-- أداة البحث العالمية الحية لمواقيت الصلاة والطقس لكل مدن ودول العالم -->
-                <div class="widget">
-                    <h4 class="widget-title">مواقيت الصلاة وحالة الطقس العالمية</h4>
-                    <div style="margin-bottom:12px;">
-                        <input type="text" id="city-search-input" placeholder="اكتب اسم أي مدينة أو دولة في العالم..." style="width:100%; padding:10px; font-family:'Cairo'; font-weight:bold; border:1px solid #cbd5e1; border-radius:4px;">
-                        <button onclick="searchGlobalCity()" class="poll-btn" style="margin-top:8px; padding:12px; width:100%; background:#0b3c7a; color:#fff; border:none; border-radius:4px; font-family:'Cairo'; font-weight:bold; cursor:pointer;">بحث فوري 🔍</button>
-                    </div>
-                    <div id="dynamic-widget-data">
-                        <p style="color:#0b3c7a; font-weight:900;" id="widget-city-name">المدينة الحالية: الرباط (المغرب)</p>
-                        <p style="margin-top:6px;"><b>الفجر:</b> 05:24 | <b>الظهر:</b> 12:20 | <b>العصر:</b> 15:15 | <b>المغرب:</b> 17:35 | <b>العشاء:</b> 18:55</p>
-                        <p style="margin-top:8px; color:#0284c7;"><b>الطقس الحالي:</b> 22°C ☀️ صافي ومستقر</p>
-                    </div>
-                </div>
-
-                <!-- استطلاع الرأي اليومي المتجدد تلقائياً لزيادة تفاعل الزوار -->
-                <div class="widget">
-                    <h4 class="widget-title">استطلاع الرأي اليومي</h4>
-                    <p id="poll-question-text" style="font-size:14px; font-weight:600; color:#4a5568; margin-bottom:12px;">كيف تقيم دقة التغطية الإخبارية والعمق التحريري للمقالات المعروضة اليوم؟</p>
-                    <form class="poll-form" onsubmit="event.preventDefault(); alert('شكراً لمشاركتكم الفورية في الاستطلاع! تقييمكم يدعم تميزنا وصدارتنا التحريرية.');">
-                        <label style="display:block; margin-bottom:8px; font-size:13px; font-weight:bold;"><input type="radio" name="poll_ans" required> احترافي وممتاز ويشذ الانتباه</label>
-                        <label style="display:block; margin-bottom:12px; font-size:13px; font-weight:bold;"><input type="radio" name="poll_ans"> ممتاز ويفوق المواقع المنافسة</label>
-                        <button type="submit" class="poll-btn" style="width:100%; padding:10px; background:#0b3c7a; color:#fff; border:none; border-radius:4px; font-family:'Cairo'; font-weight:bold; cursor:pointer;">تصويت ممتد</button>
-                    </form>
-                </div>
-                <div class="widget-ad-box"><span>مساحة إعلانية عمودية جانبية (AdSense 300x600)</span></div>
-            </aside>
-        </main>
-    </div>
-
-    <!-- واجهة قراءة المقال الداخلي الطويل -->
-    <div id="article-view" class="container" style="display:none; margin-top:30px;">
-        <main class="main-wrapper">
-            <div class="content-area" id="single-article-content"></div>
-            <aside class="sidebar-area"><div class="widget-ad-box"><span>AdSense 300x600</span></div></aside>
-        </main>
-    </div>
-
-    <!-- فوتر الجريدة المتضمن للروابط والصفحات القانونية في الأسفل دائماً بشكل ثابت -->
-    <footer class="main-footer">
-        <div class="container grid-footer">
-            <div class="footer-about">
-                <h3>نكسوس بريس | Nexus Press</h3>
-                <p>منصة إعلامية دولية مستقلة تقدم قراءات تحليلية وتغطية موسعة للأحداث الراهنة والتريندات العالمية بكل موضوعية ومهنية على مدار الساعة.</p>
-            </div>
-            <div class="footer-legal-links">
-                <h4>القسم القانوني والتواصل</h4>
-                <ul>
-                    <li><a href="privacy-policy.html">سياسة الخصوصية وشروط الاستخدام</a></li>
-                    <li><a href="about.html">من نحن</a></li>
-                    <li><a href="contact.html">اتصل بنا وهيئة التحرير</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom-bar"><p>&copy; 2026 نكسوس بريس. جميع الحقوق التحريرية محفوظة.</p></div>
-    </footer>
-
-    <!-- محرك ترجمة جوجل السحابي التلقائي المخفي لتعريب وفرنكة الموقع فورياً -->
-    <div id="google_translate_element" style="display:none;"></div>
-
-    <script type="text/javascript">
-        // قاعدة البيانات الشاملة لـ 36 مقالاً احترافياً طويلاً (6 مقالات لكل قسم) مطهرة تماماً من الكلمات المحظورة لأدسينس
-        const localDatabase = {
-            'ar_local': [
-                "الداخلية ترفع سقف اعتمادات الجماعات المحلية بالمملكة لدعم التنمية واللوجستيك البنيوي",
-                "عصيد ينتقد انصراف النقاشات إلى التفاصيل الهامشية بدل القضايا الأساسية والتعليم والاصلاح",
-                "مشاريع البنية التحتية الكبرى بالمملكة دخلت مراحل التنفيذ الميداني الفعلي والربط القاري",
-                "قرارات تشريعية جديدة لتبسيط المساطر الإدارية وتسهيل الاستثمار الوطني والأجنبي بالمملكة",
-                "إشادة دولية واسعة بجهود المغرب في قطاع الطاقات المتجددة النظيفة واستثمارات الهيدروجين الأخضر",
-                "خطة وطنية موسعة لتحديث منظومة النقل اللوجستيكي والربط السككي الفوري بين المدن والأقاليم"
-            ],
-            'ar_world': [
-                "آخر الأخبار الدولية ومستجدات الحراك السياسي وملفات الأمن والاستقرار بمنطقة الشرق الأوسط",
-                "آخر الأخبار الدولية والتحولات الاقتصادية والسياسية الراهنة والمؤثرة في القارة الأوروبية",
-                "آخر الأخبار الدولية والتوجهات الاستراتيجية والتجارية الجديدة في أمريكا ودهاليز البيت الأبيض",
-                "آخر الأخبار الدولية والفرص التنموية والاقتصادية الرقمية الواعدة في قارات افريقيا الصاعدة",
+</head><body>
+<div class="top-bar notranslate"><div class="container flex">
+<span>🔴 تحديث مستمر على مدار الساعة</span>
+<div class="lang-box" translate="no"><span>🌐</span>
+<button class="lang-btn" data-l="ar">العربية</button>|<button class="lang-btn" data-l="fr">Français</button>|<button class="lang-btn" data-l="en">English</button></div>
+</div></div>
+<header class="main-header"><div class="container flex">
+<a href="index.html" class="notranslate"><img src="image_MUwSAA.png" alt="Nexus Press"></a>
+<div class="header-tag">أخبار العالم لحظة بلحظة</div></div></header>
+<nav class="main-nav"><div class="container"><ul class="nav-menu"><li><a href="index.html" class=active>الرئيسية</a></li><li><a href="category-ar_local.html">أخبار وطنية</a></li><li><a href="category-ar_world.html">الأخبار الدولية</a></li><li><a href="category-ar_economy.html">اقتصاد</a></li><li><a href="category-ar_tech.html">تكنولوجيا</a></li><li><a href="category-ar_sports.html">رياضة</a></li><li><a href="category-ar_arts.html">فن وثقافة</a></li></ul></div></nav>
+<div class="breaking"><b>عاجل</b><div><span class="ticker">وثائق أمانستى تكشف عن 28 حالة جديدة من انتهاك حقوق المهاجرين في سبتة  •  فرنسا على صفيح ساخن: تظاهرات عارمة واحتجاجات متصاعدة تقلق قصر الإليزيه  •  سلسلة تهديدات قنابل وهمية تعصف بشبكة الطيران الأوروبية وتستهدف وسائل الإعلام  •  توماس ماركل يُوضع تحت الإقامة المنزلية في فلوريدا بعد توجيه تهمة بحيازة صور إباحية للأطفال  •  استحواذ ORIX Aviation على AerFin: تحول استراتيجي لصناعة الصيانة الجوية في ويلز  •  قواعد جديدة للدرّاجات الكهربائية: غرامات فورية وتوجيهات للمشغّلين  •  بين النفي الكوري والرقم الضخم: كيف هزّ اختراق «بينانس» عرش العملات الرقمية؟  •  آبل تواجه نقصًا في iPhone Duo قبل موسم العطلات  •  قصة صعود «كراي واندررز» إلى الدور الأول من كأس الاتحاد الإنجليزي بعد 166 عاماً  •  وِلّي هاتشينسون يحقق حلم الطفولة ويتوج بطلًا عالميًا للوزن الخفيف الثقيل بعد فوز مثير على جوشوا بواتسي في مانشستر  •  قضية راسل براند: إدانة، تحقيقات مستمرة وتداعيات على العدالة الجنائية في بريطانيا  •  U2 يطلق ألبوم &quot;Carnaval de Luz&quot; مع وداع دوللي بارتون في أغنية &quot;Torn&quot;</span></div></div><div class="container"><div class="slider"><a class="slide active" href="articles/ar_arts-202611080758-ab966b.html"><img src="images/ar_arts-202611080758-ab966b.webp" alt="قضية راسل براند: إدانة، تحقيقات مستمرة وتداعيات على العدالة الجنائية في بريطانيا" fetchpriority="high"><div class="cap"><span class="hot">🔥 رائج</span><span class="badge">فن وثقافة</span><h2>قضية راسل براند: إدانة، تحقيقات مستمرة وتداعيات على العدالة الجنائية في بريطانيا</h2></div></a><a class="slide" href="articles/ar_sports-202611080757-739277.html"><img src="images/ar_sports-202611080757-739277.svg" alt="قصة صعود «كراي واندررز» إلى الدور الأول من كأس الاتحاد الإنجليزي بعد 166 عاماً" loading="lazy"><div class="cap"><span class="hot">🔥 رائج</span><span class="badge">رياضة</span><h2>قصة صعود «كراي واندررز» إلى الدور الأول من كأس الاتحاد الإنجليزي بعد 166 عاماً</h2></div></a><a class="slide" href="articles/ar_tech-202611080756-6b2618.html"><img src="images/ar_tech-202611080756-6b2618.webp" alt="بين النفي الكوري والرقم الضخم: كيف هزّ اختراق «بينانس» عرش العملات الرقمية؟" loading="lazy"><div class="cap"><span class="hot">🔥 رائج</span><span class="badge">تكنولوجيا</span><h2>بين النفي الكوري والرقم الضخم: كيف هزّ اختراق «بينانس» عرش العملات الرقمية؟</h2></div></a><a class="slide" href="articles/ar_economy-202611080753-24cdde.html"><img src="images/ar_economy-202611080753-24cdde.webp" alt="استحواذ ORIX Aviation على AerFin: تحول استراتيجي لصناعة الصيانة الجوية في ويلز" loading="lazy"><div class="cap"><span class="hot">🔥 رائج</span><span class="badge">اقتصاد</span><h2>استحواذ ORIX Aviation على AerFin: تحول استراتيجي لصناعة الصيانة الجوية في ويلز</h2></div></a><a class="slide" href="articles/ar_world-202611080749-8db7a4.html"><img src="images/ar_world-202611080749-8db7a4.svg" alt="سلسلة تهديدات قنابل وهمية تعصف بشبكة الطيران الأوروبية وتستهدف وسائل الإعلام" loading="lazy"><div class="cap"><span class="hot">🔥 رائج</span><span class="badge">الأخبار الدولية</span><h2>سلسلة تهديدات قنابل وهمية تعصف بشبكة الطيران الأوروبية وتستهدف وسائل الإعلام</h2></div></a><button class="nav" id="sl-prev" aria-label="السابق">›</button><button class="nav" id="sl-next" aria-label="التالي">‹</button><div class="dots"><span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div></div><div class="layout"><main><h2 class="block-title" style="margin-top:30px">أخبار وطنية</h2><div class="grid"><a class="card" href="articles/ar_local-202611080747-809f9a.html"><img loading="lazy" decoding="async" src="images/ar_local-202611080747-809f9a.webp" alt="وثائق أمانستى تكشف عن 28 حالة جديدة من انتهاك حقوق المهاجرين في سبتة"><div class="info"><span class="badge">أخبار وطنية</span><h3>وثائق أمانستى تكشف عن 28 حالة جديدة من انتهاك حقوق المهاجرين في سبتة</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_local-202611080730-7865ca.html"><img loading="lazy" decoding="async" src="images/ar_local-202611080730-7865ca.webp" alt="فرنسا على صفيح ساخن: تظاهرات عارمة واحتجاجات متصاعدة تقلق قصر الإليزيه"><div class="info"><span class="badge">أخبار وطنية</span><h3>فرنسا على صفيح ساخن: تظاهرات عارمة واحتجاجات متصاعدة تقلق قصر الإليزيه</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_local-202611080722-f6c267.html"><img loading="lazy" decoding="async" src="images/ar_local-202611080722-f6c267.webp" alt="ملحمة رامايانا تعيد رسم خريطة السينما الهندية بميزانية فلكية وطموح عالمي"><div class="info"><span class="badge">أخبار وطنية</span><h3>ملحمة رامايانا تعيد رسم خريطة السينما الهندية بميزانية فلكية وطموح عالمي</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_local-202611080712-1026c4.html"><img loading="lazy" decoding="async" src="images/ar_local-202611080712-1026c4.webp" alt="التمويل التشاركي بالمغرب: بين طموح التوسع الرقمي ومحدودية التعبئة المالية"><div class="info"><span class="badge">أخبار وطنية</span><h3>التمويل التشاركي بالمغرب: بين طموح التوسع الرقمي ومحدودية التعبئة المالية</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_local-202611080703-f1bd75.html"><img loading="lazy" decoding="async" src="images/ar_local-202611080703-f1bd75.webp" alt="هل يطوي الجنرال آيزنكوت حُكم نتنياهو؟ تفاصيل التكليف ومأزق الائتلاف المعقد"><div class="info"><span class="badge">أخبار وطنية</span><h3>هل يطوي الجنرال آيزنكوت حُكم نتنياهو؟ تفاصيل التكليف ومأزق الائتلاف المعقد</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_local-202611080652-69d163.html"><img loading="lazy" decoding="async" src="images/ar_local-202611080652-69d163.webp" alt="الذكاء الاصطناعي على طاولة السينما المتوسطية.. رؤية مغربية لإعادة تشكيل الفن السابع من ماتيرا"><div class="info"><span class="badge">أخبار وطنية</span><h3>الذكاء الاصطناعي على طاولة السينما المتوسطية.. رؤية مغربية لإعادة تشكيل الفن السابع من ماتيرا</h3><p>2026-11-08</p></div></a></div><p style="margin-top:12px"><a class="badge" href="category-ar_local.html">كل مقالات أخبار وطنية ←</a></p><h2 class="block-title" style="margin-top:30px">الأخبار الدولية</h2><div class="grid"><a class="card" href="articles/ar_world-202611080749-8db7a4.html"><img loading="lazy" decoding="async" src="images/ar_world-202611080749-8db7a4.svg" alt="سلسلة تهديدات قنابل وهمية تعصف بشبكة الطيران الأوروبية وتستهدف وسائل الإعلام"><div class="info"><span class="badge">الأخبار الدولية</span><h3>سلسلة تهديدات قنابل وهمية تعصف بشبكة الطيران الأوروبية وتستهدف وسائل الإعلام</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_world-202611080732-c19482.html"><img loading="lazy" decoding="async" src="images/ar_world-202611080732-c19482.webp" alt="توماس ماركل يُوضع تحت الإقامة المنزلية في فلوريدا بعد توجيه تهمة بحيازة صور إباحية للأطفال"><div class="info"><span class="badge">الأخبار الدولية</span><h3>توماس ماركل يُوضع تحت الإقامة المنزلية في فلوريدا بعد توجيه تهمة بحيازة صور إباحية للأطفال</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_world-202611080723-e42016.html"><img loading="lazy" decoding="async" src="images/ar_world-202611080723-e42016.webp" alt="مكافآت مليونية وتحركات عسكرية أمريكية وسط مساعٍ قطرية وسلطانية لإنهاء أزمة مضيق هرمز الملف النووي"><div class="info"><span class="badge">الأخبار الدولية</span><h3>مكافآت مليونية وتحركات عسكرية أمريكية وسط مساعٍ قطرية وسلطانية لإنهاء أزمة مضيق هرمز الملف النووي</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_world-202611080715-9792a9.html"><img loading="lazy" decoding="async" src="images/ar_world-202611080715-9792a9.webp" alt="نيوزيلندا على مفترق طرق: انتخابات حبست الأنفاس ونتائج معلقة تحت وطأة الضباب والأزمة الاقتصادية"><div class="info"><span class="badge">الأخبار الدولية</span><h3>نيوزيلندا على مفترق طرق: انتخابات حبست الأنفاس ونتائج معلقة تحت وطأة الضباب والأزمة الاقتصادية</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_world-202611080707-d281eb.html"><img loading="lazy" decoding="async" src="images/ar_world-202611080707-d281eb.webp" alt="مجزرة جديدة في غارات على ضواحي صنعاء: تهاوي الهدنة اليمنية يفتح الباب أمام موجة انتقام وتصعيد إقليمي"><div class="info"><span class="badge">الأخبار الدولية</span><h3>مجزرة جديدة في غارات على ضواحي صنعاء: تهاوي الهدنة اليمنية يفتح الباب أمام موجة انتقام وتصعيد إقليمي</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_world-202611080655-010bed.html"><img loading="lazy" decoding="async" src="images/ar_world-202611080655-010bed.webp" alt="مجزرة كراكوف تدمي بولندا: تسعة قتلى برصاص متطرف يميني واستنفار أمني واسع"><div class="info"><span class="badge">الأخبار الدولية</span><h3>مجزرة كراكوف تدمي بولندا: تسعة قتلى برصاص متطرف يميني واستنفار أمني واسع</h3><p>2026-11-08</p></div></a></div><p style="margin-top:12px"><a class="badge" href="category-ar_world.html">كل مقالات الأخبار الدولية ←</a></p><h2 class="block-title" style="margin-top:30px">اقتصاد</h2><div class="grid"><a class="card" href="articles/ar_economy-202611080753-24cdde.html"><img loading="lazy" decoding="async" src="images/ar_economy-202611080753-24cdde.webp" alt="استحواذ ORIX Aviation على AerFin: تحول استراتيجي لصناعة الصيانة الجوية في ويلز"><div class="info"><span class="badge">اقتصاد</span><h3>استحواذ ORIX Aviation على AerFin: تحول استراتيجي لصناعة الصيانة الجوية في ويلز</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_economy-202611080739-be6b19.html"><img loading="lazy" decoding="async" src="images/ar_economy-202611080739-be6b19.webp" alt="قواعد جديدة للدرّاجات الكهربائية: غرامات فورية وتوجيهات للمشغّلين"><div class="info"><span class="badge">اقتصاد</span><h3>قواعد جديدة للدرّاجات الكهربائية: غرامات فورية وتوجيهات للمشغّلين</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_economy-202611080725-d5b3f7.html"><img loading="lazy" decoding="async" src="images/ar_economy-202611080725-d5b3f7.webp" alt="هندسة المستحيل: شفرات توربينات الطائرات التي تتحدى قوانين الفيزياء"><div class="info"><span class="badge">اقتصاد</span><h3>هندسة المستحيل: شفرات توربينات الطائرات التي تتحدى قوانين الفيزياء</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_economy-202611080716-d70263.html"><img loading="lazy" decoding="async" src="images/ar_economy-202611080716-d70263.webp" alt="زلزال الانتخابات الأمريكية يحرك أسهم التكنولوجيا: هل بدأت فقاعة الذكاء الاصطناعي بالانفجار؟"><div class="info"><span class="badge">اقتصاد</span><h3>زلزال الانتخابات الأمريكية يحرك أسهم التكنولوجيا: هل بدأت فقاعة الذكاء الاصطناعي بالانفجار؟</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_economy-202611080707-17b36b.html"><img loading="lazy" decoding="async" src="images/ar_economy-202611080707-17b36b.webp" alt="أسواق التكنولوجيا العالمية بين مطرقة إنفاق الذكاء الاصطناعي وسندان الانتخابات الأمريكية"><div class="info"><span class="badge">اقتصاد</span><h3>أسواق التكنولوجيا العالمية بين مطرقة إنفاق الذكاء الاصطناعي وسندان الانتخابات الأمريكية</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_economy-202611080658-8db85b.html"><img loading="lazy" decoding="async" src="images/ar_economy-202611080658-8db85b.webp" alt="انكسار حمى «لابوبو»: هل تدفع دمى «بوب مارت» ثمن زوال الهوس العابر؟"><div class="info"><span class="badge">اقتصاد</span><h3>انكسار حمى «لابوبو»: هل تدفع دمى «بوب مارت» ثمن زوال الهوس العابر؟</h3><p>2026-11-08</p></div></a></div><p style="margin-top:12px"><a class="badge" href="category-ar_economy.html">كل مقالات اقتصاد ←</a></p><h2 class="block-title" style="margin-top:30px">تكنولوجيا</h2><div class="grid"><a class="card" href="articles/ar_tech-202611080756-6b2618.html"><img loading="lazy" decoding="async" src="images/ar_tech-202611080756-6b2618.webp" alt="بين النفي الكوري والرقم الضخم: كيف هزّ اختراق «بينانس» عرش العملات الرقمية؟"><div class="info"><span class="badge">تكنولوجيا</span><h3>بين النفي الكوري والرقم الضخم: كيف هزّ اختراق «بينانس» عرش العملات الرقمية؟</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_tech-202611080743-e63da3.html"><img loading="lazy" decoding="async" src="images/ar_tech-202611080743-e63da3.webp" alt="آبل تواجه نقصًا في iPhone Duo قبل موسم العطلات"><div class="info"><span class="badge">تكنولوجيا</span><h3>آبل تواجه نقصًا في iPhone Duo قبل موسم العطلات</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_tech-202611080726-d3b791.html"><img loading="lazy" decoding="async" src="images/ar_tech-202611080726-d3b791.webp" alt="ثورة الذكاء الاصطناعي في سوق العمل: هل يصنع الجيل الجديد من الخريجين أم يهدد خبراتهم التقليدية؟"><div class="info"><span class="badge">تكنولوجيا</span><h3>ثورة الذكاء الاصطناعي في سوق العمل: هل يصنع الجيل الجديد من الخريجين أم يهدد خبراتهم التقليدية؟</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_tech-202611080717-3945e2.html"><img loading="lazy" decoding="async" src="images/ar_tech-202611080717-3945e2.svg" alt="هزات أرضية تضرب أسواق المال العالمية على وقع مخاوف تباطؤ قطاع الذكاء الاصطناعي"><div class="info"><span class="badge">تكنولوجيا</span><h3>هزات أرضية تضرب أسواق المال العالمية على وقع مخاوف تباطؤ قطاع الذكاء الاصطناعي</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_tech-202611080709-0db495.html"><img loading="lazy" decoding="async" src="images/ar_tech-202611080709-0db495.webp" alt="إيلون ماسك بين إعادة هيكلة &quot;تسلا&quot; وانتكاسة الرهان السياسي الكبير في تكساس"><div class="info"><span class="badge">تكنولوجيا</span><h3>إيلون ماسك بين إعادة هيكلة &quot;تسلا&quot; وانتكاسة الرهان السياسي الكبير في تكساس</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_tech-202611080659-d5ebdd.html"><img loading="lazy" decoding="async" src="images/ar_tech-202611080659-d5ebdd.webp" alt="عودة أسطورة «أوكارينا أوف تايم»: هل تستعيد نينتندو سحر الألعاب الثلاثية الأبعاد؟"><div class="info"><span class="badge">تكنولوجيا</span><h3>عودة أسطورة «أوكارينا أوف تايم»: هل تستعيد نينتندو سحر الألعاب الثلاثية الأبعاد؟</h3><p>2026-11-08</p></div></a></div><p style="margin-top:12px"><a class="badge" href="category-ar_tech.html">كل مقالات تكنولوجيا ←</a></p><h2 class="block-title" style="margin-top:30px">رياضة</h2><div class="grid"><a class="card" href="articles/ar_sports-202611080757-739277.html"><img loading="lazy" decoding="async" src="images/ar_sports-202611080757-739277.svg" alt="قصة صعود «كراي واندررز» إلى الدور الأول من كأس الاتحاد الإنجليزي بعد 166 عاماً"><div class="info"><span class="badge">رياضة</span><h3>قصة صعود «كراي واندررز» إلى الدور الأول من كأس الاتحاد الإنجليزي بعد 166 عاماً</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_sports-202611080744-c1ee58.html"><img loading="lazy" decoding="async" src="images/ar_sports-202611080744-c1ee58.svg" alt="وِلّي هاتشينسون يحقق حلم الطفولة ويتوج بطلًا عالميًا للوزن الخفيف الثقيل بعد فوز مثير على جوشوا بواتسي في مانشستر"><div class="info"><span class="badge">رياضة</span><h3>وِلّي هاتشينسون يحقق حلم الطفولة ويتوج بطلًا عالميًا للوزن الخفيف الثقيل بعد فوز مثير على جوشوا بواتسي في مانشستر</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_sports-202611080727-227b18.html"><img loading="lazy" decoding="async" src="images/ar_sports-202611080727-227b18.webp" alt="أحاجي الضباب الكثيف في بطولة كأس الاتحاد الإنجليزي: عندما تختفي المستطيلات الخضراء وتتحول الملاعب إلى غيوم هابطة"><div class="info"><span class="badge">رياضة</span><h3>أحاجي الضباب الكثيف في بطولة كأس الاتحاد الإنجليزي: عندما تختفي المستطيلات الخضراء وتتحول الملاعب إلى غيوم هابطة</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_sports-202611080719-703e0e.html"><img loading="lazy" decoding="async" src="images/ar_sports-202611080719-703e0e.webp" alt="من الحلم إلى الكابوس: مانشستر سيتي يعاني وسط أزمات دفاعية وتراجع مقلق"><div class="info"><span class="badge">رياضة</span><h3>من الحلم إلى الكابوس: مانشستر سيتي يعاني وسط أزمات دفاعية وتراجع مقلق</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_sports-202611080710-d09fee.html"><img loading="lazy" decoding="async" src="images/ar_sports-202611080710-d09fee.svg" alt="صمود هال سيتي يتحطم بأقدام أوديجارد: أرسنال يعزز صدارته للدوري الإنجليزي في ليلة الجدل التحكيمي"><div class="info"><span class="badge">رياضة</span><h3>صمود هال سيتي يتحطم بأقدام أوديجارد: أرسنال يعزز صدارته للدوري الإنجليزي في ليلة الجدل التحكيمي</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_sports-202611080701-266426.html"><img loading="lazy" decoding="async" src="images/ar_sports-202611080701-266426.webp" alt="صدمة في سيتي غراوند: ثنائية ديلاب تقود فورست لإسقاط مانشستر سيتي وتعميق أزمته"><div class="info"><span class="badge">رياضة</span><h3>صدمة في سيتي غراوند: ثنائية ديلاب تقود فورست لإسقاط مانشستر سيتي وتعميق أزمته</h3><p>2026-11-08</p></div></a></div><p style="margin-top:12px"><a class="badge" href="category-ar_sports.html">كل مقالات رياضة ←</a></p><h2 class="block-title" style="margin-top:30px">فن وثقافة</h2><div class="grid"><a class="card" href="articles/ar_arts-202611080758-ab966b.html"><img loading="lazy" decoding="async" src="images/ar_arts-202611080758-ab966b.webp" alt="قضية راسل براند: إدانة، تحقيقات مستمرة وتداعيات على العدالة الجنائية في بريطانيا"><div class="info"><span class="badge">فن وثقافة</span><h3>قضية راسل براند: إدانة، تحقيقات مستمرة وتداعيات على العدالة الجنائية في بريطانيا</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_arts-202611080745-d00a79.html"><img loading="lazy" decoding="async" src="images/ar_arts-202611080745-d00a79.webp" alt="U2 يطلق ألبوم &quot;Carnaval de Luz&quot; مع وداع دوللي بارتون في أغنية &quot;Torn&quot;"><div class="info"><span class="badge">فن وثقافة</span><h3>U2 يطلق ألبوم &quot;Carnaval de Luz&quot; مع وداع دوللي بارتون في أغنية &quot;Torn&quot;</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_arts-202611080728-1d4055.html"><img loading="lazy" decoding="async" src="images/ar_arts-202611080728-1d4055.webp" alt="سقوط أيقونة الثقافة الاستعراضية: كيف وفرت مرحلة &quot;اللاد كالتشر&quot; غطاءً لرواسب الانتهاكات في مسيرة راسل براند"><div class="info"><span class="badge">فن وثقافة</span><h3>سقوط أيقونة الثقافة الاستعراضية: كيف وفرت مرحلة &quot;اللاد كالتشر&quot; غطاءً لرواسب الانتهاكات في مسيرة راسل براند</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_arts-202611080720-c1ec54.html"><img loading="lazy" decoding="async" src="images/ar_arts-202611080720-c1ec54.webp" alt="نادن نيويورك نيكس يدافع عن تايلور سويفت بوصفها مشجعة عريقة بعد تصريحات مثيرة للجدل"><div class="info"><span class="badge">فن وثقافة</span><h3>نادن نيويورك نيكس يدافع عن تايلور سويفت بوصفها مشجعة عريقة بعد تصريحات مثيرة للجدل</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_arts-202611080711-b30eda.html"><img loading="lazy" decoding="async" src="images/ar_arts-202611080711-b30eda.webp" alt="إسقاط الستار عن «متزوجون من النظرة الأولى»: شهادات مأساوية تنهي مسيرة أشهر برامج الواقع في بريطانيا"><div class="info"><span class="badge">فن وثقافة</span><h3>إسقاط الستار عن «متزوجون من النظرة الأولى»: شهادات مأساوية تنهي مسيرة أشهر برامج الواقع في بريطانيا</h3><p>2026-11-08</p></div></a><a class="card" href="articles/ar_arts-202611080702-f55041.html"><img loading="lazy" decoding="async" src="images/ar_arts-202611080702-f55041.webp" alt="وداعاً «لونغميدو»: مونتي دون يسدل الستار على عقدين من الإلهام في عالم البستنة"><div class="info"><span class="badge">فن وثقافة</span><h3>وداعاً «لونغميدو»: مونتي دون يسدل الستار على عقدين من الإلهام في عالم البستنة</h3><p>2026-11-08</p></div></a></div><p style="margin-top:12px"><a class="badge" href="category-ar_arts.html">كل مقالات فن وثقافة ←</a></p></main><aside><div class="widget"><h4>🔥 عناوين الساعة</h4><ul><li><span class="rank">1</span><a href="articles/ar_arts-202611080758-ab966b.html">قضية راسل براند: إدانة، تحقيقات مستمرة وتداعيات على العدالة الجنائية في بريطانيا</a></li><li><span class="rank">2</span><a href="articles/ar_sports-202611080757-739277.html">قصة صعود «كراي واندررز» إلى الدور الأول من كأس الاتحاد الإنجليزي بعد 166 عاماً</a></li><li><span class="rank">3</span><a href="articles/ar_tech-202611080756-6b2618.html">بين النفي الكوري والرقم الضخم: كيف هزّ اختراق «بينانس» عرش العملات الرقمية؟</a></li><li><span class="rank">4</span><a href="articles/ar_economy-202611080753-24cdde.html">استحواذ ORIX Aviation على AerFin: تحول استراتيجي لصناعة الصيانة الجوية في ويلز</a></li><li><span class="rank">5</span><a href="articles/ar_world-202611080749-8db7a4.html">سلسلة تهديدات قنابل وهمية تعصف بشبكة الطيران الأوروبية وتستهدف وسائل الإعلام</a></li><li><span class="rank">6</span><a href="articles/ar_local-202611080747-809f9a.html">وثائق أمانستى تكشف عن 28 حالة جديدة من انتهاك حقوق المهاجرين في سبتة</a></li><li><span class="rank">7</span><a href="articles/ar_arts-202611080745-d00a79.html">U2 يطلق ألبوم &quot;Carnaval de Luz&quot; مع وداع دوللي بارتون في أغنية &quot;Torn&quot;</a></li><li><span class="rank">8</span><a href="articles/ar_sports-202611080744-c1ee58.html">وِلّي هاتشينسون يحقق حلم الطفولة ويتوج بطلًا عالميًا للوزن الخفيف الثقيل بعد فوز مثير على جوشوا بواتسي في مانشستر</a></li></ul></div></aside></div></div><footer class="footer"><div class="container footer-grid">
+<div><h4>نكسوس بريس | Nexus Press</h4><p>جريدة إلكترونية تتابع أبرز أحداث العالم في السياسة والاقتصاد والتكنولوجيا والرياضة والثقافة.</p></div>
+<div><h4>الأقسام</h4><ul><li><a href="category-ar_local.html">أخبار وطنية</a></li><li><a href="category-ar_world.html">الأخبار الدولية</a></li><li><a href="category-ar_economy.html">اقتصاد</a></li><li><a href="category-ar_tech.html">تكنولوجيا</a></li><li><a href="category-ar_sports.html">رياضة</a></li><li><a href="category-ar_arts.html">فن وثقافة</a></li></ul></div>
+<div><h4>معلومات</h4><ul><li><a href="about.html">من نحن</a></li><li><a href="contact.html">اتصل بنا</a></li><li><a href="privacy-policy.html">سياسة الخصوصية</a></li></ul></div>
+</div><div class="footer-bottom">© 2026 نكسوس بريس. جميع الحقوق محفوظة.</div></footer>
+<div id="google_translate_element" style="display:none"></div>
+<script src="site.js" defer></script>
+</body></html>
