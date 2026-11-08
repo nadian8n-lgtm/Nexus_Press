@@ -1,7 +1,14 @@
-/* Language switcher (Google Translate) + hero slider */
+/* Language switcher (Google Translate, loaded only when needed) + hero slider + lazy comments */
 (function () {
   var m = document.cookie.match(/googtrans=\/ar\/(\w+)/), cur = m ? m[1] : 'ar';
-  if (cur !== 'ar') { document.documentElement.dir = 'ltr'; document.documentElement.lang = cur; }
+  if (cur !== 'ar') {
+    document.documentElement.dir = 'ltr';
+    document.documentElement.lang = cur;
+    var gs = document.createElement('script');
+    gs.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+    gs.async = true;
+    document.head.appendChild(gs);
+  }
   document.querySelectorAll('.lang-btn').forEach(function (b) {
     if (b.dataset.l === cur) b.classList.add('on');
     b.onclick = function () {
@@ -32,7 +39,32 @@
     if (p) p.onclick = function () { go(i - 1); auto(); };
     if (nx) nx.onclick = function () { go(i + 1); auto(); };
   }
+
+  var c = document.querySelector('.comments[data-repo]');
+  if (c) {
+    var loadComments = function () {
+      if (c.dataset.loaded) return;
+      c.dataset.loaded = '1';
+      var u = document.createElement('script');
+      u.src = 'https://utteranc.es/client.js';
+      u.setAttribute('repo', c.dataset.repo);
+      u.setAttribute('issue-term', 'pathname');
+      u.setAttribute('label', 'comment');
+      u.setAttribute('theme', 'github-light');
+      u.crossOrigin = 'anonymous';
+      u.async = true;
+      c.appendChild(u);
+    };
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries, o) {
+        if (entries[0].isIntersecting) { loadComments(); o.disconnect(); }
+      }, { rootMargin: '400px' }).observe(c);
+    } else {
+      loadComments();
+    }
+  }
 })();
+
 function googleTranslateElementInit() {
   new google.translate.TranslateElement({ pageLanguage: 'ar', includedLanguages: 'ar,fr,en', autoDisplay: false }, 'google_translate_element');
 }
