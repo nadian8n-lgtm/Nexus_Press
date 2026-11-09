@@ -8,6 +8,11 @@ on:
       count:
         description: 'عدد المقالات في هذه الدورة (اكتب 36 لأول تشغيل)'
         default: '2'
+      regen_images:
+        description: 'إعادة رسم الصور: none = لا / svg = استبدال الصور البديلة فقط / all = إعادة رسم كل الصور بلا علامة مائية (مرة واحدة)'
+        type: choice
+        default: svg
+        options: [none, svg, all]
 
 permissions:
   contents: write
@@ -31,12 +36,25 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          # مفتاح Pollinations (يكفي أن يكون اسم السر واحداً من هذه الثلاثة)
+          POLLINATIONS_API_KEY: ${{ secrets.POLLINATIONS_API_KEY }}
+          POLLINATIONS_KEY: ${{ secrets.POLLINATIONS_KEY }}
+          POLLINATIONS_TOKEN: ${{ secrets.POLLINATIONS_TOKEN }}
+          # Cloudinary: إما CLOUDINARY_URL وحده، أو الأسرار الثلاثة CLOUD_NAME + API_KEY + API_SECRET
+          CLOUDINARY_URL: ${{ secrets.CLOUDINARY_URL }}
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME || vars.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+          NP_API: ${{ vars.NP_API }}
           GEMINI_TEXT_MODEL: ${{ vars.GEMINI_TEXT_MODEL }}
           GEMINI_IMAGE_MODEL: ${{ vars.GEMINI_IMAGE_MODEL }}
           IMAGE_PROVIDERS: ${{ vars.IMAGE_PROVIDERS }}
           MAX_PER_RUN: ${{ github.event.inputs.count || '2' }}
+          REGEN_IMAGES: ${{ github.event.inputs.regen_images || 'svg' }}
           ADSENSE_CLIENT: ${{ vars.ADSENSE_CLIENT }}
           ADSENSE_SLOT: ${{ vars.ADSENSE_SLOT }}
+          NEWSLETTER_BUTTONDOWN: ${{ vars.NEWSLETTER_BUTTONDOWN }}
+          CONTACT_EMAIL: ${{ vars.CONTACT_EMAIL }}
         run: python fetch_news.py
       - name: Check site (links, images, core files)
         run: python check_site.py
