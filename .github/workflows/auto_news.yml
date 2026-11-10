@@ -64,11 +64,35 @@ jobs:
         run: python fetch_news.py
       - name: Check site (links, images, core files)
         run: python check_site.py
-      - name: Commit and push
+      - name: Commit and push (conflict-proof)
         run: |
           git config user.name "NexusPress-Bot"
           git config user.email "bot@users.noreply.github.com"
           git add -A
-          git diff --cached --quiet || git commit -m "نشر تلقائي: مقالات جديدة"
-          git pull --rebase origin main
-          git push origin main
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          git commit -m "نشر تلقائي: مقالات جديدة"
+          for i in 1 2 3 4; do
+            git fetch origin main
+            if ! git merge --no-edit -X ours origin/main; then
+              # generated files (html/json/images) always win; then finish the merge
+              git checkout --ours . 2>/dev/null || true
+              git add -A
+              git commit --no-edit -m "دمج تلقائي" || git merge --abort || true
+            fi
+            python3 - <<'PY'
+          import json, subprocess
+          try:
+              mine = json.load(open("news-state.json"))["used"]
+              theirs = json.loads(subprocess.check_output(["git", "show", "origin/main:news-state.json"]))["used"]
+              merged = sorted(set(mine) | set(theirs))[-3000:]
+              if merged != mine:
+                  json.dump({"used": merged}, open("news-state.json", "w"))
+          except Exception as e:
+              print("state merge skipped:", e)
+          PY
+            git add -A
+            git diff --cached --quiet || git commit -qm "دمج سجل الأخبار المستخدمة"
+            if git push origin HEAD:main; then echo "pushed"; exit 0; fi
+            echo "push failed, retry $i"; sleep $((i * 6))
+          done
+          echo "::error::could not push after 4 attempts"; exit 1
