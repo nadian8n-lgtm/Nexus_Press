@@ -1,6 +1,6 @@
 // Article illustration generator using the official Google Gen AI SDK (https://github.com/googleapis/js-genai)
-// Usage: node gen_image.mjs <output-file> "<english prompt>"      env: GEMINI_API_KEY, optional GENAI_IMAGE_MODEL
-// It discovers the image models your key can use (Imagen or Gemini image), tries them in order and writes the first image it gets.
+// Usage: node gen_image.mjs <output-file> "<english prompt>"      env: GEMINI_API_KEY, optional GENAI_IMAGE_MODEL, GENAI_TIMEOUT_S
+// It discovers the image models your key can use (Gemini image models), tries up to 3 in order and writes the first image it gets.
 import { GoogleGenAI } from '@google/genai';
 import fs from 'node:fs';
 
@@ -14,6 +14,8 @@ if (!key || !out || !prompt) {
 const ai = new GoogleGenAI({ apiKey: key });
 const log = (...a) => console.error('[genai]', ...a);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+// hard deadline for this whole image (default 130 s): a rate-limited API must never stall the pipeline
+setTimeout(() => { log('deadline reached, giving up on this image'); process.exit(1); }, (Number(process.env.GENAI_TIMEOUT_S) || 130) * 1000).unref();
 
 async function listModels() {
   const found = [];
@@ -35,7 +37,7 @@ function candidates(models) {
     .sort((a, b) => Number(/preview|exp/.test(a)) - Number(/preview|exp/.test(b)) || b.localeCompare(a));
   const list = [process.env.GENAI_IMAGE_MODEL, ...gem];
   if (!gem.length) list.push('gemini-2.5-flash-image');
-  return [...new Set(list.filter(Boolean))].slice(0, 6);
+  return [...new Set(list.filter(Boolean))].slice(0, 3);
 }
 
 async function viaImagen(model) {
@@ -80,7 +82,7 @@ for (const model of order) {
     } catch (e) {
       const msg = String(e.message || e).slice(0, 220);
       log(`${model} attempt ${attempt} failed: ${msg}`);
-      if (attempt === 1 && /429|RESOURCE_EXHAUSTED|503|UNAVAILABLE/.test(msg)) { await sleep(20000); continue; }
+      if (attempt === 1 && /429|RESOURCE_EXHAUSTED|503|UNAVAILABLE/.test(msg)) { await sleep(8000); continue; }
       break;
     }
   }
