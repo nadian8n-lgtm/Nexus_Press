@@ -3,19 +3,18 @@
 Each run: reads RSS feeds of famous WORLD and ARABIC newspapers (no Moroccan outlet is used as a source),
 picks fresh stories (categories with < 6 articles first), writes an ORIGINAL Arabic article, checks it against the
 sources for copied wording, creates a UNIQUE illustration (no watermark, duplicate-checked), compresses it to WebP,
-uploads it to Cloudinary (if configured), updates articles.json, creates the daily poll and rebuilds the site.
+updates articles.json, creates the daily poll and rebuilds the site.
 
 Morocco news (category ar_local) = what is trending in Morocco on Google (Google Trends RSS), written from the
 non-Moroccan coverage of that trend.
 
 TEXT providers (tried in this order, only those with a key): Gemini -> Groq -> OpenRouter
-IMAGE providers (IMAGE_PROVIDERS, default "pollinations,gemini"), then a local SVG that is replaced automatically on a later run.
+IMAGE providers (IMAGE_PROVIDERS, default "genai" = official Google Gen AI JS SDK through gen_image.mjs; others: pollinations, gemini), then a local SVG that is replaced automatically on a later run.
 
 Env: GEMINI_API_KEY / GROQ_API_KEY / OPENROUTER_API_KEY, POLLINATIONS_API_KEY (sk_... key => no watermark, no rate limit),
 GEMINI_TEXT_MODEL / GEMINI_IMAGE_MODEL (optional), MAX_PER_RUN (2), MIN_PER_CATEGORY (6), KEEP_PER_CATEGORY (15),
 PAUSE_SECONDS (8), CLOUDINARY_URL (or CLOUDINARY_CLOUD_NAME + CLOUDINARY_API_KEY + CLOUDINARY_API_SECRET) -> images are also
-uploaded to Cloudinary and served from its CDN (auto format/size, much faster), REGEN_IMAGES = none | svg (default) | all
-(all = redraw every image once, e.g. to drop old watermarks)
+uploaded to Cloudinary and served from its CDN (auto format/size, much faster), REGEN_IMAGES = none | svg (default) | all  (all = redraw every image once, e.g. to drop old watermarks)
 """
 import base64
 import hashlib
@@ -24,6 +23,8 @@ import json
 import os
 import random
 import re
+import subprocess
+import sys
 import time
 import urllib.error
 import urllib.parse
@@ -40,7 +41,7 @@ GEMINI_KEY = os.getenv("GEMINI_API_KEY", "")
 GROQ_KEY = os.getenv("GROQ_API_KEY", "")
 OPENROUTER_KEY = os.getenv("OPENROUTER_API_KEY", "")
 POLL_KEY = next((os.getenv(n, "").strip() for n in ("POLLINATIONS_API_KEY", "POLLINATIONS_KEY", "POLLINATIONS_TOKEN") if os.getenv(n, "").strip()), "")
-IMAGE_PROVIDERS = [p.strip() for p in (os.getenv("IMAGE_PROVIDERS") or "pollinations,gemini").split(",") if p.strip()]
+IMAGE_PROVIDERS = [p.strip() for p in (os.getenv("IMAGE_PROVIDERS") or "genai").split(",") if p.strip()]
 MAX_PER_RUN = int(os.getenv("MAX_PER_RUN") or "2")
 MIN_PER_CAT = int(os.getenv("MIN_PER_CATEGORY") or "6")
 KEEP = int(os.getenv("KEEP_PER_CATEGORY") or "15")
@@ -98,11 +99,18 @@ SYSTEM = """أنت صحفي عربي محترف بخبرة طويلة في غر�
 - اكتب بصياغتك الخاصة تماماً. لا تنقل جملاً من المصدر ولا تترجمها حرفياً ولا تحاكِ ترتيب فقراته.
 - استخدم فقط الوقائع والأرقام والأسماء الواردة في المواد المقدمة، ويمكنك إضافة خلفية عامة معروفة ومؤكدة فقط.
 - لا تخترع اقتباسات ولا أرقاماً ولا أسماء ولا تواريخ ولا تصريحات. إن لم تكن متأكداً فاحذف المعلومة.
-- الفقرة الأولى «هوك» جذاب يشدّ القارئ (مشهد، مفارقة، سؤال أو معلومة لافتة) ثم يدخل في صلب الخبر.
-- بنية المقال: هوك، ثم الخبر الأساسي، ثم الخلفية والسياق، ثم الأطراف والمواقف الواردة في المصدر، ثم التحليل والدلالات، ثم ما ينتظر القارئ لاحقاً.
-- الطول بين {LO} و{HI} كلمة، بفقرات متوازنة (3 إلى 5 جمل لكل فقرة). يمكن استخدام عناوين فرعية على شكل فقرة قصيرة تبدأ بـ '## '.
-- لا تخاطب القارئ بعبارات مثل «بصفتي». لا تنسب المقال لشخص حقيقي. التزم الحياد ولا تُبدِ رأياً سياسياً أو دينياً.
-- أعد JSON فقط بالشكل: {"title": "...", "summary": "جملتان كحد أقصى", "image_prompt": "English prompt", "body": ["فقرة", "فقرة", ...]}
+- الفقرة الأولى «هوك» جذاب يشدّ القارئ (مشهد، مفارقة، سؤال أو معلومة لافتة) ثم يدخل في صلب الخبر، وتأتي بلا عنوان.
+- بعد الفقرة الأولى قسّم المقال إلى 5 أو 6 أقسام، يبدأ كل قسم بعنوان فرعي قصير (من 3 إلى 6 كلمات) يُكتب كعنصر مستقل في القائمة يبدأ بـ '## '، ثم فقرة أو فقرتان تحته. الأقسام بهذا الترتيب:
+  1) تفاصيل الخبر: ماذا حدث بالضبط ومتى وأين ومن المعنيون.
+  2) خلفية عن الموضوع: كيف كان الوضع سابقاً وما الذي قاد إلى هذا الخبر (مثلاً: إذا كان قراراً جديداً فاشرح باختصار ما كان معمولاً به قبله).
+  3) المواقف والأطراف: ما قالته الأطراف أو الجهات المعنية كما ورد في المواد المرجعية فقط.
+  4) تأثير الخبر على القارئ: كيف قد يمسّ هذا الخبر المواطنين أو القرّاء في حياتهم اليومية أو في قراراتهم، بصياغة حذرة ("قد"، "من المتوقع") دون جزم أو وعود.
+  5) قراءة وتحليل: دلالات الخبر ومقارنته بأحداث مشابهة معروفة.
+  6) ما الذي ينتظرنا: الخطوات أو التطورات المحتملة القادمة.
+- الفقرات قصيرة ومريحة للقراءة على الهاتف: من جملتين إلى 4 جمل، بلا كتل نصية طويلة. العناوين الفرعية جمل وصفية قصيرة لا علامات ترقيم زائدة فيها.
+- الخلفية والتأثير يعتمدان فقط على المواد المقدمة أو على معلومات عامة معروفة ومؤكدة؛ وإن لم تتوفر تفاصيل فاشرح السياق العام دون اختلاق وقائع محددة.
+- الطول بين {LO} و{HI} كلمة. لا تخاطب القارئ بعبارات مثل «بصفتي». لا تنسب المقال لشخص حقيقي. التزم الحياد ولا تُبدِ رأياً سياسياً أو دينياً.
+- أعد JSON فقط بالشكل: {"title": "...", "summary": "جملتان كحد أقصى", "image_prompt": "English prompt", "body": ["فقرة افتتاحية", "## عنوان فرعي", "فقرة", "## عنوان فرعي", "فقرة", ...]}
 - image_prompt: وصف إنجليزي مفصّل (40 إلى 70 كلمة) لمشهد فوتوغرافي تحريري يعبّر مباشرة عن حدث المقال نفسه، بعناصر بصرية ملموسة وخاصة بهذا الخبر
   (المكان، الأشياء، الأجواء، الإضاءة، زاوية التصوير)، وليس مشهداً عاماً يصلح لأي خبر. بدون نصوص أو حروف أو شعارات أو علامات تجارية،
   وبدون وجوه أشخاص حقيقيين أو شخصيات عامة (استعمل أشخاصاً مجهولين من الخلف أو من بعيد أو أيدٍ وأدوات ومعالم)."""
@@ -458,7 +466,11 @@ def write_article(cat_name, sources, trend=None):
             print("bad JSON from model, retrying:", str(ex)[:100])
             continue
         n, ov = words(body), overlap(body, sources)
-        print(f"attempt {attempt + 1}: {n} words, overlap {ov:.1%}")
+        heads = sum(1 for p in body if p.lstrip().startswith("## "))
+        print(f"attempt {attempt + 1}: {n} words, {heads} subheadings, overlap {ov:.1%}")
+        if heads < 4 and attempt < 2:
+            user += "\n\nملاحظة: المقال يحتاج 5 إلى 6 عناوين فرعية مستقلة تبدأ بـ '## ' كما في البنية المطلوبة (تفاصيل، خلفية، مواقف، تأثير، تحليل، ما بعد الخبر)."
+            continue
         if lo <= n <= hi and ov <= MAX_OVERLAP:
             art["body"] = body
             return art
@@ -537,6 +549,24 @@ def image_gemini(prompt):
     raise last
 
 
+def image_genai(prompt, seed):
+    """Illustration through the official Google Gen AI JS SDK (gen_image.mjs, needs Node 18+ and `npm i @google/genai`)."""
+    tmp = ROOT / "images" / f".genai-{seed}.bin"
+    tmp.parent.mkdir(exist_ok=True)
+    try:
+        r = subprocess.run(["node", str(ROOT / "gen_image.mjs"), str(tmp), prompt], capture_output=True, text=True, timeout=480,
+                           env={**os.environ, "GEMINI_API_KEY": GEMINI_KEY})
+    except Exception as ex:
+        raise ApiError(0, str(ex), "genai") from None
+    tail = (r.stderr or "").strip().splitlines()[-4:]
+    if r.returncode != 0 or not tmp.exists():
+        tmp.unlink(missing_ok=True)
+        raise ApiError(0, " | ".join(tail), "genai")
+    data = tmp.read_bytes()
+    tmp.unlink(missing_ok=True)
+    return data, False
+
+
 def image_pollinations(prompt, seed):
     """Returns (bytes, needs_watermark_crop). With a key: gen.pollinations.ai, nologo, no rate limit.
     Without a key (or if the key call fails): legacy anonymous endpoint (1 request / 15 s, watermark is cropped off)."""
@@ -578,25 +608,25 @@ def make_image(prompt, art_id, cat, file_stem=None):
     if Image:
         known_hashes()
         for prov in IMAGE_PROVIDERS:
-            if prov in STATE["dead_image"] or (prov == "gemini" and not GEMINI_KEY):
+            if prov in STATE["dead_image"] or (prov in ("gemini", "genai") and not GEMINI_KEY):
                 continue
             chosen, chosen_h = None, None
             for attempt in range(3):  # new seed + new angle/light each time until the picture is not a look-alike
                 seed = int(hashlib.md5(f"{art_id}-{attempt}".encode()).hexdigest()[:6], 16)
                 full = build_prompt(prompt, art_id, cat, attempt)
                 try:
-                    raw, crop = image_gemini(full) if prov == "gemini" else image_pollinations(full, seed)
+                    raw, crop = (image_gemini(full) if prov == "gemini" else image_genai(full, seed) if prov == "genai" else image_pollinations(full, seed))
                     img = Image.open(io.BytesIO(raw)).convert("RGB")
                 except Exception as ex:
                     print(f"image provider '{prov}' failed:", str(ex)[:160])
-                    if prov == "pollinations":
+                    if prov in ("pollinations", "genai"):
                         STATE["poll_fail"] += 1
                         if STATE["poll_fail"] >= 3:
                             STATE["dead_image"].add(prov)
                     else:
                         STATE["dead_image"].add(prov)
                     break
-                if prov == "pollinations":
+                if prov in ("pollinations", "genai"):
                     STATE["poll_fail"] = 0
                 if crop:  # anonymous Pollinations images carry a logo strip at the bottom
                     img = img.crop((0, 0, img.width, int(img.height * 0.925)))
@@ -742,7 +772,7 @@ def main():
         raise SystemExit("ERROR: no AI key found. Add GEMINI_API_KEY (https://aistudio.google.com/apikey) in GitHub: "
                          "Settings > Secrets and variables > Actions > Secrets. Optional fallbacks: GROQ_API_KEY, OPENROUTER_API_KEY.")
     print("cloudinary:", "on" if cloudinary_cfg() else "off (set CLOUDINARY_URL or the 3 CLOUDINARY_* secrets)")
-    print("pollinations key:", "found (no watermark)" if POLL_KEY else "NOT found (anonymous, watermark gets cropped)")
+    print("image providers:", ",".join(IMAGE_PROVIDERS), "| node:", "ok" if subprocess.run(["node", "-v"], capture_output=True).returncode == 0 else "MISSING")
     jf, sf = ROOT / "articles.json", ROOT / "news-state.json"
     data = json.loads(jf.read_text(encoding="utf-8")) if jf.exists() else {}
     arts = {k: data.get("articles", {}).get(k, []) for k in build_site.CATEGORIES}
