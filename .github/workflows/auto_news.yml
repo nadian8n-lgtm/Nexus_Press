@@ -30,7 +30,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
       - run: pip install pillow
+      - name: Install Google Gen AI SDK (github.com/googleapis/js-genai)
+        run: npm install --no-save --no-package-lock @google/genai
       - name: Generate articles and build site
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -48,7 +53,8 @@ jobs:
           NP_API: ${{ vars.NP_API }}
           GEMINI_TEXT_MODEL: ${{ vars.GEMINI_TEXT_MODEL }}
           GEMINI_IMAGE_MODEL: ${{ vars.GEMINI_IMAGE_MODEL }}
-          IMAGE_PROVIDERS: ${{ vars.IMAGE_PROVIDERS }}
+          IMAGE_PROVIDERS: ${{ vars.IMAGE_PROVIDERS || 'genai' }}
+          GENAI_IMAGE_MODEL: ${{ vars.GENAI_IMAGE_MODEL }}
           MAX_PER_RUN: ${{ github.event.inputs.count || '2' }}
           REGEN_IMAGES: ${{ github.event.inputs.regen_images || 'svg' }}
           ADSENSE_CLIENT: ${{ vars.ADSENSE_CLIENT }}
