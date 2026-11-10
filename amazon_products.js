@@ -17,11 +17,13 @@ const fs = require('fs');
 const path = require('path');
 
 const E = process.env;
-const MARKETPLACE = E.AMAZON_MARKETPLACE || 'www.amazon.com';
-const PARTNER_TAG = E.AMAZON_TRACKING_ID || '';
-const CRED_ID = E.AMAZON_CREDENTIAL_ID || '';
-const CRED_SECRET = E.AMAZON_CREDENTIAL_SECRET || '';
-const VERSION = E.AMAZON_CREDENTIAL_VERSION || '3.1';
+// GitHub secrets often carry a hidden trailing newline (\r\n) when pasted: strip ALL whitespace from every setting.
+const clean = (v) => String(v ?? '').replace(/\s+/g, '');
+const MARKETPLACE = clean(E.AMAZON_MARKETPLACE) || 'www.amazon.com';
+const PARTNER_TAG = clean(E.AMAZON_TRACKING_ID);
+const CRED_ID = clean(E.AMAZON_CREDENTIAL_ID);
+const CRED_SECRET = clean(E.AMAZON_CREDENTIAL_SECRET);
+const VERSION = clean(E.AMAZON_CREDENTIAL_VERSION) || '3.1';
 const API = 'https://creatorsapi.amazon/catalog/v1/searchItems';
 const TOKEN_URLS = {
   '3.1': 'https://api.amazon.com/auth/o2/token',
@@ -58,10 +60,10 @@ const get = (o, ...paths) => {
 
 async function getToken() {
   if (!CRED_ID || !CRED_SECRET) throw new Error('Missing AMAZON_CREDENTIAL_ID / AMAZON_CREDENTIAL_SECRET (Creators API credentials, not the old AWS keys)');
-  const url = E.AMAZON_TOKEN_URL || TOKEN_URLS[VERSION];
+  const url = clean(E.AMAZON_TOKEN_URL) || TOKEN_URLS[VERSION];
   if (!url) throw new Error(`Credential version ${VERSION}: set AMAZON_TOKEN_URL (Cognito token URL shown in Associates Central)`);
   const v3 = VERSION.startsWith('3');
-  const scope = E.AMAZON_TOKEN_SCOPE || (v3 ? 'creatorsapi::default' : 'creatorsapi/default');
+  const scope = (E.AMAZON_TOKEN_SCOPE || '').trim() || (v3 ? 'creatorsapi::default' : 'creatorsapi/default');
   const res = await fetch(url, v3
     ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ grant_type: 'client_credentials', client_id: CRED_ID, client_secret: CRED_SECRET, scope }) }
     : { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ grant_type: 'client_credentials', client_id: CRED_ID, client_secret: CRED_SECRET, scope }) });
@@ -71,6 +73,7 @@ async function getToken() {
 }
 
 async function searchItems(t) {
+  if (!PARTNER_TAG) throw new Error('AMAZON_TRACKING_ID is empty (your Associate tag, e.g. mysite-20)');
   const token = await getToken();
   const res = await fetch(API, {
     method: 'POST',
