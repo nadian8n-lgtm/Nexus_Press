@@ -207,3 +207,10 @@ input,textarea,select{background:var(--card);border:1px solid var(--line);border
 .cm-body p{font-size:16px;line-height:1.9;word-wrap:break-word;overflow-wrap:anywhere}
 .cm-list>.btn{margin-top:14px}
 @media(max-width:850px){.cm-row{grid-template-columns:1fr}}
+/* readable on every device */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+img,video,iframe,svg{max-width:100%}
+.article-body table{display:block;overflow-x:auto;max-width:100%}
+.article-body h2{font-size:20px;margin:26px 0 10px;padding-right:10px;border-right:4px solid var(--sky)}
+.article-body p{overflow-wrap:anywhere}
+@media(max-width:600px){.article-body p{font-size:17px;line-height:1.95;margin-bottom:20px;text-align:start}.article-body p:first-child{font-size:18px}.article-body h2{font-size:18px;margin:22px 0 8px}.container{padding:0 12px}.share button{padding:5px 11px}}
