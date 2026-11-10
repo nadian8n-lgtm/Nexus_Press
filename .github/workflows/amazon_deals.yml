@@ -8,6 +8,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: nexus-publish
+  cancel-in-progress: false
+
 jobs:
   deals:
     runs-on: ubuntu-latest
@@ -25,7 +29,7 @@ jobs:
           [ -n "$CID" ]  || { echo "::error::AMAZON_CREDENTIAL_ID is empty (create it in Settings > Secrets and variables > Actions > Secrets)"; exit 1; }
           [ -n "$CSEC" ] || { echo "::error::AMAZON_CREDENTIAL_SECRET is empty"; exit 1; }
           [ -n "$TAG" ]  || { echo "::error::AMAZON_TRACKING_ID is empty. Create a repository SECRET named exactly AMAZON_TRACKING_ID with your Associate tag, for example nexuspress-20"; exit 1; }
-          echo "settings OK (tag length: ${#TAG})"
+          echo "settings OK"
       - name: Build Amazon pages (Creators API)
         env:
           AMAZON_CREDENTIAL_ID: ${{ secrets.AMAZON_CREDENTIAL_ID }}
@@ -34,11 +38,24 @@ jobs:
           AMAZON_TRACKING_ID: ${{ secrets.AMAZON_TRACKING_ID || vars.AMAZON_TRACKING_ID || secrets.AMAZON_PARTNER_TAG || vars.AMAZON_PARTNER_TAG || secrets.AMAZON_ASSOCIATE_TAG || secrets.AMAZON_TAG }}
           AMAZON_MARKETPLACE: ${{ vars.AMAZON_MARKETPLACE || 'www.amazon.com' }}
         run: node amazon_products.js
-      - name: Commit and push
+      - name: Commit and push (conflict-proof)
         run: |
           git config user.name "NexusPress-Bot"
           git config user.email "bot@users.noreply.github.com"
           git add -A
-          git diff --cached --quiet || git commit -m "تحديث عروض أمازون"
-          git pull --rebase origin main
-          git push origin main
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          git commit -m "تحديث عروض أمازون"
+          for i in 1 2 3 4; do
+            git fetch origin main
+            if ! git merge --no-edit -X ours origin/main; then
+              # generated files (html/json/images) always win; then finish the merge
+              git checkout --ours . 2>/dev/null || true
+              git add -A
+              git commit --no-edit -m "دمج تلقائي" || git merge --abort || true
+            fi
+            git add -A
+            git diff --cached --quiet || git commit -qm "دمج تلقائي"
+            if git push origin HEAD:main; then echo "pushed"; exit 0; fi
+            echo "push failed, retry $i"; sleep $((i * 6))
+          done
+          echo "::error::could not push after 4 attempts"; exit 1
