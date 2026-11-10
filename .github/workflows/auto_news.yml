@@ -24,7 +24,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 340
+    timeout-minutes: ${{ github.event.inputs.regen_images == 'all' && 340 || 60 }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
