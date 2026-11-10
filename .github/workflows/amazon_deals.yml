@@ -16,12 +16,22 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - name: Check Amazon settings
+        env:
+          TAG: ${{ secrets.AMAZON_TRACKING_ID || vars.AMAZON_TRACKING_ID || secrets.AMAZON_PARTNER_TAG || vars.AMAZON_PARTNER_TAG || secrets.AMAZON_ASSOCIATE_TAG || secrets.AMAZON_TAG }}
+          CID: ${{ secrets.AMAZON_CREDENTIAL_ID }}
+          CSEC: ${{ secrets.AMAZON_CREDENTIAL_SECRET }}
+        run: |
+          [ -n "$CID" ]  || { echo "::error::AMAZON_CREDENTIAL_ID is empty (create it in Settings > Secrets and variables > Actions > Secrets)"; exit 1; }
+          [ -n "$CSEC" ] || { echo "::error::AMAZON_CREDENTIAL_SECRET is empty"; exit 1; }
+          [ -n "$TAG" ]  || { echo "::error::AMAZON_TRACKING_ID is empty. Create a repository SECRET named exactly AMAZON_TRACKING_ID with your Associate tag, for example nexuspress-20"; exit 1; }
+          echo "settings OK (tag length: ${#TAG})"
       - name: Build Amazon pages (Creators API)
         env:
           AMAZON_CREDENTIAL_ID: ${{ secrets.AMAZON_CREDENTIAL_ID }}
           AMAZON_CREDENTIAL_SECRET: ${{ secrets.AMAZON_CREDENTIAL_SECRET }}
           AMAZON_CREDENTIAL_VERSION: ${{ vars.AMAZON_CREDENTIAL_VERSION || '3.1' }}
-          AMAZON_TRACKING_ID: ${{ secrets.AMAZON_TRACKING_ID }}
+          AMAZON_TRACKING_ID: ${{ secrets.AMAZON_TRACKING_ID || vars.AMAZON_TRACKING_ID || secrets.AMAZON_PARTNER_TAG || vars.AMAZON_PARTNER_TAG || secrets.AMAZON_ASSOCIATE_TAG || secrets.AMAZON_TAG }}
           AMAZON_MARKETPLACE: ${{ vars.AMAZON_MARKETPLACE || 'www.amazon.com' }}
         run: node amazon_products.js
       - name: Commit and push
