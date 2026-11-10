@@ -1,0 +1,34 @@
+name: Amazon Deals (daily)
+
+on:
+  schedule:
+    - cron: '30 5 * * *'   # يوميًا: أمازون تطلب تحديث الأسعار كل 24 ساعة
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deals:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Build Amazon pages (Creators API)
+        env:
+          AMAZON_CREDENTIAL_ID: ${{ secrets.AMAZON_CREDENTIAL_ID }}
+          AMAZON_CREDENTIAL_SECRET: ${{ secrets.AMAZON_CREDENTIAL_SECRET }}
+          AMAZON_CREDENTIAL_VERSION: ${{ vars.AMAZON_CREDENTIAL_VERSION || '3.1' }}
+          AMAZON_TRACKING_ID: ${{ secrets.AMAZON_TRACKING_ID }}
+          AMAZON_MARKETPLACE: ${{ vars.AMAZON_MARKETPLACE || 'www.amazon.com' }}
+        run: node amazon_products.js
+      - name: Commit and push
+        run: |
+          git config user.name "NexusPress-Bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || git commit -m "تحديث عروض أمازون"
+          git pull --rebase origin main
+          git push origin main
