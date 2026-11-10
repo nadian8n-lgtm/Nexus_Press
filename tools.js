@@ -215,7 +215,7 @@
       }).filter(function (r) { return r.hit === q.length; }).sort(function (x, y) { return y.sc - x.sc || (y.a.d > x.a.d ? 1 : -1); });
       out.innerHTML = rows.length ? rows.map(function (r) {
         var a = r.a;
-        return '<a class="card" href="' + pre + 'articles/' + esc(a.i) + '.html"><img loading="lazy" decoding="async" width="480" height="270" src="' + pre + esc(a.m) + '" alt="' + esc(a.t) + '"><div class="info"><span class="badge">' + esc(a.c) + '</span><h3>' + esc(a.t) + '</h3><p>' + esc(a.d) + '</p></div></a>';
+        return '<a class="card" href="' + pre + 'articles/' + esc(a.i) + '.html"><img loading="lazy" decoding="async" width="480" height="270" src="' + (/^https?:/.test(a.m) ? '' : pre) + esc(a.m) + '" alt="' + esc(a.t) + '"><div class="info"><span class="badge">' + esc(a.c) + '</span><h3>' + esc(a.t) + '</h3><p>' + esc(a.d) + '</p></div></a>';
       }).join('') : '<p class="muted">لا توجد نتائج مطابقة. جرّب كلمات أخرى.</p>';
     };
     input.value = new URLSearchParams(location.search).get('q') || '';
