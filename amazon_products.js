@@ -89,6 +89,11 @@ async function searchItems(t) {
     }),
   });
   const j = await res.json().catch(() => ({}));
+  if (res.status === 403 && /AssociateNotEligible/i.test(JSON.stringify(j))) {
+    const err = new Error('Amazon: this Associates account does not currently meet the Creators API eligibility requirements');
+    err.notEligible = true;
+    throw err;
+  }
   if (!res.ok) throw new Error(`SearchItems failed (HTTP ${res.status}): ${JSON.stringify(j).slice(0, 400)}`);
   return j;
 }
@@ -169,4 +174,14 @@ async function main() {
   console.log(`done: ${list.length} products, price time ${when}`);
 }
 
-main().catch((e) => { console.error('amazon_products failed:', e.message); process.exit(1); });
+main().catch((e) => {
+  if (e.notEligible) {
+    // Not a bug in the site: Amazon refuses API access until the Associates account is eligible. Do not turn the workflow red,
+    // and remove old pages so that no stale price stays online.
+    if (fs.existsSync(OUT)) for (const f of fs.readdirSync(OUT)) if (f.endsWith('.html')) fs.unlinkSync(path.join(OUT, f));
+    console.log('::warning::' + e.message + '. Check Associates Central > Tools > Creators API for the requirements. Credentials and code are fine; no deals pages were created.');
+    process.exit(0);
+  }
+  console.error('amazon_products failed:', e.message);
+  process.exit(1);
+});
