@@ -9,10 +9,10 @@ on:
         description: 'عدد المقالات في هذه الدورة (اكتب 36 لأول تشغيل)'
         default: '2'
       regen_images:
-        description: 'إعادة رسم الصور: none = لا / svg = استبدال الصور البديلة فقط / all = إعادة رسم كل الصور بلا علامة مائية (مرة واحدة)'
+        description: 'الصور: none = لا شيء / svg = استبدال 8 صور بديلة / svgall = استبدال كل الصور البديلة / all = إعادة رسم كل الصور'
         type: choice
         default: svg
-        options: [none, svg, all]
+        options: [none, svg, svgall, all]
 
 permissions:
   contents: write
@@ -24,7 +24,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: ${{ github.event.inputs.regen_images == 'all' && 340 || 60 }}
+    timeout-minutes: ${{ (github.event.inputs.regen_images == 'all' || github.event.inputs.regen_images == 'svgall') && 340 || 60 }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -34,8 +34,11 @@ jobs:
         with:
           node-version: '20'
       - run: pip install pillow
-      - name: Install Google Gen AI SDK (github.com/googleapis/js-genai)
-        run: npm install --no-save --no-package-lock @google/genai
+      - name: Install Google Gen AI SDK (github.com/googleapis/js-genai) outside the repository
+        run: |
+          mkdir -p "$RUNNER_TEMP/genai"
+          npm install --prefix "$RUNNER_TEMP/genai" --no-package-lock --no-audit --no-fund @google/genai
+          echo "GENAI_DIR=$RUNNER_TEMP/genai" >> "$GITHUB_ENV"
       - name: Generate articles and build site
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -53,7 +56,7 @@ jobs:
           NP_API: ${{ vars.NP_API }}
           GEMINI_TEXT_MODEL: ${{ vars.GEMINI_TEXT_MODEL }}
           GEMINI_IMAGE_MODEL: ${{ vars.GEMINI_IMAGE_MODEL }}
-          IMAGE_PROVIDERS: ${{ vars.IMAGE_PROVIDERS || 'genai' }}
+          IMAGE_PROVIDERS: ${{ vars.IMAGE_PROVIDERS || 'genai,pollinations' }}
           GENAI_IMAGE_MODEL: ${{ vars.GENAI_IMAGE_MODEL }}
           MAX_PER_RUN: ${{ github.event.inputs.count || '2' }}
           REGEN_IMAGES: ${{ github.event.inputs.regen_images || 'svg' }}
@@ -68,6 +71,9 @@ jobs:
         run: |
           git config user.name "NexusPress-Bot"
           git config user.email "bot@users.noreply.github.com"
+          # node_modules must never be committed (it was added by mistake before)
+          grep -qx 'node_modules/' .gitignore 2>/dev/null || echo 'node_modules/' >> .gitignore
+          git rm -r -q --cached node_modules 2>/dev/null || true
           git add -A
           if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
           git commit -m "نشر تلقائي: مقالات جديدة"
