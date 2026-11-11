@@ -9,12 +9,12 @@ Morocco news (category ar_local) = what is trending in Morocco on Google (Google
 non-Moroccan coverage of that trend.
 
 TEXT providers (tried in this order, only those with a key): Gemini -> Groq -> OpenRouter
-IMAGE providers (IMAGE_PROVIDERS, default "genai" = official Google Gen AI JS SDK through gen_image.mjs; others: pollinations, gemini), then a local SVG that is replaced automatically on a later run.
+IMAGE providers (IMAGE_PROVIDERS, default "genai,pollinations": official Google Gen AI JS SDK through gen_image.mjs first, then Pollinations with your key; also available: gemini), then a local SVG that is replaced automatically on a later run.
 
 Env: GEMINI_API_KEY / GROQ_API_KEY / OPENROUTER_API_KEY, POLLINATIONS_API_KEY (sk_... key => no watermark, no rate limit),
 GEMINI_TEXT_MODEL / GEMINI_IMAGE_MODEL (optional), MAX_PER_RUN (2), MIN_PER_CATEGORY (6), KEEP_PER_CATEGORY (15),
 PAUSE_SECONDS (8), CLOUDINARY_URL (or CLOUDINARY_CLOUD_NAME + CLOUDINARY_API_KEY + CLOUDINARY_API_SECRET) -> images are also
-uploaded to Cloudinary and served from its CDN (auto format/size, much faster), REGEN_IMAGES = none | svg (default) | all  (all = redraw every image once, e.g. to drop old watermarks)
+uploaded to Cloudinary and served from its CDN (auto format/size, much faster), REGEN_IMAGES = none | svg (default: replaces up to 8 placeholder images per run) | svgall (all placeholders) | all (redraw every image once)
 """
 import base64
 import hashlib
@@ -41,7 +41,7 @@ GEMINI_KEY = os.getenv("GEMINI_API_KEY", "")
 GROQ_KEY = os.getenv("GROQ_API_KEY", "")
 OPENROUTER_KEY = os.getenv("OPENROUTER_API_KEY", "")
 POLL_KEY = next((os.getenv(n, "").strip() for n in ("POLLINATIONS_API_KEY", "POLLINATIONS_KEY", "POLLINATIONS_TOKEN") if os.getenv(n, "").strip()), "")
-IMAGE_PROVIDERS = [p.strip() for p in (os.getenv("IMAGE_PROVIDERS") or "genai").split(",") if p.strip()]
+IMAGE_PROVIDERS = [p.strip() for p in (os.getenv("IMAGE_PROVIDERS") or "genai,pollinations").split(",") if p.strip()]
 MAX_PER_RUN = int(os.getenv("MAX_PER_RUN") or "2")
 MIN_PER_CAT = int(os.getenv("MIN_PER_CATEGORY") or "6")
 KEEP = int(os.getenv("KEEP_PER_CATEGORY") or "15")
@@ -596,6 +596,24 @@ def image_pollinations(prompt, seed):
     return data, True
 
 
+def fallback_svg(stem, cat):
+    """Placeholder used only when no provider produced a picture. Unique per article (seeded by its id), no text or emoji,
+    and replaced automatically by a real illustration on a later run (see heal_images)."""
+    r = random.Random(stem)
+    h1 = r.randint(0, 359)
+    h2 = (h1 + r.randint(35, 90)) % 360
+    shapes = "".join(
+        f'<circle cx="{r.randint(0, 1000)}" cy="{r.randint(0, 560)}" r="{r.randint(50, 260)}" fill="#fff" opacity="{r.choice([.04, .06, .08, .1])}"/>'
+        for _ in range(7))
+    shapes += "".join(
+        f'<rect x="{r.randint(0, 900)}" y="{r.randint(0, 480)}" width="{r.randint(80, 360)}" height="{r.randint(6, 40)}" rx="8" fill="#fff" '
+        f'opacity="{r.choice([.05, .08, .12])}" transform="rotate({r.randint(-35, 35)} 500 280)"/>' for _ in range(4))
+    x1, y1, x2, y2 = r.choice([(0, 0, 1, 1), (0, 1, 1, 0), (0, 0, 0, 1), (1, 0, 0, 1)])
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560"><defs><linearGradient id="g" x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}">'
+            f'<stop offset="0" stop-color="hsl({h1},62%,36%)"/><stop offset="1" stop-color="hsl({h2},70%,14%)"/></linearGradient></defs>'
+            f'<rect width="1000" height="560" fill="url(#g)"/>{shapes}</svg>')
+
+
 def make_image(prompt, art_id, cat, file_stem=None):
     out = ROOT / "images"
     out.mkdir(exist_ok=True)
@@ -619,7 +637,10 @@ def make_image(prompt, art_id, cat, file_stem=None):
                     img = Image.open(io.BytesIO(raw)).convert("RGB")
                 except Exception as ex:
                     print(f"image provider '{prov}' failed:", str(ex)[:160])
-                    if prov in ("pollinations", "genai"):
+                    if prov == "genai" and re.search(r"limit: 0|free.?tier|not.?found|permission|forbidden|api key|cannot find|ERR_MODULE|billing", str(ex), re.I):
+                        print("genai cannot be used with this key/setup -> skipping it for this run, using the next provider")
+                        STATE["dead_image"].add(prov)
+                    elif prov in ("pollinations", "genai"):
                         STATE["poll_fail"] += 1
                         if STATE["poll_fail"] >= 3:
                             STATE["dead_image"].add(prov)
@@ -642,12 +663,7 @@ def make_image(prompt, art_id, cat, file_stem=None):
                 STATE["hashes"][stem] = chosen_h
                 return f"images/{path.name}"
     svg = out / f"{stem}.svg"
-    svg.write_text(
-        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">'
-        f'<stop offset="0" stop-color="{COLORS[cat]}"/><stop offset="1" stop-color="#071c35"/></linearGradient></defs>'
-        f'<rect width="1000" height="560" fill="url(#g)"/><circle cx="780" cy="160" r="210" fill="#fff" opacity=".07"/>'
-        f'<circle cx="200" cy="470" r="260" fill="#fff" opacity=".06"/>'
-        f'<text x="500" y="330" font-size="190" text-anchor="middle" opacity=".9">{ICONS[cat]}</text></svg>', encoding="utf-8")
+    svg.write_text(fallback_svg(stem, cat), encoding="utf-8")
     return f"images/{svg.name}"
 
 
@@ -667,11 +683,11 @@ def image_prompt_for(art):
 
 
 def heal_images(arts):
-    """REGEN_IMAGES=svg: replace placeholder SVGs (a few per run). all: redraw every image once (drops old watermarks)."""
+    """REGEN_IMAGES=svg: replace up to 8 placeholder SVGs per run. svgall: all placeholders. all: redraw every image once."""
     if REGEN == "none" or not (GEMINI_KEY or GROQ_KEY or OPENROUTER_KEY):
         return
     todo = [(k, a) for k, v in arts.items() for a in v if (REGEN == "all" and not a.get("regen")) or a["image"].endswith(".svg")]
-    limit = len(todo) if REGEN == "all" else 3
+    limit = len(todo) if REGEN in ("all", "svgall") else 8
     stamp = datetime.now(timezone.utc).strftime("%y%m%d%H%M")
     for k, a in todo[:limit]:
         old = a["image"]
