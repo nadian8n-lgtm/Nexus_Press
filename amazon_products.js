@@ -1,17 +1,18 @@
 #!/usr/bin/env node
 /**
- * Nexus Press - Amazon deals pages (Creators API, Node 18+, NO dependencies).
+ * Nexus Press - Amazon corner (Creators API, Node 18+, NO dependencies).
+ *
+ * Always creates deals/index.html ("ركن أمازون"): category tiles with affiliate SEARCH links (work without the API, show no prices).
+ * When the Creators API is available for your account it also adds today's products (deals/<ASIN>.html) above the tiles.
  *
  * IMPORTANT: Amazon retired PA-API 5 (the old paapi5-nodejs-sdk now gets HTTP 403). The replacement is the Creators API:
  * OAuth 2.0 credentials (Credential ID + Secret + Version) from Associates Central > Tools > Creators API.
+ * HTTP 403 "AssociateNotEligible" means Amazon has not enabled the API for the account yet: this is tolerated (warning, no red job).
  *
  * Env: AMAZON_CREDENTIAL_ID, AMAZON_CREDENTIAL_SECRET, AMAZON_CREDENTIAL_VERSION (default 3.1 = North America, 3.2 = EU, 3.3 = Far East),
  *      AMAZON_TRACKING_ID (your Associate tag), AMAZON_MARKETPLACE (default www.amazon.com),
  *      optional: AMAZON_TOKEN_URL, AMAZON_TOKEN_SCOPE
  * Test without calling Amazon:  node amazon_products.js --mock sample.json
- *
- * Output: deals/<ASIN>.html (one page per product) + deals/index.html. Old pages are deleted on every successful run,
- * because Amazon requires prices to be refreshed (24 h) and to carry a date/time.
  */
 const fs = require('fs');
 const path = require('path');
@@ -146,23 +147,48 @@ function page(p, t, when) {
 </div></div></body></html>`;
 }
 
+// ---- category tiles: affiliate SEARCH links (no API needed, no prices shown, so nothing can become stale)
+function tiles(t) {
+  const fixed = [
+    ['🧥', 'ملابس وجاكيتات', 'jackets hoodies clothing'], ['📚', 'كتب الأكثر مبيعًا', 'bestselling books'],
+    ['🎮', 'ألعاب وبطاقات رقمية', 'PlayStation Xbox gift cards'], ['🎒', 'حقائب مدرسية وسفر', 'backpacks'],
+    ['🎧', 'سماعات وإلكترونيات', 'headphones electronics'], ['🏠', 'المنزل والمطبخ', 'home kitchen'],
+    ['💄', 'العناية والجمال', 'skincare beauty'], ['💪', 'الرياضة واللياقة', 'fitness sports'],
+  ];
+  const all = [['⭐', 'اختيار الموسم: ' + t.name, t.keywords], ...fixed];
+  return `<div class="grid">` + all.map(([ico, name, q]) =>
+    `<a class="item cat" href="https://${esc(MARKETPLACE)}/s?k=${encodeURIComponent(q)}&amp;tag=${encodeURIComponent(PARTNER_TAG)}" target="_blank" rel="sponsored nofollow noopener noreferrer"><span class="ico">${ico}</span><b>${esc(name)}</b><span class="small">تصفّح على أمازون ←</span></a>`).join('') + `</div>`;
+}
+
 function indexPage(list, t, when) {
-  const cards = list.map((p) => `<a class="item" href="${p.asin}.html"><img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy" decoding="async"><b>${esc(p.title)}</b>${p.price ? `<span class="price">${esc(p.price)}</span>` : ''}</a>`).join('');
+  const products = list.length
+    ? `<h2 style="font-size:19px">اختيارات اليوم</h2><div class="grid">` + list.map((p) => `<a class="item" href="${p.asin}.html"><img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy" decoding="async"><b>${esc(p.title)}</b>${p.price ? `<span class="price">${esc(p.price)}</span>` : ''}</a>`).join('') + `</div>
+<span class="small" dir="ltr">Amazon prices are subject to change. Price as of ${esc(when)}.</span>`
+    : '';
   return `<!DOCTYPE html>
 <html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>اختيارات من أمازون | نكسوس بريس</title><meta name="robots" content="noindex,follow"><style>${CSS}</style></head><body><div class="wrap">
+<title>ركن أمازون | نكسوس بريس</title><meta name="robots" content="noindex,follow"><style>${CSS}.cat{text-align:center}.cat .ico{font-size:38px;display:block}</style></head><body><div class="wrap">
 <div class="top"><a href="../index.html">← نكسوس بريس</a></div>
-<div class="card">${DISCLOSURE}<h1>اختيارات اليوم: ${esc(t.name)}</h1><div class="grid">${cards}</div>
-<span class="small" dir="ltr">Amazon prices are subject to change. Price as of ${esc(when)}.</span></div></div></body></html>`;
+<div class="card">${DISCLOSURE}<h1>ركن أمازون</h1>
+<p>اختر القسم الذي يهمّك وتصفّح المنتجات مباشرة على أمازون. الأسعار والتقييمات وتوفر المنتجات تظهر في أمازون وقت الشراء.</p>
+${products}<h2 style="font-size:19px;margin-top:22px">تصفّح الأقسام</h2>${tiles(t)}</div></div></body></html>`;
 }
 
 async function main() {
+  if (!PARTNER_TAG) throw new Error('AMAZON_TRACKING_ID is empty (your Associate tag, e.g. mysite-20)');
   const t = topic();
   const mi = process.argv.indexOf('--mock');
-  const data = mi > -1 ? JSON.parse(fs.readFileSync(process.argv[mi + 1], 'utf8')) : await searchItems(t);
-  const items = get(data, 'searchResult.items') || [];
-  const list = items.map(normalize).filter((p) => p.asin && p.title && p.image && p.url);
-  if (!list.length) throw new Error('No usable products returned: ' + JSON.stringify(data).slice(0, 300));
+  let list = [], eligible = true, problem = '';
+  try {
+    const data = mi > -1 ? JSON.parse(fs.readFileSync(process.argv[mi + 1], 'utf8')) : await searchItems(t);
+    const items = get(data, 'searchResult.items') || [];
+    list = items.map(normalize).filter((p) => p.asin && p.title && p.image && p.url);
+    if (!list.length) throw new Error('No usable products returned: ' + JSON.stringify(data).slice(0, 300));
+  } catch (e) {
+    if (!e.notEligible) throw e;   // real errors still fail the job; only "account not eligible" is tolerated
+    eligible = false;
+    problem = e.message;
+  }
   const when = stamp();
   fs.mkdirSync(OUT, { recursive: true });
   for (const f of fs.readdirSync(OUT)) if (f.endsWith('.html')) fs.unlinkSync(path.join(OUT, f));   // never keep stale prices
@@ -171,17 +197,10 @@ async function main() {
     console.log('page written:', p.asin, '-', p.title.slice(0, 60));
   }
   fs.writeFileSync(path.join(OUT, 'index.html'), indexPage(list, t, when));
-  console.log(`done: ${list.length} products, price time ${when}`);
+  if (!eligible) {
+    console.log('::warning::' + problem + '. Product pages are skipped until Amazon enables the Creators API for this account (Associates Central > Tools > Creators API). The category page (affiliate search links) was still created.');
+  }
+  console.log(`done: ${list.length} products + category page, price time ${when}`);
 }
 
-main().catch((e) => {
-  if (e.notEligible) {
-    // Not a bug in the site: Amazon refuses API access until the Associates account is eligible. Do not turn the workflow red,
-    // and remove old pages so that no stale price stays online.
-    if (fs.existsSync(OUT)) for (const f of fs.readdirSync(OUT)) if (f.endsWith('.html')) fs.unlinkSync(path.join(OUT, f));
-    console.log('::warning::' + e.message + '. Check Associates Central > Tools > Creators API for the requirements. Credentials and code are fine; no deals pages were created.');
-    process.exit(0);
-  }
-  console.error('amazon_products failed:', e.message);
-  process.exit(1);
-});
+main().catch((e) => { console.error('amazon_products failed:', e.message); process.exit(1); });
