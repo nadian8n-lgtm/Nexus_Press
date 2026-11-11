@@ -56,7 +56,9 @@ jobs:
           NP_API: ${{ vars.NP_API }}
           GEMINI_TEXT_MODEL: ${{ vars.GEMINI_TEXT_MODEL }}
           GEMINI_IMAGE_MODEL: ${{ vars.GEMINI_IMAGE_MODEL }}
-          IMAGE_PROVIDERS: ${{ vars.IMAGE_PROVIDERS || 'genai,pollinations' }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_IMAGE_MODEL: ${{ vars.OPENAI_IMAGE_MODEL }}
+          IMAGE_PROVIDERS: ${{ vars.IMAGE_PROVIDERS || 'openai,genai,pollinations' }}
           GENAI_IMAGE_MODEL: ${{ vars.GENAI_IMAGE_MODEL }}
           MAX_PER_RUN: ${{ github.event.inputs.count || '2' }}
           REGEN_IMAGES: ${{ github.event.inputs.regen_images || 'svg' }}
