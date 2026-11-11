@@ -12,7 +12,7 @@ SKIP_PREFIX = ("http:", "https:", "//", "mailto:", "tel:", "data:", "#", "javasc
 problems = []
 
 for need in ("style.css", "site.js", "tools.js", "sw.js", "logo.webp", "manifest.webmanifest", "feed.xml", "search.json",
-             "index.html", "about.html", "contact.html", "privacy-policy.html", "weather.html", "search.html"):
+             "index.html", "about.html", "contact.html", "privacy-policy.html", "weather.html", "search.html", "ai-academy.html", "chat.js"):
     if not (ROOT / need).exists():
         problems.append(f"missing core file: {need}")
 
@@ -30,6 +30,9 @@ for page in pages:
         target = (page.parent / unquote(urlparse(val).path)).resolve()
         if not target.exists():
             problems.append(f"{page.relative_to(ROOT)} -> missing {val}")
+    # every page must open <body> once and close </body></html> exactly once, at the very end
+    if len(re.findall(r"<body[\s>]", text)) != 1 or text.count("</body>") != 1 or text.count("</html>") != 1 or not text.rstrip().endswith("</html>"):
+        problems.append(f"{page.relative_to(ROOT)}: <body>/</body>/</html> tags are not exactly right")
     for needle in ('class="main-nav"', 'class="footer"'):
         if needle not in text:
             problems.append(f"{page.relative_to(ROOT)} lacks {needle}")
