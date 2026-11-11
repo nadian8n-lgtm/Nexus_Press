@@ -1,5 +1,5 @@
 /* Nexus Press service worker: instant repeat visits + offline fallback */
-const V = 'np-20261111T04190';
+const V = 'np-20261111T06590';
 const CORE = ['./', 'style.css', 'site.js', 'tools.js', 'logo.webp'];
 self.addEventListener('install', e => {
   self.skipWaiting();
