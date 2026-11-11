@@ -1,8 +1,17 @@
 // Article illustration generator using the official Google Gen AI SDK (https://github.com/googleapis/js-genai)
-// Usage: node gen_image.mjs <output-file> "<english prompt>"      env: GEMINI_API_KEY, optional GENAI_IMAGE_MODEL, GENAI_TIMEOUT_S
+// Usage: node gen_image.mjs <output-file> "<english prompt>"      env: GEMINI_API_KEY, optional GENAI_IMAGE_MODEL, GENAI_TIMEOUT_S, GENAI_DIR
 // It discovers the image models your key can use (Gemini image models), tries up to 3 in order and writes the first image it gets.
-import { GoogleGenAI } from '@google/genai';
 import fs from 'node:fs';
+import path from 'node:path';
+import { createRequire } from 'node:module';
+
+// The SDK is installed OUTSIDE the repository (GENAI_DIR, see the workflow) so that no node_modules folder is ever committed.
+let GoogleGenAI;
+try {
+  ({ GoogleGenAI } = createRequire(path.join(process.env.GENAI_DIR || process.cwd(), 'noop.js'))('@google/genai'));
+} catch {
+  ({ GoogleGenAI } = await import('@google/genai'));   // fallback: a normal local install
+}
 
 const [, , out, ...rest] = process.argv;
 const prompt = rest.join(' ').trim();
