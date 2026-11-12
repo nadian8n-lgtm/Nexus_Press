@@ -9,15 +9,16 @@ Morocco news (category ar_local) = what is trending in Morocco on Google (Google
 non-Moroccan coverage of that trend.
 
 TEXT providers (tried in this order, only those with a key): Gemini -> Groq -> OpenRouter
-IMAGE providers (IMAGE_PROVIDERS, default "genai,pollinations": official Google Gen AI JS SDK through gen_image.mjs first, then Pollinations with your key; also available: gemini), then a local SVG that is replaced automatically on a later run.
+IMAGE providers (IMAGE_PROVIDERS, default "picsum,openai,genai,pollinations": a unique seeded photograph from Picsum Photos first, then (only if Picsum is down) ChatGPT images if OPENAI_API_KEY exists, the Google Gen AI JS SDK, Pollinations; also available: gemini), then a local SVG that is replaced automatically on a later run.
 
 Env: GEMINI_API_KEY / GROQ_API_KEY / OPENROUTER_API_KEY, POLLINATIONS_API_KEY (sk_... key => no watermark, no rate limit),
-GEMINI_TEXT_MODEL / GEMINI_IMAGE_MODEL (optional), MAX_PER_RUN (2), MIN_PER_CATEGORY (6), KEEP_PER_CATEGORY (15),
+OPENAI_API_KEY / OPENAI_IMAGE_MODEL (optional, ChatGPT images), GEMINI_TEXT_MODEL / GEMINI_IMAGE_MODEL (optional), MAX_PER_RUN (2), MIN_PER_CATEGORY (6), KEEP_PER_CATEGORY (15),
 PAUSE_SECONDS (8), CLOUDINARY_URL (or CLOUDINARY_CLOUD_NAME + CLOUDINARY_API_KEY + CLOUDINARY_API_SECRET) -> images are also
 uploaded to Cloudinary and served from its CDN (auto format/size, much faster), REGEN_IMAGES = none | svg (default: replaces up to 8 placeholder images per run) | svgall (all placeholders) | all (redraw every image once)
 """
 import base64
 import hashlib
+import html as htmllib
 import io
 import json
 import os
@@ -34,14 +35,16 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import build_site
+import curate
 
 ROOT = Path(__file__).parent
 GEMINI_API = "https://generativelanguage.googleapis.com/v1beta"
 GEMINI_KEY = os.getenv("GEMINI_API_KEY", "")
 GROQ_KEY = os.getenv("GROQ_API_KEY", "")
 OPENROUTER_KEY = os.getenv("OPENROUTER_API_KEY", "")
+OPENAI_KEY = os.getenv("OPENAI_API_KEY", "").strip()   # optional: ChatGPT images (gpt-image-1), paid
 POLL_KEY = next((os.getenv(n, "").strip() for n in ("POLLINATIONS_API_KEY", "POLLINATIONS_KEY", "POLLINATIONS_TOKEN") if os.getenv(n, "").strip()), "")
-IMAGE_PROVIDERS = [p.strip() for p in (os.getenv("IMAGE_PROVIDERS") or "genai,pollinations").split(",") if p.strip()]
+IMAGE_PROVIDERS = [p.strip() for p in (os.getenv("IMAGE_PROVIDERS") or "picsum,openai,genai,pollinations").split(",") if p.strip()]
 MAX_PER_RUN = int(os.getenv("MAX_PER_RUN") or "2")
 MIN_PER_CAT = int(os.getenv("MIN_PER_CATEGORY") or "6")
 KEEP = int(os.getenv("KEEP_PER_CATEGORY") or "15")
@@ -549,6 +552,21 @@ def image_gemini(prompt):
     raise last
 
 
+def image_openai(prompt, seed):
+    """ChatGPT images through the OpenAI API (gpt-image-1 by default). Needs OPENAI_API_KEY (paid; the organization may need verification)."""
+    model = os.getenv("OPENAI_IMAGE_MODEL", "").strip() or "gpt-image-1"
+    payload = {"model": model, "prompt": prompt[:3800], "size": "1536x1024", "n": 1}
+    if model.startswith("gpt-image"):
+        payload["quality"] = os.getenv("OPENAI_IMAGE_QUALITY", "").strip() or "medium"
+    res = call_json("https://api.openai.com/v1/images/generations", payload, {"Authorization": f"Bearer {OPENAI_KEY}"}, "openai", tries=2)
+    item = (res.get("data") or [{}])[0]
+    if item.get("b64_json"):
+        return base64.b64decode(item["b64_json"]), False
+    if item.get("url"):
+        return request(item["url"], timeout=120), False
+    raise ApiError(0, "no image in the OpenAI response", "openai")
+
+
 def image_genai(prompt, seed):
     """Illustration through the official Google Gen AI JS SDK (gen_image.mjs, needs Node 18+ and `npm i @google/genai`)."""
     tmp = ROOT / "images" / f".genai-{seed}.bin"
@@ -596,6 +614,17 @@ def image_pollinations(prompt, seed):
     return data, True
 
 
+def image_picsum(seed_text, attempt=0):
+    """Photograph from Picsum Photos (https://picsum.photos): a direct cloud link, no key, no watermark, free Unsplash-licensed pictures.
+    URL: https://picsum.photos/seed/{seed}/{width}/{height}  - the seed fixes the picture: same seed = same photo forever.
+    The seed is the article id (+ the attempt number, used to pick another photo when two articles would get a look-alike)."""
+    seed = re.sub(r"[^A-Za-z0-9_-]", "", f"{seed_text}-{attempt}") or f"nexus-{attempt}"
+    data = request(f"https://picsum.photos/seed/{seed}/1280/720", timeout=60)
+    if len(data) < 15000:
+        raise ApiError(0, "image too small / not a photograph", "picsum")
+    return data, False
+
+
 def fallback_svg(stem, cat):
     """Placeholder used only when no provider produced a picture. Unique per article (seeded by its id), no text or emoji,
     and replaced automatically by a real illustration on a later run (see heal_images)."""
@@ -615,6 +644,7 @@ def fallback_svg(stem, cat):
 
 
 def make_image(prompt, art_id, cat, file_stem=None):
+    """Returns (relative image path, credit dict or None). A credit ({"source": "picsum"}) exists only for stock photographs."""
     out = ROOT / "images"
     out.mkdir(exist_ok=True)
     stem = file_stem or art_id
@@ -626,28 +656,28 @@ def make_image(prompt, art_id, cat, file_stem=None):
     if Image:
         known_hashes()
         for prov in IMAGE_PROVIDERS:
-            if prov in STATE["dead_image"] or (prov in ("gemini", "genai") and not GEMINI_KEY):
+            if prov in STATE["dead_image"] or (prov in ("gemini", "genai") and not GEMINI_KEY) or (prov == "openai" and not OPENAI_KEY):
                 continue
             chosen, chosen_h = None, None
             for attempt in range(3):  # new seed + new angle/light each time until the picture is not a look-alike
                 seed = int(hashlib.md5(f"{art_id}-{attempt}".encode()).hexdigest()[:6], 16)
                 full = build_prompt(prompt, art_id, cat, attempt)
                 try:
-                    raw, crop = (image_gemini(full) if prov == "gemini" else image_genai(full, seed) if prov == "genai" else image_pollinations(full, seed))
+                    raw, crop = (image_gemini(full) if prov == "gemini" else image_genai(full, seed) if prov == "genai" else image_openai(full, seed) if prov == "openai" else image_picsum(art_id, attempt) if prov == "picsum" else image_pollinations(full, seed))
                     img = Image.open(io.BytesIO(raw)).convert("RGB")
                 except Exception as ex:
                     print(f"image provider '{prov}' failed:", str(ex)[:160])
-                    if prov == "genai" and re.search(r"limit: 0|free.?tier|not.?found|permission|forbidden|api key|cannot find|ERR_MODULE|billing", str(ex), re.I):
-                        print("genai cannot be used with this key/setup -> skipping it for this run, using the next provider")
+                    if prov in ("genai", "openai") and re.search(r"limit: 0|free.?tier|not.?found|permission|forbidden|api key|cannot find|ERR_MODULE|billing|insufficient_quota|invalid_api_key|must be verified|HTTP 40[13]", str(ex), re.I):
+                        print(f"{prov} cannot be used with this key/setup -> skipping it for this run, using the next provider")
                         STATE["dead_image"].add(prov)
-                    elif prov in ("pollinations", "genai"):
+                    elif prov in ("pollinations", "genai", "openai", "picsum"):
                         STATE["poll_fail"] += 1
                         if STATE["poll_fail"] >= 3:
                             STATE["dead_image"].add(prov)
                     else:
                         STATE["dead_image"].add(prov)
                     break
-                if prov in ("pollinations", "genai"):
+                if prov in ("pollinations", "genai", "openai", "picsum"):
                     STATE["poll_fail"] = 0
                 if crop:  # anonymous Pollinations images carry a logo strip at the bottom
                     img = img.crop((0, 0, img.width, int(img.height * 0.925)))
@@ -657,14 +687,15 @@ def make_image(prompt, art_id, cat, file_stem=None):
                     break
                 print(f"image looks like an existing one, regenerating (attempt {attempt + 1})")
             if chosen is not None:
-                chosen.thumbnail((1000, 1000))
+                photo = prov == "picsum"      # real photographs keep more pixels and less compression (sharper)
+                chosen.thumbnail((1280, 1280) if photo else (1000, 1000))
                 path = out / f"{stem}.webp"
-                chosen.save(path, "WEBP", quality=74, method=6)
+                chosen.save(path, "WEBP", quality=84 if photo else 74, method=6)
                 STATE["hashes"][stem] = chosen_h
-                return f"images/{path.name}"
+                return f"images/{path.name}", ({"source": "picsum"} if prov == "picsum" else None)
     svg = out / f"{stem}.svg"
     svg.write_text(fallback_svg(stem, cat), encoding="utf-8")
-    return f"images/{svg.name}"
+    return f"images/{svg.name}", None
 
 
 def image_prompt_for(art):
@@ -684,18 +715,23 @@ def image_prompt_for(art):
 
 def heal_images(arts):
     """REGEN_IMAGES=svg: replace up to 8 placeholder SVGs per run. svgall: all placeholders. all: redraw every image once."""
-    if REGEN == "none" or not (GEMINI_KEY or GROQ_KEY or OPENROUTER_KEY):
+    if REGEN == "none" or not (GEMINI_KEY or GROQ_KEY or OPENROUTER_KEY or IMAGE_PROVIDERS[:1] == ["picsum"]):
         return
     todo = [(k, a) for k, v in arts.items() for a in v if (REGEN == "all" and not a.get("regen")) or a["image"].endswith(".svg")]
     limit = len(todo) if REGEN in ("all", "svgall") else 8
     stamp = datetime.now(timezone.utc).strftime("%y%m%d%H%M")
     for k, a in todo[:limit]:
         old = a["image"]
-        new = make_image(image_prompt_for(a), a["id"], k, file_stem=f"{a['id']}-{stamp}")
+        prompt = a.get("image_prompt") or (a["title"] if IMAGE_PROVIDERS[:1] == ["picsum"] else image_prompt_for(a))
+        new, credit = make_image(prompt, a["id"], k, file_stem=f"{a['id']}-{stamp}")
         if new.endswith(".svg"):
             (ROOT / new).unlink(missing_ok=True)
             continue
         a["image"], a["regen"] = new, True
+        if credit:
+            a["image_credit"] = credit
+        else:
+            a.pop("image_credit", None)
         a["cdn"] = cloudinary_upload(ROOT / new, "nexus/" + Path(new).stem)
         if old != new:
             (ROOT / old).unlink(missing_ok=True)
@@ -794,6 +830,13 @@ def main():
     arts = {k: data.get("articles", {}).get(k, []) for k in build_site.CATEGORIES}
     used = set(json.loads(sf.read_text(encoding="utf-8")).get("used", [])) if sf.exists() else set()
 
+    # remove duplicated stories and put every article in its right section (once per article)
+    removed, moved = curate.run(arts, build_site.CATEGORIES, llm=generate_text if (GEMINI_KEY or GROQ_KEY or OPENROUTER_KEY) else None)
+    for a in removed:
+        (ROOT / a["image"]).unlink(missing_ok=True)
+        print("duplicate article removed:", a["title"][:70])
+    print(f"archive cleaned: {len(removed)} duplicates removed, {moved} articles moved to their right section")
+
     heal_images(arts)
 
     made, stuck, errors = 0, set(), []
@@ -833,12 +876,17 @@ def main():
         if not art:
             print("article rejected (length / similarity), skipping story")
             continue
+        if curate.is_duplicate_of_any({"title": art["title"], "content": "\n\n".join(art["body"])}, arts):
+            print("article rejected: it duplicates one that is already published:", art["title"][:70])
+            continue
         aid = f"{cat}-{datetime.now(timezone.utc):%Y%m%d%H%M}-{hashlib.md5(chosen[0]['url'].encode()).hexdigest()[:6]}"
         ip = art.get("image_prompt") or art["title"]
         arts[cat].insert(0, {
             "id": aid, "title": art["title"].strip(), "summary": art["summary"].strip(),
             "content": "\n\n".join(p.strip() for p in art["body"]),
-            "image": (img := make_image(ip, aid, cat)), "cdn": cloudinary_upload(ROOT / img, "nexus/" + Path(img).stem), "image_alt": art["title"].strip(), "image_prompt": ip,
+            "image": (mi := make_image(ip, aid, cat))[0], "image_credit": mi[1],
+            "cdn": cloudinary_upload(ROOT / mi[0], "nexus/" + Path(mi[0]).stem), "image_alt": art["title"].strip(),
+            "image_prompt": ip, "cat_ok": True,
             "date": datetime.now(timezone.utc).isoformat(timespec="minutes"),
             "sources": [{"publisher": s["publisher"], "url": s["url"]} for s in chosen]})
         made += 1
