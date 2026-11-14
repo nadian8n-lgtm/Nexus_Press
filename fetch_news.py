@@ -1,18 +1,26 @@
 """Nexus Press pipeline - self-healing multi-provider version.
 
-Each run: reads RSS feeds of famous WORLD and ARABIC newspapers (no Moroccan outlet is used as a source),
-picks fresh stories (categories with < 6 articles first), writes an ORIGINAL Arabic article, checks it against the
-sources for copied wording, creates a UNIQUE illustration (no watermark, duplicate-checked), compresses it to WebP,
-updates articles.json, creates the daily poll and rebuilds the site.
+Each run: reads RSS feeds of famous WORLD and ARABIC newspapers (no Moroccan outlet is used as a source in the
+international / economy / tech / sports / arts sections), picks fresh stories (categories with < 6 articles first),
+writes an ORIGINAL Arabic article, checks it against the sources for copied wording, builds a strong image prompt from
+the HEADLINE + FIRST THREE PARAGRAPHS, creates a UNIQUE illustration (no watermark, sharp, duplicate-checked),
+compresses it to WebP, updates articles.json, creates the daily poll and rebuilds the site.
 
 Morocco news (category ar_local) = what is trending in Morocco on Google (Google Trends RSS), written from the
 non-Moroccan coverage of that trend.
 
+City news (category ar_cities) = accidents, crime, courts and security in Moroccan cities. Discovery: Google News
+(hl=ar&gl=MA) + the national press RSS feeds for the full text; every article cites its sources. Moroccan outlets are
+allowed ONLY in this section.
+
 TEXT providers (tried in this order, only those with a key): Gemini -> Groq -> OpenRouter
-IMAGE providers (IMAGE_PROVIDERS, default "picsum,openai,genai,pollinations": a unique seeded photograph from Picsum Photos first, then (only if Picsum is down) ChatGPT images if OPENAI_API_KEY exists, the Google Gen AI JS SDK, Pollinations; also available: gemini), then a local SVG that is replaced automatically on a later run.
+IMAGE providers (IMAGE_PROVIDERS, default "pollinations,gemini,openai,genai": Pollinations first (sk_... key => nologo, no rate
+limit), then the optional paid/other providers; the random-stock "picsum" provider is no longer in the default list), then a
+local SVG that is replaced automatically on a later run.
 
 Env: GEMINI_API_KEY / GROQ_API_KEY / OPENROUTER_API_KEY, POLLINATIONS_API_KEY (sk_... key => no watermark, no rate limit),
-OPENAI_API_KEY / OPENAI_IMAGE_MODEL (optional, ChatGPT images), GEMINI_TEXT_MODEL / GEMINI_IMAGE_MODEL (optional), MAX_PER_RUN (2), MIN_PER_CATEGORY (6), KEEP_PER_CATEGORY (15),
+POLLINATIONS_MODEL (default flux), OPENAI_API_KEY / OPENAI_IMAGE_MODEL (optional, ChatGPT images), GEMINI_TEXT_MODEL / GEMINI_IMAGE_MODEL (optional),
+MAX_PER_RUN (6), MIN_PER_CATEGORY (6), KEEP_PER_CATEGORY (30),
 PAUSE_SECONDS (8), CLOUDINARY_URL (or CLOUDINARY_CLOUD_NAME + CLOUDINARY_API_KEY + CLOUDINARY_API_SECRET) -> images are also
 uploaded to Cloudinary and served from its CDN (auto format/size, much faster), REGEN_IMAGES = none | svg (default: replaces up to 8 placeholder images per run) | svgall (all placeholders) | all (redraw every image once)
 """
@@ -35,6 +43,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import build_site
+import cities
 import curate
 
 ROOT = Path(__file__).parent
@@ -44,10 +53,12 @@ GROQ_KEY = os.getenv("GROQ_API_KEY", "")
 OPENROUTER_KEY = os.getenv("OPENROUTER_API_KEY", "")
 OPENAI_KEY = os.getenv("OPENAI_API_KEY", "").strip()   # optional: ChatGPT images (gpt-image-1), paid
 POLL_KEY = next((os.getenv(n, "").strip() for n in ("POLLINATIONS_API_KEY", "POLLINATIONS_KEY", "POLLINATIONS_TOKEN") if os.getenv(n, "").strip()), "")
-IMAGE_PROVIDERS = [p.strip() for p in (os.getenv("IMAGE_PROVIDERS") or "picsum,openai,genai,pollinations").split(",") if p.strip()]
-MAX_PER_RUN = int(os.getenv("MAX_PER_RUN") or "2")
+# Pollinations first (key => no watermark, no rate limit), then the paid/optional providers.
+# picsum is deliberately NOT in the default list any more: random stock photos do not match the story.
+IMAGE_PROVIDERS = [p.strip() for p in (os.getenv("IMAGE_PROVIDERS") or "pollinations,gemini,openai,genai").split(",") if p.strip()]
+MAX_PER_RUN = int(os.getenv("MAX_PER_RUN") or "6")
 MIN_PER_CAT = int(os.getenv("MIN_PER_CATEGORY") or "6")
-KEEP = int(os.getenv("KEEP_PER_CATEGORY") or "15")
+KEEP = int(os.getenv("KEEP_PER_CATEGORY") or "30")
 PAUSE = int(os.getenv("PAUSE_SECONDS") or "8")
 REGEN = (os.getenv("REGEN_IMAGES") or "svg").lower()
 MIN_WORDS, MAX_WORDS = 800, 1500
@@ -70,31 +81,79 @@ NYT = "https://rss.nytimes.com/services/xml/rss/nyt"
 GUARD = "https://www.theguardian.com"
 FEEDS = {
     "ar_world": [("BBC عربي", f"{BBC}/arabic/rss.xml"), ("BBC News", f"{BBC}/news/world/rss.xml"),
+                 ("BBC Middle East", f"{BBC}/news/world/middle_east/rss.xml"),
                  ("الجزيرة", "https://www.aljazeera.net/aljazeerarss/a7c186be-1baa-4bd4-9d80-a84db769f779/73d0e1b4-532f-45ef-b682-8f6c4a1f1e9d"),
                  ("Al Jazeera English", "https://www.aljazeera.com/xml/rss/all.xml"),
                  ("فرانس 24", "https://www.france24.com/ar/rss"), ("DW عربية", "https://rss.dw.com/xml/rss-ar-all"),
                  ("سكاي نيوز عربية", "https://www.skynewsarabia.com/web/rss"), ("CNN بالعربية", "https://arabic.cnn.com/api/v1/rss/rss.xml"),
                  ("الشرق الأوسط", "https://aawsat.com/feed"), ("العربية", "https://www.alarabiya.net/feed/rss2/ar.xml"),
-                 ("The Guardian", f"{GUARD}/world/rss"), ("The New York Times", f"{NYT}/World.xml")],
+                 ("اندبندنت عربية", "https://www.independentarabia.com/rss"),
+                 ("The Guardian", f"{GUARD}/world/rss"), ("Guardian Middle East", f"{GUARD}/world/middleeast/rss"),
+                 ("The New York Times", f"{NYT}/World.xml"), ("NPR World", "https://feeds.npr.org/1004/rss.xml"),
+                 ("UN News عربي", "https://news.un.org/feed/subscribe/ar/news/all/rss.xml")],
     "ar_economy": [("BBC عربي", f"{BBC}/arabic/business/rss.xml"), ("BBC Business", f"{BBC}/news/business/rss.xml"),
                    ("The Guardian", f"{GUARD}/business/rss"), ("The New York Times", f"{NYT}/Business.xml"),
                    ("CNBC", "https://www.cnbc.com/id/100003114/device/rss/rss.html"),
-                   ("الشرق الأوسط", "https://aawsat.com/feed/business"), ("DW عربية", "https://rss.dw.com/xml/rss-ar-eco")],
+                   ("الشرق الأوسط", "https://aawsat.com/feed/business"), ("DW عربية", "https://rss.dw.com/xml/rss-ar-eco"),
+                   ("العربية", "https://www.alarabiya.net/feed/rss2/ar.xml"),
+                   ("Sky News Arabia اقتصاد", "https://www.skynewsarabia.com/web/rss/economy")],
     "ar_tech": [("BBC عربي", f"{BBC}/arabic/science-and-tech/rss.xml"), ("BBC Technology", f"{BBC}/news/technology/rss.xml"),
                 ("The Guardian", f"{GUARD}/technology/rss"), ("The New York Times", f"{NYT}/Technology.xml"),
-                ("Wired", "https://www.wired.com/feed/rss"), ("The Verge", "https://www.theverge.com/rss/index.xml")],
+                ("Wired", "https://www.wired.com/feed/rss"), ("The Verge", "https://www.theverge.com/rss/index.xml"),
+                ("Ars Technica", "https://feeds.arstechnica.com/arstechnica/index")],
     "ar_sports": [("BBC عربي", f"{BBC}/arabic/sports/rss.xml"), ("BBC Sport", f"{BBC}/sport/rss.xml"),
-                  ("The Guardian", f"{GUARD}/sport/rss"), ("The New York Times", f"{NYT}/Sports.xml"),
-                  ("ESPN", "https://www.espn.com/espn/rss/news"), ("سكاي نيوز عربية", "https://www.skynewsarabia.com/web/rss/sport")],
+                  ("BBC Football", f"{BBC}/sport/football/rss.xml"),
+                  ("The Guardian", f"{GUARD}/sport/rss"), ("Guardian Football", f"{GUARD}/football/rss"),
+                  ("The New York Times", f"{NYT}/Sports.xml"),
+                  ("ESPN", "https://www.espn.com/espn/rss/news"), ("ESPN Soccer", "https://www.espn.com/espn/rss/soccer/news"),
+                  ("Sky Sports Football", "https://www.skysports.com/rss/12040"),
+                  ("سكاي نيوز عربية", "https://www.skynewsarabia.com/web/rss/sport")],
     "ar_arts": [("BBC عربي", f"{BBC}/arabic/arts/rss.xml"), ("BBC Arts", f"{BBC}/news/entertainment_and_arts/rss.xml"),
                 ("The Guardian", f"{GUARD}/culture/rss"), ("The New York Times", f"{NYT}/Arts.xml"),
                 ("Variety", "https://variety.com/feed/"), ("DW عربية", "https://rss.dw.com/xml/rss-ar-cul")],
 }
+
+# موضوعات تُتابَع عبر Google News (صحف عالمية وعربية) حتى لا يبقى قسم كرة القدم أو الشرق الأوسط بلا أخبار.
+# hl=en/gl=US للاستعلامات الإنجليزية، hl=ar/gl=MA للعربية. لا تُستخدم أي صحيفة مغربية هنا.
+def gn(query, lang="ar", geo="MA"):
+    return ("https://news.google.com/rss/search?q=" + urllib.parse.quote(query) +
+            f"&hl={lang}&gl={geo}&ceid={geo}:{lang}")
+
+
+TOPIC_FEEDS = {
+    "ar_world": [
+        ("فلسطين غزة", gn("فلسطين OR غزة OR الضفة الغربية")),
+        ("الشرق الأوسط", gn("الشرق الأوسط OR لبنان OR سوريا OR إيران OR العراق")),
+        ("Middle East", gn("Middle East Gaza Lebanon Iran", "en", "US")),
+        ("أوكرانيا", gn("أوكرانيا OR روسيا OR الناتو")),
+    ],
+    "ar_sports": [
+        ("المنتخب المغربي", gn("المنتخب المغربي OR أسود الأطلس OR حكيمي OR بونو OR زياش")),
+        ("الديربي المغربي", gn("الديربي المغربي OR الوداد OR الرجاء OR الجيش الملكي")),
+        ("الدوري الإنجليزي", gn("الدوري الإنجليزي OR ليفربول OR مانشستر سيتي OR أرسنال OR تشيلسي")),
+        ("ريال مدريد وبرشلونة", gn("ريال مدريد OR برشلونة OR الكلاسيكو OR دوري أبطال أوروبا")),
+        ("نجوم العالم", gn("ميسي OR رونالدو OR مبابي OR هالاند OR نيمار")),
+        ("Morocco football", gn("Morocco national team Hakimi Bounou World Cup", "en", "US")),
+    ],
+    "ar_economy": [
+        ("الأسواق العالمية", gn("الأسواق العالمية OR النفط OR الذهب OR الدولار OR الفيدرالي")),
+        ("الاقتصاد العربي", gn("الاقتصاد العربي OR الخليج OR صندوق النقد الدولي")),
+    ],
+    "ar_tech": [
+        ("الذكاء الاصطناعي", gn("الذكاء الاصطناعي OR OpenAI OR تشات جي بي تي OR غوغل")),
+        ("التقنية العالمية", gn("أبل OR سامسونغ OR مايكروسوفت OR ميتا OR إنترنت")),
+    ],
+    "ar_arts": [
+        ("سينما وفنون", gn("مهرجان سينمائي OR فيلم OR مسلسل OR جائزة أوسكار OR موسيقى")),
+    ],
+}
+
 TRENDS_URL = "https://trends.google.com/trending/rss?geo=MA"   # what Morocco is searching for right now
 BLOCK_TOPICS = ("porn", "sex", "xxx", "onlyfans", "nude", "سكس", "نيك", "اباح", "إباح", "عاري", "فضيحة جنس")
 
-ICONS = {"ar_local": "🇲🇦", "ar_world": "🌍", "ar_economy": "💹", "ar_tech": "💻", "ar_sports": "⚽", "ar_arts": "🎭"}
-COLORS = {"ar_local": "#0b3c7a", "ar_world": "#0369a1", "ar_economy": "#047857",
+ICONS = {"ar_local": "🇲🇦", "ar_cities": "🏙️", "ar_world": "🌍", "ar_economy": "💹", "ar_tech": "💻",
+         "ar_sports": "⚽", "ar_arts": "🎭"}
+COLORS = {"ar_local": "#0b3c7a", "ar_cities": "#9a3412", "ar_world": "#0369a1", "ar_economy": "#047857",
           "ar_tech": "#6d28d9", "ar_sports": "#b45309", "ar_arts": "#be185d"}
 
 SYSTEM = """أنت صحفي عربي محترف بخبرة طويلة في غرف الأخبار، تكتب مقالات إخبارية أصلية بأسلوب صحفي رصين وسلس.
@@ -118,6 +177,38 @@ SYSTEM = """أنت صحفي عربي محترف بخبرة طويلة في غر�
   (المكان، الأشياء، الأجواء، الإضاءة، زاوية التصوير)، وليس مشهداً عاماً يصلح لأي خبر. بدون نصوص أو حروف أو شعارات أو علامات تجارية،
   وبدون وجوه أشخاص حقيقيين أو شخصيات عامة (استعمل أشخاصاً مجهولين من الخلف أو من بعيد أو أيدٍ وأدوات ومعالم)."""
 
+CITY_SYSTEM = """أنت محقق صحفي مغربي مخضرم في قسم الحوادث والقضايا، تكتب لصحيفة إلكترونية عربية كبرى.
+أسلوبك: سرد أدبي مشدود، بلاغة بلا مبالغة، تفاصيل حسّية دقيقة، وإيقاع يدفع القارئ إلى آخر سطر، مع التزام صارم بأخلاقيات المهنة.
+القواعد الإلزامية:
+- اكتب بصياغتك الخاصة تماماً ولا تنقل جملاً من المصادر.
+- استخدم فقط الوقائع والأرقام والأسماء والتصريحات الواردة في المواد المقدمة. لا تخترع أي معلومة، ولا تُكمل الفراغات من خيالك.
+- قرينة البراءة: كل متهم بريء حتى تثبت إدانته. استخدم «المشتبه فيه» و«حسب المصادر» و«تشير المعطيات» بدل الجزم.
+- لا تذكر أسماء الضحايا ولا القاصرين ولا تفاصيل تسمح بالتعرف عليهم، ولا أسماء متهمين لم تُعلنها السلطات رسمياً.
+- لا تُدِن أحداً ولا تُصدر حكماً، ولا تُشهر بأشخاص أو عائلات أو مناطق. لا خطاب كراهية ولا مسّ بالمقدسات أو الأديان.
+- لا وصف دموي مقزز ولا تفاصيل جنسية، وتجنّب الإثارة الرخيصة. الإثارة تكون في السرد لا في الإسفاف.
+- لا تذكر أسماء الصحف داخل النص؛ يكفي أن يقول «حسب ما أوردته مصادر إعلامية».
+البنية (5 إلى 6 أقسام، كل قسم يبدأ بـ '## ' في عنصر مستقل):
+  1) المشهد الافتتاحي: ابدأ بمشهد حسّي أو لحظة زمنية تضع القارئ داخل الحدث، بلا عنوان.
+  2) ما حدث بالضبط: التسلسل الزمني والمكان والأطراف، كما ورد في المواد.
+  3) من المتضرر: أثر الحادث على السكان والضحايا وعائلاتهم، بلغة إنسانية حذرة.
+  4) الأطراف الرسمية: ما قالته السلطات أو النيابة أو الدرك أو الشرطة، حرفياً إن ورد.
+  5) السياق الاجتماعي: هل الحادث معزول أم يعكس ظاهرة أوسع؟ اعتمد على المعطيات المتوفرة فقط.
+  6) ما ينتظره الملف: الإجراءات القضائية أو الأمنية المحتملة، بصيغة «من المتوقع» و«يُنتظر».
+- الطول بين {LO} و{HI} كلمة. فقرات من جملتين إلى 4 جمل.
+- أعد JSON فقط: {"title": "...", "summary": "جملتان", "image_prompt": "English prompt", "body": ["فقرة", "## عنوان", "فقرة", ...]}"""
+
+PROMPT_SYSTEM = """You are the award-winning picture editor of an international news agency.
+You receive a news headline and the first three paragraphs of an Arabic article.
+Write ONE image-generation prompt (English, 55-85 words) for a single editorial photograph that could run on the front page next to THIS story.
+How to build it:
+- Read the headline and the three paragraphs, then extract: the place, the time of day, the weather, the main human activity, and 2-3 concrete objects that only belong to this story.
+- Describe ONE frozen moment that tells the story without showing violence or identifiable faces.
+- Specify: subject and action, setting and background, two or three props, light direction and quality, camera angle, lens (24mm/35mm/50mm/85mm), depth of field, colour palette, and emotional tone.
+- Photorealistic documentary/photojournalism style, natural skin texture, sharp focus, high dynamic range.
+- Never include: text, letters, numbers, logos, watermarks, brand names, flags with writing, identifiable real people or celebrities, dead bodies, blood, weapons pointed at people, religious symbols being desecrated, or sexual content.
+- Do not describe the article itself; describe what the camera sees.
+Answer ONLY JSON: {"image_prompt": "..."}"""
+
 TREND_NOTE = """
 
 ملاحظة خاصة: هذا الموضوع يتصدّر اهتمام الباحثين في المغرب على Google اليوم. اكتب المقال للقارئ المغربي والعربي بما يشرح له الخبر وسياقه
@@ -129,7 +220,8 @@ POLL_SYSTEM = """أنت محرر تفاعل في جريدة إلكترونية �
 - أعد JSON فقط: {"question": "...", "options": ["...", "..."]}"""
 
 IMG_STYLE = {
-    "ar_local": "documentary photography, authentic everyday scene",
+    "ar_local": "documentary photography, authentic everyday Moroccan scene",
+    "ar_cities": "investigative photojournalism, Moroccan street at night, police tape and city lights in the background, tense atmosphere",
     "ar_world": "photojournalism, wide dramatic news photograph",
     "ar_economy": "business photojournalism, markets, ports, factories or city skyline",
     "ar_tech": "modern technology editorial photograph, clean futuristic atmosphere",
@@ -137,7 +229,10 @@ IMG_STYLE = {
     "ar_arts": "cultural editorial photography, rich color and atmosphere",
 }
 ANGLES = ["wide establishing shot", "low-angle shot", "aerial drone view", "intimate close-up of a telling object", "shot from behind a silhouette",
-          "symmetrical centered composition", "telephoto compressed perspective", "shallow depth of field detail shot"]
+          "symmetrical centered composition", "telephoto compressed perspective", "shallow depth of field detail shot",
+          "over-the-shoulder framing", "high-angle view from a balcony"]
+PALETTES = ["muted teal and amber", "cool blue-grey with one warm accent", "desaturated earth tones", "deep shadows with sodium-orange highlights",
+            "soft pastel dawn colours", "high-contrast black and sandy beige"]
 LIGHTS = ["soft early-morning light", "dramatic overcast sky", "warm golden hour", "cool blue hour", "crisp midday sunlight",
           "moody night with practical lights", "diffused window light", "stormy contrasty light"]
 
@@ -323,8 +418,8 @@ def child(el, *names):
     return None
 
 
-def read_feed(name, url):
-    """RSS or Atom -> list of stories. Moroccan outlets are dropped. Cached per run."""
+def read_feed(name, url, allow_moroccan=False):
+    """RSS or Atom -> list of stories. Cached per run. Moroccan outlets are dropped unless allow_moroccan."""
     if url in STATE["feeds"]:
         return STATE["feeds"][url]
     out = []
@@ -344,12 +439,44 @@ def read_feed(name, url):
             link = (lk.get("href") or lk.text or "").strip()
         d = child(it, "description", "summary", "content")
         title = (t.text or "").strip() if t is not None else ""
-        if not (title and link) or build_site.is_moroccan(link, name):
+        if not (title and link) or (not allow_moroccan and build_site.is_moroccan(link, name)):
             continue
         desc = re.sub(r"<[^>]+>", " ", (d.text or "") if d is not None else "")
         out.append({"publisher": name, "title": title, "url": link, "desc": re.sub(r"\s+", " ", desc).strip()})
     print(f"feed ok: {name} ({len(out)})" if out else f"feed empty: {name}")
     STATE["feeds"][url] = out
+    return out
+
+
+def read_gn(label, url, allow_moroccan=False):
+    """Google News RSS -> stories with the real publisher name (its <source> element).
+    Google News links are discovery links; page_text() usually cannot read them, so the article is
+    written from the headline + snippet (or from the national feed when allow_moroccan is used)."""
+    key = "gn:" + url
+    if key in STATE["feeds"]:
+        return STATE["feeds"][key]
+    out = []
+    try:
+        root = ET.fromstring(request(url, timeout=30))
+    except Exception as ex:
+        print("google news feed failed", label, str(ex)[:100])
+        STATE["feeds"][key] = out
+        return out
+    for it in root.iter("item"):
+        t, lk, d = child(it, "title"), child(it, "link"), child(it, "description")
+        src = child(it, "source")
+        title = (t.text or "").strip() if t is not None else ""
+        link = (lk.text or "").strip() if lk is not None else ""
+        pub = (src.text or "").strip() if src is not None else label
+        purl = (src.get("url") or "") if src is not None else ""
+        if not (title and link):
+            continue
+        if not allow_moroccan and (build_site.is_moroccan(purl, pub) or build_site.is_moroccan(link, pub)):
+            continue
+        desc = re.sub(r"<[^>]+>", " ", (d.text or "") if d is not None else "")
+        out.append({"publisher": pub, "title": title, "url": link, "desc": re.sub(r"\s+", " ", desc).strip()})
+    print(f"google news ok: {label} ({len(out)})" if out else f"google news empty: {label}")
+    STATE["feeds"][key] = out
     return out
 
 
@@ -415,14 +542,57 @@ def pick_trend(used):
     return None
 
 
+def pick_city_story(used, arts):
+    """Next Moroccan city + a real crime/security story about it.
+    Discovery: national RSS (full text, attributed) then Google News; never invents a story.
+    Returns ((name, slug, region), sources, key) or None."""
+    day = datetime.now(timezone.utc).strftime("%Y%m%d")
+    ordered = []
+    for name, slug, region in cities.CITIES:
+        ordered.append((name, slug, region))
+    have = {}
+    for a in arts.get("ar_cities", []):
+        have[a.get("city")] = have.get(a.get("city"), 0) + 1
+    ordered.sort(key=lambda c: (have.get(c[0], 0), cities.CITIES.index(c)))
+    for name, slug, region in ordered[:8]:
+        key = f"city:{name}:{day}"
+        if key in used:
+            continue
+        pool = []
+        for pub, url in cities.NATIONAL_FEEDS:
+            for it in read_feed(pub, url, allow_moroccan=True):
+                if it["url"] in used:
+                    continue
+                text = it["title"] + " " + it["desc"]
+                if cities.mentions(text, name) and cities.is_crime(text):
+                    pool.append(it)
+        chosen = pool[:2]
+        if len(chosen) < 2:     # complete with Google News coverage of the same city
+            for url in cities.city_urls(name):
+                for it in read_gn("Google News", url, allow_moroccan=True):
+                    if it["url"] not in used and all(it["url"] != c["url"] for c in chosen):
+                        chosen.append(it)
+                    if len(chosen) >= 2:
+                        break
+                if len(chosen) >= 2:
+                    break
+        if chosen:
+            return (name, slug, region), chosen, key
+        used.add(key)
+        print("city skipped (no fresh story):", name)
+    return None
+
+
 def page_text(url):
+    if "news.google." in url:      # Google News discovery links do not expose the article body
+        return ""
     try:
         raw = request(url, timeout=30).decode("utf-8", "ignore")
     except Exception:
         return ""
     raw = re.sub(r"(?is)<(script|style|nav|footer|header|aside).*?</\1>", " ", raw)
     paras = [re.sub(r"<[^>]+>", "", p).strip() for p in re.findall(r"(?is)<p[^>]*>(.*?)</p>", raw)]
-    return " ".join(p for p in paras if len(p) > 60)[:6000]
+    return " ".join(p for p in paras if len(p) > 60)[:8000]
 
 
 def words(paras):
@@ -444,16 +614,19 @@ def overlap(paras, sources, n=5):
 
 
 def parse_json(text):
-    text = re.sub(r"(?is)<think>.*?</think>", "", text).strip()
+    text = re.sub(r"(?is)<think¬.*?</think¬>", "", text).strip()
     a, b = text.find("{"), text.rfind("}")
     return json.loads(text[a:b + 1])
 
 
-def write_article(cat_name, sources, trend=None):
-    lo, hi = (MIN_WORDS_TREND, MAX_WORDS_TREND) if trend else (MIN_WORDS, MAX_WORDS)
-    system = SYSTEM.replace("{LO}", str(lo)).replace("{HI}", str(hi))
+def write_article(cat_name, sources, trend=None, system=None, city=None, lo=None, hi=None):
+    lo = lo or ((MIN_WORDS_TREND, MAX_WORDS_TREND) if trend else (MIN_WORDS, MAX_WORDS))[0]
+    hi = hi or ((MIN_WORDS_TREND, MAX_WORDS_TREND) if trend else (MIN_WORDS, MAX_WORDS))[1]
+    system = (system or SYSTEM).replace("{LO}", str(lo)).replace("{HI}", str(hi))
     material = "\n\n".join(f"[{s['publisher']}] {s['title']}\n{s['text'] or s['desc']}" for s in sources)
     user = f"القسم: {cat_name}\n"
+    if city:
+        user += f"المدينة المعنية: {city}\nاجعل اسم المدينة واضحاً في العنوان وفي أول فقرة.\n"
     if trend:
         user += f"الموضوع الرائج في المغرب على Google: {trend['query']}\n"
         system += TREND_NOTE
@@ -510,14 +683,64 @@ def known_hashes():
 
 
 def is_duplicate(h, skip=""):
-    return any(bin(h ^ o).count("1") <= DUP_DIST for k, o in known_hashes().items() if k != skip)
+    return any(bin(h ^ o).count("1") <= DUP_DIST for k, o in known_hashes().items()
+               if k != skip and not (skip and k.startswith(skip + "-")))
 
 
 def build_prompt(prompt, art_id, cat, attempt):
+    """Wrap the scene prompt into a full photographic brief: style, framing, lens, light, palette, mood and strict negatives.
+    The seed depends on the article id, so two articles never receive the same framing, and regenerating is reproducible."""
     r = random.Random(f"{art_id}-{attempt}")
-    return ("Editorial news photograph, ultra detailed, natural colors, no text, no letters, no numbers, no logos, no watermark, "
-            "no brand names, no recognizable real people. " + IMG_STYLE.get(cat, "") + ". " + r.choice(ANGLES) + ", " + r.choice(LIGHTS) +
-            ". Scene: " + prompt)
+    lens = r.choice(["24mm wide lens", "35mm documentary lens", "50mm natural perspective", "85mm short telephoto"])
+    palette = r.choice(PALETTES)
+    return ("Editorial news photograph for the front page of an international newspaper, photorealistic, shot on a full-frame camera with a "
+            + lens + ", " + r.choice(ANGLES) + ", " + r.choice(LIGHTS) + ", " + palette + " colour grade, natural skin texture, "
+            "sharp focus on the subject, subtle film grain, high dynamic range. " + IMG_STYLE.get(cat, "") + ". "
+            "Scene: " + prompt + ". "
+            "MANDATORY NEGATIVES: no text, no letters, no numbers, no logos, no watermark, no signature, no brand names, no trademarks, "
+            "no identifiable real people or celebrities, no graphic violence, no blood, no dead bodies, no sexual content, no religious desecration.")
+
+
+def image_prompt_for_article(title, paragraphs, cat, art_id):
+    """Build the image prompt FROM THE HEADLINE + THE FIRST THREE PARAGRAPHS, exactly as the editor asked.
+    Falls back to the article's own English prompt, then to a category scene. Returns a clean 40-90 word English prompt."""
+    first3 = [p.strip() for p in paragraphs if p.strip() and not p.strip().startswith("## ")][:3]
+    material = f"HEADLINE: {title}\n\nFIRST THREE PARAGRAPHS:\n" + "\n".join(f"- {p}" for p in first3)
+    try:
+        res = parse_json(generate_text(PROMPT_SYSTEM, material))
+        p = re.sub(r"\s+", " ", str(res.get("image_prompt", ""))).strip().strip('"')
+        if 25 <= len(p.split()) <= 130:
+            print("image prompt built from title + first 3 paragraphs")
+            return p
+    except Exception as ex:
+        print("image prompt from title failed:", str(ex)[:120])
+    return ""
+
+
+def sharpness(img):
+    """Edge-detail score used to reject blurry or upscaled images."""
+    try:
+        from PIL import ImageFilter, ImageStat
+        g = img.convert("L")
+        g.thumbnail((640, 640))
+        return ImageStat.Stat(g.filter(ImageFilter.FIND_EDGES)).var[0]
+    except Exception:
+        return 999
+
+
+SHARP_MIN = 30          # below this the picture is nearly blank / heavily upscaled -> regenerate (dark night shots stay above it)
+MIN_W, MIN_H = 900, 500
+
+
+def image_ok(img):
+    if img.width < MIN_W or img.height < MIN_H:
+        print(f"image too small ({img.width}x{img.height}) -> regenerating")
+        return False
+    s = sharpness(img)
+    if s < SHARP_MIN:
+        print(f"image looks blurry (sharpness {s:.0f}) -> regenerating")
+        return False
+    return True
 
 
 def image_gemini(prompt):
@@ -593,7 +816,8 @@ def image_pollinations(prompt, seed):
         if wait > 0:
             time.sleep(wait)
         STATE["poll_last"] = time.time()
-        q = urllib.parse.urlencode({"model": "flux", "width": 1280, "height": 720, "seed": seed, "nologo": "true"})
+        q = urllib.parse.urlencode({"model": os.getenv("POLLINATIONS_MODEL", "flux"), "width": 1280, "height": 720,
+                                    "seed": seed, "nologo": "true", "enhance": "true"})
         try:
             data = request("https://gen.pollinations.ai/image/" + urllib.parse.quote(prompt[:700]) + "?" + q,
                            headers={"Authorization": f"Bearer {POLL_KEY}"}, timeout=240)
@@ -606,8 +830,8 @@ def image_pollinations(prompt, seed):
     if wait > 0:
         time.sleep(wait)
     STATE["poll_last"] = time.time()
-    url = ("https://image.pollinations.ai/prompt/" + urllib.parse.quote(prompt[:450]) +
-           f"?width=1280&height=720&nologo=true&model=flux&seed={seed}")
+    url = ("https://image.pollinations.ai/prompt/" + urllib.parse.quote(prompt[:600]) +
+           f"?width=1280&height=720&nologo=true&model={os.getenv('POLLINATIONS_MODEL', 'flux')}&seed={seed}")
     data = request(url, timeout=180)
     if len(data) < 15000:
         raise ApiError(0, "image too small / not an image", "pollinations")
@@ -659,7 +883,7 @@ def make_image(prompt, art_id, cat, file_stem=None):
             if prov in STATE["dead_image"] or (prov in ("gemini", "genai") and not GEMINI_KEY) or (prov == "openai" and not OPENAI_KEY):
                 continue
             chosen, chosen_h = None, None
-            for attempt in range(3):  # new seed + new angle/light each time until the picture is not a look-alike
+            for attempt in range(4):  # new seed + new angle/light each time until the picture is not a look-alike
                 seed = int(hashlib.md5(f"{art_id}-{attempt}".encode()).hexdigest()[:6], 16)
                 full = build_prompt(prompt, art_id, cat, attempt)
                 try:
@@ -681,16 +905,17 @@ def make_image(prompt, art_id, cat, file_stem=None):
                     STATE["poll_fail"] = 0
                 if crop:  # anonymous Pollinations images carry a logo strip at the bottom
                     img = img.crop((0, 0, img.width, int(img.height * 0.925)))
+                if not image_ok(img):
+                    continue
                 h = dhash(img)
-                chosen, chosen_h = img, h
                 if not is_duplicate(h, skip=art_id):
+                    chosen, chosen_h = img, h
                     break
                 print(f"image looks like an existing one, regenerating (attempt {attempt + 1})")
             if chosen is not None:
-                photo = prov == "picsum"      # real photographs keep more pixels and less compression (sharper)
-                chosen.thumbnail((1280, 1280) if photo else (1000, 1000))
+                chosen.thumbnail((1280, 1280))   # keep the full 1280px wide illustration, less compression = sharper
                 path = out / f"{stem}.webp"
-                chosen.save(path, "WEBP", quality=84 if photo else 74, method=6)
+                chosen.save(path, "WEBP", quality=86, method=6)
                 STATE["hashes"][stem] = chosen_h
                 return f"images/{path.name}", ({"source": "picsum"} if prov == "picsum" else None)
     svg = out / f"{stem}.svg"
@@ -715,14 +940,24 @@ def image_prompt_for(art):
 
 def heal_images(arts):
     """REGEN_IMAGES=svg: replace up to 8 placeholder SVGs per run. svgall: all placeholders. all: redraw every image once."""
-    if REGEN == "none" or not (GEMINI_KEY or GROQ_KEY or OPENROUTER_KEY or IMAGE_PROVIDERS[:1] == ["picsum"]):
+    if REGEN == "none" or not (GEMINI_KEY or GROQ_KEY or OPENROUTER_KEY or OPENAI_KEY or POLL_KEY or IMAGE_PROVIDERS):
         return
-    todo = [(k, a) for k, v in arts.items() for a in v if (REGEN == "all" and not a.get("regen")) or a["image"].endswith(".svg")]
+    # placeholders + old random stock photos (picsum) are healed automatically, a few per run
+    todo = [(k, a) for k, v in arts.items() for a in v
+            if (REGEN == "all" and not a.get("regen"))
+            or a["image"].endswith(".svg")
+            or (a.get("image_credit") or {}).get("source") == "picsum"]
     limit = len(todo) if REGEN in ("all", "svgall") else 8
     stamp = datetime.now(timezone.utc).strftime("%y%m%d%H%M")
     for k, a in todo[:limit]:
         old = a["image"]
-        prompt = a.get("image_prompt") or (a["title"] if IMAGE_PROVIDERS[:1] == ["picsum"] else image_prompt_for(a))
+        prompt = a.get("image_prompt_editor") or ""
+        if not prompt:   # build it from the headline + the first three paragraphs (the editor's rule)
+            paras = [p for p in a.get("content", "").split("\n\n") if p.strip() and not p.strip().startswith("## ")]
+            prompt = (image_prompt_for_article(a["title"], paras, k, a["id"])
+                      or a.get("image_prompt") or a["title"])
+            a["image_prompt_editor"] = prompt
+            a["image_prompt"] = prompt
         new, credit = make_image(prompt, a["id"], k, file_stem=f"{a['id']}-{stamp}")
         if new.endswith(".svg"):
             (ROOT / new).unlink(missing_ok=True)
@@ -802,7 +1037,8 @@ def ensure_poll(arts):
             return
     except Exception:
         pass
-    heads = [a["title"] for k in ("ar_world", "ar_economy", "ar_tech", "ar_sports", "ar_arts", "ar_local") for a in arts.get(k, [])[:2]]
+    heads = [a["title"] for k in ("ar_world", "ar_cities", "ar_economy", "ar_tech", "ar_sports", "ar_arts", "ar_local")
+             for a in arts.get(k, [])[:2]]
     if not heads or not (GEMINI_KEY or GROQ_KEY or OPENROUTER_KEY):
         return
     try:
@@ -844,7 +1080,7 @@ def main():
         # neediest category first; once all have >= MIN_PER_CAT, rotate to the one with the oldest latest article
         cat = min((k for k in arts if k not in stuck),
                   key=lambda k: (len(arts[k]) >= MIN_PER_CAT, len(arts[k]), arts[k][0]["date"] if arts[k] else ""))
-        trend, tkey = None, None
+        trend, tkey, city_meta, system = None, None, None, None
         if cat == "ar_local":
             pick = pick_trend(used)
             if not pick:
@@ -852,8 +1088,18 @@ def main():
                 stuck.add(cat)
                 continue
             trend, chosen, tkey = pick
+        elif cat == "ar_cities":
+            pick = pick_city_story(used, arts)
+            if not pick:
+                print("no usable city story right now")
+                stuck.add(cat)
+                continue
+            city_meta, chosen, tkey = pick
+            system = CITY_SYSTEM
         else:
-            pool = interleave([[i for i in read_feed(n, u) if i["url"] not in used] for n, u in FEEDS[cat]])
+            lists = [[i for i in read_feed(n, u) if i["url"] not in used] for n, u in FEEDS.get(cat, [])]
+            lists += [[i for i in read_gn(n, u) if i["url"] not in used] for n, u in TOPIC_FEEDS.get(cat, [])]
+            pool = interleave([x for x in lists if x])
             if not pool:
                 print("no fresh stories for", cat)
                 stuck.add(cat)
@@ -865,7 +1111,8 @@ def main():
         for s in chosen:
             s["text"] = page_text(s["url"])
         try:
-            art = write_article(build_site.CATEGORIES[cat], chosen, trend)
+            art = write_article(build_site.CATEGORIES[cat], chosen, trend, system=system,
+                                city=city_meta[0] if city_meta else None)
         except Exception as ex:  # providers down: do NOT burn the story, stop after 2 failures
             print("generation failed:", str(ex)[:300])
             errors.append(str(ex))
@@ -880,15 +1127,23 @@ def main():
             print("article rejected: it duplicates one that is already published:", art["title"][:70])
             continue
         aid = f"{cat}-{datetime.now(timezone.utc):%Y%m%d%H%M}-{hashlib.md5(chosen[0]['url'].encode()).hexdigest()[:6]}"
-        ip = art.get("image_prompt") or art["title"]
-        arts[cat].insert(0, {
+        body = [p.strip() for p in art["body"]]
+        # image prompt is rebuilt from the headline + the first three paragraphs (the editor's rule)
+        ip = (image_prompt_for_article(art["title"], body, cat, aid)
+              or str(art.get("image_prompt", "")).strip()
+              or f"a telling scene from this news story: {art['title']}")
+        mi = make_image(ip, aid, cat)
+        entry = {
             "id": aid, "title": art["title"].strip(), "summary": art["summary"].strip(),
-            "content": "\n\n".join(p.strip() for p in art["body"]),
-            "image": (mi := make_image(ip, aid, cat))[0], "image_credit": mi[1],
+            "content": "\n\n".join(body),
+            "image": mi[0], "image_credit": mi[1],
             "cdn": cloudinary_upload(ROOT / mi[0], "nexus/" + Path(mi[0]).stem), "image_alt": art["title"].strip(),
-            "image_prompt": ip, "cat_ok": True,
+            "image_prompt": ip, "image_prompt_editor": ip, "cat_ok": True,
             "date": datetime.now(timezone.utc).isoformat(timespec="minutes"),
-            "sources": [{"publisher": s["publisher"], "url": s["url"]} for s in chosen]})
+            "sources": [{"publisher": s["publisher"], "url": s["url"]} for s in chosen]}
+        if city_meta:
+            entry.update({"city": city_meta[0], "city_slug": city_meta[1], "city_region": city_meta[2]})
+        arts[cat].insert(0, entry)
         made += 1
         print(f"published ({made}/{MAX_PER_RUN}):", art["title"])
         time.sleep(PAUSE)
