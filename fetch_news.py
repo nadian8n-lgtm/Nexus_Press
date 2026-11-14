@@ -297,7 +297,7 @@ def gemini_models():
 
 
 def gemini_text_candidates():
-    pat = re.compile(r"^gemini-(\d+(?:\.\d+)?)-flash(-lite)?(-preview[\w.-]*)?$") 
+    pat = re.compile(r"^gemini-(\d+(?:\.\d+)?)-flash(-lite)?(-preview[\w.-]*)?$")
     found = []
     for name, methods in gemini_models().items():
         m = pat.match(name)
@@ -597,7 +597,8 @@ def page_text(url):
 
 def words(paras):
     return len(re.findall(r"\S+", " ".join(paras)))
-    
+
+
 def overlap(paras, sources, n=5):
     """Share of the article's n-word sequences that also appear in the source text (plagiarism guard)."""
     def grams(text):
@@ -613,7 +614,7 @@ def overlap(paras, sources, n=5):
 
 
 def parse_json(text):
-    text = re.sub(r"(?is)<think.*?</think[^>]*>", "", text).strip()
+    text = re.sub(r"(?is)<think>.*?</think>", "", text).strip()
     a, b = text.find("{"), text.rfind("}")
     return json.loads(text[a:b + 1])
 
@@ -897,7 +898,7 @@ def make_image(prompt, art_id, cat, file_stem=None):
                         STATE["poll_fail"] += 1
                         if STATE["poll_fail"] >= 3:
                             STATE["dead_image"].add(prov)
-                                                else:
+                    else:
                         STATE["dead_image"].add(prov)
                     break
                 if prov in ("pollinations", "genai", "openai", "picsum"):
