@@ -24,7 +24,8 @@ for page in pages:
     for val in re.findall(r'(?:href|src)="([^"]+)"', text):
         if val.startswith(SKIP_PREFIX):
             if val.startswith("http") and page.parent.name == "articles" and "rel=\"nofollow" in text:
-                if build_site.is_moroccan(val):
+                cat = page.name.split("-")[0]          # ids look like ar_cities-2026...
+                if build_site.is_moroccan(val) and cat not in build_site.MOROCCAN_OK_CATS:
                     problems.append(f"{page.name}: Moroccan source link {val}")
             continue
         target = (page.parent / unquote(urlparse(val).path)).resolve()
