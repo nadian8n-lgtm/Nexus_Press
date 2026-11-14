@@ -14,12 +14,12 @@ City news (category ar_cities) = accidents, crime, courts and security in Morocc
 allowed ONLY in this section.
 
 TEXT providers (tried in this order, only those with a key): Gemini -> Groq -> OpenRouter
-IMAGE providers (IMAGE_PROVIDERS, default "pollinations,gemini,openai,genai": Pollinations first (sk_... key => nologo, no rate
-limit), then the optional paid/other providers; the random-stock "picsum" provider is no longer in the default list), then a
-local SVG that is replaced automatically on a later run.
+IMAGE providers (IMAGE_PROVIDERS, default "gemini,genai,openai"): Gemini image generation first, then the optional Gen AI SDK
+and ChatGPT images. Pollinations and random stock photos were removed: they returned generic or unrelated pictures (often
+people who had nothing to do with the story). If no provider works, a local SVG placeholder is used and replaced on a later run.
 
-Env: GEMINI_API_KEY / GROQ_API_KEY / OPENROUTER_API_KEY, POLLINATIONS_API_KEY (sk_... key => no watermark, no rate limit),
-POLLINATIONS_MODEL (default flux), OPENAI_API_KEY / OPENAI_IMAGE_MODEL (optional, ChatGPT images), GEMINI_TEXT_MODEL / GEMINI_IMAGE_MODEL (optional),
+Env: GEMINI_API_KEY / GROQ_API_KEY / OPENROUTER_API_KEY,
+OPENAI_API_KEY / OPENAI_IMAGE_MODEL (optional, ChatGPT images), GEMINI_TEXT_MODEL / GEMINI_IMAGE_MODEL (optional),
 MAX_PER_RUN (6), MIN_PER_CATEGORY (6), KEEP_PER_CATEGORY (30),
 PAUSE_SECONDS (8), CLOUDINARY_URL (or CLOUDINARY_CLOUD_NAME + CLOUDINARY_API_KEY + CLOUDINARY_API_SECRET) -> images are also
 uploaded to Cloudinary and served from its CDN (auto format/size, much faster), REGEN_IMAGES = none | svg (default: replaces up to 8 placeholder images per run) | svgall (all placeholders) | all (redraw every image once)
@@ -52,10 +52,10 @@ GEMINI_KEY = os.getenv("GEMINI_API_KEY", "")
 GROQ_KEY = os.getenv("GROQ_API_KEY", "")
 OPENROUTER_KEY = os.getenv("OPENROUTER_API_KEY", "")
 OPENAI_KEY = os.getenv("OPENAI_API_KEY", "").strip()   # optional: ChatGPT images (gpt-image-1), paid
-POLL_KEY = next((os.getenv(n, "").strip() for n in ("POLLINATIONS_API_KEY", "POLLINATIONS_KEY", "POLLINATIONS_TOKEN") if os.getenv(n, "").strip()), "")
-# Pollinations first (key => no watermark, no rate limit), then the paid/optional providers.
-# picsum is deliberately NOT in the default list any more: random stock photos do not match the story.
-IMAGE_PROVIDERS = [p.strip() for p in (os.getenv("IMAGE_PROVIDERS") or "pollinations,gemini,openai,genai").split(",") if p.strip()]
+# Gemini image generation first, then the Gen AI SDK and ChatGPT images.
+# Pollinations and picsum are hard-disabled: their pictures were generic and unrelated to the headline.
+IMAGE_PROVIDERS = [p.strip() for p in (os.getenv("IMAGE_PROVIDERS") or "gemini,genai,openai").split(",") if p.strip()]
+IMAGE_PROVIDERS = [p for p in IMAGE_PROVIDERS if p not in ("pollinations", "picsum")]
 MAX_PER_RUN = int(os.getenv("MAX_PER_RUN") or "6")
 MIN_PER_CAT = int(os.getenv("MIN_PER_CATEGORY") or "6")
 KEEP = int(os.getenv("KEEP_PER_CATEGORY") or "30")
@@ -205,7 +205,8 @@ How to build it:
 - Describe ONE frozen moment that tells the story without showing violence or identifiable faces.
 - Specify: subject and action, setting and background, two or three props, light direction and quality, camera angle, lens (24mm/35mm/50mm/85mm), depth of field, colour palette, and emotional tone.
 - Photorealistic documentary/photojournalism style, natural skin texture, sharp focus, high dynamic range.
-- Never include: text, letters, numbers, logos, watermarks, brand names, flags with writing, identifiable real people or celebrities, dead bodies, blood, weapons pointed at people, religious symbols being desecrated, or sexual content.
+- Never include: text, letters, numbers, logos, watermarks, brand names, flags with writing, identifiable real people or celebrities, posed fashion/beauty portraits, glamour or influencer photos, dead bodies, blood, weapons pointed at people, religious symbols being desecrated, or sexual content.
+- The frame must show the event itself (a place, objects, action, atmosphere), never a person posing for the camera.
 - Do not describe the article itself; describe what the camera sees.
 Answer ONLY JSON: {"image_prompt": "..."}"""
 
@@ -698,7 +699,7 @@ def build_prompt(prompt, art_id, cat, attempt):
             "sharp focus on the subject, subtle film grain, high dynamic range. " + IMG_STYLE.get(cat, "") + ". "
             "Scene: " + prompt + ". "
             "MANDATORY NEGATIVES: no text, no letters, no numbers, no logos, no watermark, no signature, no brand names, no trademarks, "
-            "no identifiable real people or celebrities, no graphic violence, no blood, no dead bodies, no sexual content, no religious desecration.")
+            "no identifiable real people or celebrities, no posed portrait, no fashion model, no glamour or beauty shot, no graphic violence, no blood, no dead bodies, no sexual content, no religious desecration.")
 
 
 def image_prompt_for_article(title, paragraphs, cat, art_id):
@@ -808,47 +809,6 @@ def image_genai(prompt, seed):
     return data, False
 
 
-def image_pollinations(prompt, seed):
-    """Returns (bytes, needs_watermark_crop). With a key: gen.pollinations.ai, nologo, no rate limit.
-    Without a key (or if the key call fails): legacy anonymous endpoint (1 request / 15 s, watermark is cropped off)."""
-    if POLL_KEY:
-        wait = 4 - (time.time() - STATE["poll_last"])
-        if wait > 0:
-            time.sleep(wait)
-        STATE["poll_last"] = time.time()
-        q = urllib.parse.urlencode({"model": os.getenv("POLLINATIONS_MODEL", "flux"), "width": 1280, "height": 720,
-                                    "seed": seed, "nologo": "true", "enhance": "true"})
-        try:
-            data = request("https://gen.pollinations.ai/image/" + urllib.parse.quote(prompt[:700]) + "?" + q,
-                           headers={"Authorization": f"Bearer {POLL_KEY}"}, timeout=240)
-            if len(data) > 15000:
-                return data, False
-            print("pollinations (key): response too small, falling back")
-        except ApiError as ex:
-            print(f"pollinations (key) failed HTTP {ex.code}: {ex.body[:150]} -> falling back to anonymous endpoint")
-    wait = 16 - (time.time() - STATE["poll_last"])
-    if wait > 0:
-        time.sleep(wait)
-    STATE["poll_last"] = time.time()
-    url = ("https://image.pollinations.ai/prompt/" + urllib.parse.quote(prompt[:600]) +
-           f"?width=1280&height=720&nologo=true&model={os.getenv('POLLINATIONS_MODEL', 'flux')}&seed={seed}")
-    data = request(url, timeout=180)
-    if len(data) < 15000:
-        raise ApiError(0, "image too small / not an image", "pollinations")
-    return data, True
-
-
-def image_picsum(seed_text, attempt=0):
-    """Photograph from Picsum Photos (https://picsum.photos): a direct cloud link, no key, no watermark, free Unsplash-licensed pictures.
-    URL: https://picsum.photos/seed/{seed}/{width}/{height}  - the seed fixes the picture: same seed = same photo forever.
-    The seed is the article id (+ the attempt number, used to pick another photo when two articles would get a look-alike)."""
-    seed = re.sub(r"[^A-Za-z0-9_-]", "", f"{seed_text}-{attempt}") or f"nexus-{attempt}"
-    data = request(f"https://picsum.photos/seed/{seed}/1280/720", timeout=60)
-    if len(data) < 15000:
-        raise ApiError(0, "image too small / not a photograph", "picsum")
-    return data, False
-
-
 def fallback_svg(stem, cat):
     """Placeholder used only when no provider produced a picture. Unique per article (seeded by its id), no text or emoji,
     and replaced automatically by a real illustration on a later run (see heal_images)."""
@@ -887,7 +847,14 @@ def make_image(prompt, art_id, cat, file_stem=None):
                 seed = int(hashlib.md5(f"{art_id}-{attempt}".encode()).hexdigest()[:6], 16)
                 full = build_prompt(prompt, art_id, cat, attempt)
                 try:
-                    raw, crop = (image_gemini(full) if prov == "gemini" else image_genai(full, seed) if prov == "genai" else image_openai(full, seed) if prov == "openai" else image_picsum(art_id, attempt) if prov == "picsum" else image_pollinations(full, seed))
+                    if prov == "gemini":
+                        raw, crop = image_gemini(full)
+                    elif prov == "genai":
+                        raw, crop = image_genai(full, seed)
+                    elif prov == "openai":
+                        raw, crop = image_openai(full, seed)
+                    else:
+                        raise ApiError(0, f"unknown image provider: {prov}", prov)
                     img = Image.open(io.BytesIO(raw)).convert("RGB")
                 except Exception as ex:
                     print(f"image provider '{prov}' failed:", str(ex)[:160])
@@ -940,18 +907,18 @@ def image_prompt_for(art):
 
 def heal_images(arts):
     """REGEN_IMAGES=svg: replace up to 8 placeholder SVGs per run. svgall: all placeholders. all: redraw every image once."""
-    if REGEN == "none" or not (GEMINI_KEY or GROQ_KEY or OPENROUTER_KEY or OPENAI_KEY or POLL_KEY or IMAGE_PROVIDERS):
+    if REGEN == "none" or not (GEMINI_KEY or GROQ_KEY or OPENROUTER_KEY or OPENAI_KEY or IMAGE_PROVIDERS):
         return
     # placeholders + old random stock photos (picsum) are healed automatically, a few per run
     todo = [(k, a) for k, v in arts.items() for a in v
-            if (REGEN == "all" and not a.get("regen"))
+            if REGEN == "all"
             or a["image"].endswith(".svg")
             or (a.get("image_credit") or {}).get("source") == "picsum"]
     limit = len(todo) if REGEN in ("all", "svgall") else 8
     stamp = datetime.now(timezone.utc).strftime("%y%m%d%H%M")
     for k, a in todo[:limit]:
         old = a["image"]
-        prompt = a.get("image_prompt_editor") or ""
+        prompt = "" if REGEN == "all" else (a.get("image_prompt_editor") or "")
         if not prompt:   # build it from the headline + the first three paragraphs (the editor's rule)
             paras = [p for p in a.get("content", "").split("\n\n") if p.strip() and not p.strip().startswith("## ")]
             prompt = (image_prompt_for_article(a["title"], paras, k, a["id"])
@@ -1072,6 +1039,23 @@ def main():
         (ROOT / a["image"]).unlink(missing_ok=True)
         print("duplicate article removed:", a["title"][:70])
     print(f"archive cleaned: {len(removed)} duplicates removed, {moved} articles moved to their right section")
+
+    # guard: Moroccan outlets may only be cited in «أخبار المدن»; any other article citing one is dropped here
+    dropped = 0
+    for k in list(arts):
+        if k in build_site.MOROCCAN_OK_CATS:
+            continue
+        keep = []
+        for a in arts[k]:
+            if any(build_site.is_moroccan(s.get("url", ""), s.get("publisher", "")) for s in a.get("sources", [])):
+                (ROOT / a["image"]).unlink(missing_ok=True)
+                dropped += 1
+                print("article removed (Moroccan source outside city news):", a["id"])
+            else:
+                keep.append(a)
+        arts[k] = keep
+    if dropped:
+        print(f"archive cleaned: {dropped} articles citing a Moroccan outlet removed")
 
     heal_images(arts)
 
