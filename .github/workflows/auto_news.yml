@@ -7,7 +7,7 @@ on:
     inputs:
       count:
         description: 'عدد المقالات في هذه الدورة (اكتب 36 لأول تشغيل)'
-        default: '2'
+        default: '6'
       regen_images:
         description: 'الصور: none = لا شيء / svg = استبدال 8 صور بديلة / svgall = استبدال كل الصور البديلة / all = إعادة رسم كل الصور'
         type: choice
@@ -58,9 +58,12 @@ jobs:
           GEMINI_IMAGE_MODEL: ${{ vars.GEMINI_IMAGE_MODEL }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_IMAGE_MODEL: ${{ vars.OPENAI_IMAGE_MODEL }}
-          IMAGE_PROVIDERS: ${{ vars.IMAGE_PROVIDERS || 'picsum,openai,genai,pollinations' }}
+          IMAGE_PROVIDERS: ${{ vars.IMAGE_PROVIDERS || 'pollinations,gemini,openai,genai' }}
+          POLLINATIONS_MODEL: ${{ vars.POLLINATIONS_MODEL || 'flux' }}
           GENAI_IMAGE_MODEL: ${{ vars.GENAI_IMAGE_MODEL }}
-          MAX_PER_RUN: ${{ github.event.inputs.count || '2' }}
+          MAX_PER_RUN: ${{ github.event.inputs.count || '6' }}
+          MIN_PER_CATEGORY: ${{ vars.MIN_PER_CATEGORY || '6' }}
+          KEEP_PER_CATEGORY: ${{ vars.KEEP_PER_CATEGORY || '30' }}
           REGEN_IMAGES: ${{ github.event.inputs.regen_images || 'svg' }}
           ADSENSE_CLIENT: ${{ vars.ADSENSE_CLIENT }}
           ADSENSE_SLOT: ${{ vars.ADSENSE_SLOT }}
