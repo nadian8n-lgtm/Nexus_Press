@@ -29,6 +29,17 @@
     td.textContent = g + (h ? '  •  ' + h : '');
   } catch (e) {}
 
+  /* ---- live "last update" clock in the top bar */
+  var lu = $('#last-up');
+  if (lu) {
+    (function () {
+      function tick() {
+        try { lu.textContent = '· آخر تحديث ' + new Date().toLocaleTimeString('ar-u-nu-latn', { hour: '2-digit', minute: '2-digit' }); } catch (e) {}
+      }
+      tick(); setInterval(tick, 60000);
+    })();
+  }
+
   /* ---- language switcher (Google Translate, loaded only when needed) */
   var m = document.cookie.match(/googtrans=\/ar\/(\w+)/), cur = m ? m[1] : 'ar';
   if (cur !== 'ar') {
@@ -282,6 +293,56 @@
     }
     inView(box, function () { if (store.get(key) !== null) results(); else options(); }, '200px');
   });
+
+  /* ---- reader tools: save for later + font size (like the big e-newspapers) */
+  var abody = $('.article-body');
+  if (abody) (function () {
+    var meta = $('.meta'), share = $('.share');
+    var bar = document.createElement('div'); bar.className = 'a-tools';
+    var id = (location.pathname.split('/').pop() || '').replace('.html', '');
+    var saved = []; try { saved = JSON.parse(store.get('np-saved') || '[]'); } catch (e) {}
+    var btn = document.createElement('button'); btn.type = 'button';
+    function has() { return saved.some(function (x) { return x.id === id; }); }
+    function paint() {
+      btn.textContent = has() ? '✓ محفوظ في محفوظاتي' : '🔖 حفظ للقراءة لاحقًا';
+      btn.classList.toggle('saved-on', has());
+    }
+    btn.onclick = function () {
+      if (has()) saved = saved.filter(function (x) { return x.id !== id; });
+      else saved.unshift({ id: id, t: (document.title || '').split('|')[0].trim(), u: (location.pathname.split('/').pop() || '') });
+      store.set('np-saved', JSON.stringify(saved.slice(0, 30))); paint(); renderSaved();
+    };
+    paint(); bar.appendChild(btn);
+    var fs = document.createElement('span'); fs.className = 'fs-btns'; fs.textContent = 'حجم الخط: ';
+    [1, 2, 3].forEach(function (n) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = ['أ', 'أ+', 'أ++'][n - 1];
+      b.onclick = function () { abody.className = abody.className.replace(/\bfs-\d\b/g, '').trim() + ' fs-' + n; store.set('np-fs', String(n)); };
+      fs.appendChild(b);
+    });
+    abody.className += ' fs-' + (+store.get('np-fs') || 2);
+    bar.appendChild(fs);
+    if (share && share.parentNode) share.parentNode.insertBefore(bar, share.nextSibling);
+    else if (meta && meta.parentNode) meta.parentNode.insertBefore(bar, meta.nextSibling);
+    else abody.parentNode.insertBefore(bar, abody);
+  })();
+
+  function renderSaved() {
+    var box = $('#saved-box'); if (!box) return;
+    var list = $('.saved-list', box); if (!list) return;
+    var arr = []; try { arr = JSON.parse(store.get('np-saved') || '[]'); } catch (e) {}
+    list.textContent = '';
+    if (!arr.length) {
+      var d = document.createElement('li'); d.className = 'muted';
+      d.textContent = 'اضغط «حفظ» على أي مقال ليظهر هنا وتقرأه لاحقًا.';
+      list.appendChild(d); return;
+    }
+    arr.forEach(function (x) {
+      var li = document.createElement('li'), a = document.createElement('a');
+      a.href = /^https?:/.test(x.u) ? x.u : pre + 'articles/' + x.u;
+      a.textContent = x.t; li.appendChild(a); list.appendChild(li);
+    });
+  }
+  renderSaved();
 
   /* ---- weather / prayer times / search live in tools.js (loaded only when needed) */
   var need = $('#wx-app, #search-app'), mini = $('.wx-mini');
