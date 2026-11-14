@@ -11,6 +11,8 @@ import urllib.parse
 from datetime import datetime, timezone
 from pathlib import Path
 
+import ai_hub
+import cities
 import legal
 
 ROOT = Path(__file__).parent
@@ -28,19 +30,24 @@ POLL_NS = "np-" + (re.sub(r"[^a-z0-9]+", "-", REPO.lower()).strip("-") if REPO e
 
 CATEGORIES = {
     "ar_local": "أخبار المغرب",
+    "ar_cities": "أخبار المدن",
     "ar_world": "الأخبار الدولية",
     "ar_economy": "اقتصاد",
     "ar_tech": "تكنولوجيا",
     "ar_sports": "رياضة",
     "ar_arts": "فن وثقافة",
 }
-# Moroccan outlets are not used as sources any more (Morocco is covered through Google Trends).
+# Moroccan outlets are not used as sources in the international sections (Morocco is covered through Google Trends).
+# Exception: «أخبار المدن» is local crime/security news that only the national press reports, so its sources are kept
+# and always cited (publisher + link) under the article.
+MOROCCAN_OK_CATS = {"ar_cities"}
 MOROCCAN_HOSTS = ("hespress", "le360", "hibapress", "alyaoum24", "medias24", "2m.ma", "snrt", "map.ma", "mapexpress",
                   "barlamane", "goud.ma", "chouftv", "yabiladi", "lakome", "akhbarona", "assahifa", "almaghribtoday",
                   "h24info", "lematin", "leconomiste", "telquel", "aujourdhui.ma", "bladi", "febrayer", "anfaspress",
                   "kech24", "moroccoworldnews", "moroccotomorrow", "hespress", "lopinion.ma", "maroc.ma", "alaoual",
                   "almassaa", "assabah", "rue20", "lesiteinfo", "challenge.ma", "ledesk", "elbotola", "arryadia",
-                  "hibapress", "tanja24", "bayanealyaoume", "sahraa", "alakhbar")
+                  "hibapress", "tanja24", "bayanealyaoume", "sahraa", "alakhbar", "alakhbar.ma", "tanja24.com",
+                  "kech24.com", "barlamane.com", "alyaoum24.com", "anfaspress.com", "almaghribtoday.net")
 e = html.escape
 
 POLL_BANK = [
@@ -205,14 +212,15 @@ def HAS_DEALS():
 
 def header(pre, data, active):
     ticker = "  •  ".join(a["title"] for k in CATEGORIES for a in data[k][:2]) or "نكسوس بريس — أخبار العالم على مدار الساعة"
-    items = ([("index.html", "الرئيسية", "home")] + [(f"category-{k}.html", v, k) for k, v in CATEGORIES.items()]
-             + [("weather.html", "🌦️ الطقس والصلاة", "weather")]
+    nav_names = {k: (("🏙️ " + v) if k == "ar_cities" else v) for k, v in CATEGORIES.items()}
+    items = ([("index.html", "الرئيسية", "home")] + [(f"category-{k}.html", nav_names[k], k) for k in CATEGORIES]
+             + [("weather.html", "🌦️ الطقس والصلاة", "weather"), ("ai-academy.html", "🎓 أكاديمية AI", "ai")]
              + ([("deals/index.html", "🛒 عروض أمازون", "deals")] if HAS_DEALS() else []))
     nav = "".join(f'<li><a href="{pre}{u}"{" class=active" if active == key else ""}>{e(n)}</a></li>' for u, n, key in items)
     return f"""<body data-pre="{pre}" data-api="{e(NP_API)}">
 <div class="progress" id="progress"></div>
 <div class="top-bar notranslate"><div class="container flex">
-<span class="today"><span class="live">●</span> <span id="today">تحديث مستمر على مدار الساعة</span></span>
+<span class="today"><span class="live">●</span> <span id="today">تحديث مستمر على مدار الساعة</span> <span class="last-up" id="last-up"></span></span>
 <div class="top-tools"><button class="icon-btn" id="theme-btn" type="button" aria-label="الوضع الليلي" title="الوضع الليلي">🌓</button>
 <div class="lang-box" translate="no"><span>🌐</span>
 <button class="lang-btn" data-l="ar">العربية</button>|<button class="lang-btn" data-l="fr">Français</button>|<button class="lang-btn" data-l="en">English</button></div></div>
@@ -229,7 +237,7 @@ def footer(pre):
     return f"""<footer class="footer"><div class="container footer-grid">
 <div><h4>نكسوس بريس | Nexus Press</h4><p>جريدة إلكترونية تتابع أبرز أحداث العالم في السياسة والاقتصاد والتكنولوجيا والرياضة والثقافة.</p></div>
 <div><h4>الأقسام</h4><ul>{"".join(f'<li><a href="{pre}category-{k}.html">{e(v)}</a></li>' for k, v in CATEGORIES.items())}</ul></div>
-<div><h4>معلومات</h4><ul><li><a href="{pre}weather.html">الطقس ومواقيت الصلاة</a></li>{f'<li><a href="{pre}deals/index.html">عروض أمازون</a></li>' if HAS_DEALS() else ''}<li><a href="{pre}about.html">من نحن</a></li><li><a href="{pre}contact.html">اتصل بنا</a></li><li><a href="{pre}privacy-policy.html">سياسة الخصوصية</a></li><li><a href="{pre}feed.xml">RSS</a></li></ul></div>
+<div><h4>معلومات</h4><ul><li><a href="{pre}category-ar_cities.html">أخبار المدن</a></li><li><a href="{pre}weather.html">الطقس ومواقيت الصلاة</a></li><li><a href="{pre}ai-academy.html">أكاديمية الذكاء الاصطناعي</a></li>{f'<li><a href="{pre}deals/index.html">عروض أمازون</a></li>' if HAS_DEALS() else ''}<li><a href="{pre}about.html">من نحن</a></li><li><a href="{pre}contact.html">اتصل بنا</a></li><li><a href="{pre}privacy-policy.html">سياسة الخصوصية</a></li><li><a href="{pre}feed.xml">RSS</a></li></ul></div>
 </div><div class="footer-bottom">© {datetime.now().year} نكسوس بريس. جميع الحقوق محفوظة.</div></footer>
 <button class="to-top" id="to-top" type="button" aria-label="أعلى الصفحة">↑</button>
 <div id="google_translate_element" style="display:none"></div>
@@ -276,6 +284,8 @@ def sidebar(pre, data, poll):
     latest = sorted((a for k in CATEGORIES for a in data[k]), key=lambda a: a["date"], reverse=True)[:8]
     lis = "".join(f'<li><span class="rank">{i}</span><a href="{pre}articles/{a["id"]}.html">{e(a["title"])}</a></li>' for i, a in enumerate(latest, 1))
     return (f'<aside>{ad("side1")}{wx_mini()}{poll_widget(poll)}{newsletter()}'
+            f'<div class="widget saved-box" id="saved-box"><h4>🔖 محفوظاتي</h4>'
+            '<ul class="saved-list"><li class="muted">اضغط «حفظ» على أي مقال ليظهر هنا وتقرأه لاحقًا.</li></ul></div>'
             f'<div class="widget"><h4>🔥 عناوين الساعة</h4><ul>{lis or "<li>قريباً</li>"}</ul></div>'
             f'{ad("side2", "sticky")}</aside>')
 
@@ -294,9 +304,13 @@ def render_body(content):
     return "\n\n".join(out)
 
 
-COMMENT_RULES = """<div class="c-rules" role="note"><b>⚠️ شروط النشر في التعليقات</b>
+COMMENT_RULES = """<div class="c-rules" role="note" aria-label="شروط النشر في التعليقات">
+<div class="c-rules-head"><span class="c-rules-ico">⚠️</span><b>شروط النشر في التعليقات</b><span class="c-rules-tag">يُرجى القراءة قبل المشاركة</span></div>
 <p>من شروط النشر بالتعليقات: عدم الإساءة للكاتب أو للأشخاص أو للمقدسات أو مهاجمة الأديان أو الذات الإلهية، والابتعاد عن التحريض العنصري والشتائم.</p>
-<p>الآراء الواردة في التعليقات تعبر عن آراء أصحابها وليس عن رأي <span dir="ltr">Nexus Press</span>.</p></div>"""
+<p>الآراء الواردة في التعليقات تعبر عن آراء أصحابها وليس عن رأي <span dir="ltr">Nexus Press</span>.</p>
+<ul><li>تُحذف التعليقات المخالفة أو التي تحتوي تشهيراً أو اتهاماً بلا دليل أو خطاب كراهية أو دعوة إلى العنف.</li>
+<li>لا يُنشر البريد الإلكتروني مع التعليق، وتُمرّ التعليقات بمراجعة تحريرية قبل ظهورها.</li>
+<li>بإرسالك التعليق فأنت تُقرّ باحترام هذه الشروط وتتحمّل مسؤولية ما تكتبه.</li></ul></div>"""
 
 
 def comments_block(aid):
@@ -325,6 +339,20 @@ def reading_time(text):
     return max(1, round(len(re.findall(r"\S+", text)) / 190))
 
 
+def city_chips(pre="", active=""):
+    """The list of Moroccan cities: visitors pick their city and get its own news page."""
+    return ('<nav class="city-chips" aria-label="اختر مدينتك">'
+            '<span class="city-chips-t">📍 اختر مدينتك:</span>'
+            + "".join(f'<a class="city-chip{" on" if slug == active else ""}" href="{pre}city-{slug}.html">{e(name)}</a>'
+                      for name, slug, region in cities.CITIES) + "</nav>")
+
+
+def city_panel(name, region, count):
+    return (f'<div class="city-hero"><div><span class="city-kicker">🏙️ أخبار المدن</span>'
+            f'<h1>{e(name)}</h1><p class="city-region">جهة {e(region)} · {count} مقال منشور · حوادث وأمن وقضايا ومدينة</p></div>'
+            '<div class="city-hero-ico" aria-hidden="true">🏙️</div></div>')
+
+
 def shell(title, desc, pre, canonical, data, active, inner, poll, extra_head="", image=""):
     return (head(title, desc, pre, canonical, image, extra_head) + header(pre, data, active)
             + f'<div class="container">{ad("top")}{inner}{ad("bottom")}</div>' + footer(pre))
@@ -339,10 +367,12 @@ def build():
     for old in (ROOT / "articles").glob("*.html"):
         old.unlink()
     urls = (["index.html"] + [f"category-{k}.html" for k in CATEGORIES]
-            + ["weather.html", "search.html", "about.html", "contact.html", "privacy-policy.html"])
+            + [f"city-{s}.html" for _, s, _ in cities.CITIES]
+            + ["weather.html", "search.html", "about.html", "contact.html", "privacy-policy.html", "ai-academy.html"])
     allart = sorted(((k, a) for k in CATEGORIES for a in data[k]), key=lambda t: t[1]["date"], reverse=True)
-    for k, a in allart:  # never show Moroccan outlets as a source
-        a["sources"] = [s for s in a.get("sources", []) if not is_moroccan(s.get("url", ""), s.get("publisher", ""))]
+    for k, a in allart:  # never show Moroccan outlets as a source, except in «أخبار المدن» (local press is the source)
+        if k not in MOROCCAN_OK_CATS:
+            a["sources"] = [s for s in a.get("sources", []) if not is_moroccan(s.get("url", ""), s.get("publisher", ""))]
     clean_thumbs(data)
 
     # ---- home
@@ -361,11 +391,17 @@ def build():
         hero = '<div class="slider"><div class="hero-fallback">جاري تجهيز أحدث الأخبار…</div></div>'
     sections, shown = "", 0
     for k, name in CATEGORIES.items():
-        if not data[k]:
+        if not data[k] and k != "ar_cities":
             continue
         cards_html = "".join(card(a, "", k) for a in data[k][:6])
+        extra = ""
+        if k == "ar_cities":
+            extra = (city_chips("") +
+                     '<p class="city-lead">حوادث، جرائم، قضايا، أمن ومدن: تابع ما يقع في مدينتك، مع ذكر المصادر في أسفل كل مقال.</p>')
+        if not data[k]:
+            cards_html = '<div class="empty">سيبدأ نشر أخبار المدن في الدورة القادمة. اختر مدينتك من اللائحة أعلاه.</div>'
         more_link = f'<p class="more"><a class="badge" href="category-{k}.html">كل مقالات {e(name)} ←</a></p>'
-        sections += f'<section class="sect"><h2 class="block-title">{e(name)}</h2><div class="grid">{cards_html}</div>{more_link}</section>'
+        sections += f'<section class="sect"><h2 class="block-title">{e(name)}</h2>{extra}<div class="grid">{cards_html}</div>{more_link}</section>'
         shown += 1
         if shown == 2:
             sections += newsletter("band")
@@ -382,14 +418,25 @@ def build():
     # ---- categories + articles
     for k, name in CATEGORIES.items():
         cards = "".join(card(a, "", k) for a in data[k]) or '<div class="empty">لا توجد مقالات في هذا القسم بعد.</div>'
-        inner = (f'<div class="layout"><main><h1 class="block-title">{e(name)}</h1><div class="grid">{cards}</div>{ad("middle")}</main>'
+        extra = ""
+        if k == "ar_cities":
+            extra = (city_chips("") + '<p class="city-lead">قسم مخصص لكل ما يقع في مدن المملكة: الحوادث والجرائم والقضايا '
+                     'والأمن والتحقيقات، بأسلوب صحفي معمّق ومع ذكر المصادر. اختر مدينتك لتقرأ أخبارها وحدها.</p>')
+        inner = (f'<div class="layout"><main><h1 class="block-title">{e(name)}</h1>{extra}<div class="grid">{cards}</div>{ad("middle")}</main>'
                  f'{sidebar("", data, poll)}</div>')
         (ROOT / f"category-{k}.html").write_text(shell(f"{name} | نكسوس بريس", f"آخر مقالات قسم {name} في جريدة نكسوس بريس.", "",
                                                       f"{base}/category-{k}.html" if base else "", data, k, inner, poll), encoding="utf-8")
         for a in data[k]:
             src = "".join(f'<li><a href="{e(s["url"])}" rel="nofollow noopener" target="_blank">{e(s.get("publisher", s["url"]))}</a></li>' for s in a["sources"])
-            src_html = f'<div class="sources"><b>المصادر والمراجع:</b><ul>{src}</ul></div>' if src else ""
-            related = "".join(card(r, "../", k) for r in [x for x in data[k] if x["id"] != a["id"]][:3])
+            src_html = (f'<div class="sources"><b>📚 المصادر والمراجع:</b><p class="src-hint">اعتمد هذا المقال على المواد التالية، '
+                        f'وأُعيدت صياغتها بالكامل بأسلوب هيئة التحرير.</p><ul>{src}</ul></div>') if src else ""
+            rel_pool = [x for x in data[k] if x["id"] != a["id"]]
+            if a.get("city"):
+                same_city = [x for x in rel_pool if x.get("city") == a["city"]]
+                rel_pool = same_city + [x for x in rel_pool if x not in same_city]
+            related = "".join(card(r, "../", k) for r in rel_pool[:3])
+            city_crumb = (f' › <a href="../city-{a["city_slug"]}.html">{e(a["city"])}</a>' if a.get("city_slug") else "")
+            city_badge = (f'<span class="badge city-badge">📍 {e(a["city"])}</span> ' if a.get("city") else "")
             url = f"{base}/articles/{a['id']}.html" if base else ""
             img_abs = cdn(a, 1200) or (f"{base}/{a['image']}" if base else a["image"])
             ld = json.dumps({"@context": "https://schema.org", "@type": "NewsArticle", "headline": a["title"], "datePublished": a["date"],
@@ -397,8 +444,8 @@ def build():
                              "author": {"@type": "Organization", "name": "هيئة تحرير نكسوس بريس"}}, ensure_ascii=False)
             rt = reading_time(a["content"])
             inner = f"""<div class="layout"><main><article class="article">
-<nav class="crumbs" aria-label="مسار التصفح"><a href="../index.html">الرئيسية</a> › <a href="../category-{k}.html">{e(name)}</a></nav>
-<span class="badge">{e(name)}</span><h1>{e(a["title"])}</h1>
+<nav class="crumbs" aria-label="مسار التصفح"><a href="../index.html">الرئيسية</a> › <a href="../category-{k}.html">{e(name)}</a>{city_crumb}</nav>
+{city_badge}<span class="badge">{e(name)}</span><h1>{e(a["title"])}</h1>
 <div class="meta">هيئة تحرير نكسوس بريس · {e(a["date"][:10])} · ⏱ {rt} د للقراءة</div>
 {share_bar()}
 {ad("article_top")}
@@ -413,6 +460,26 @@ def build():
                 f'{a["title"]} | نكسوس بريس', a.get("summary", a["title"]), "../", url, data, k, inner, poll,
                 f'<script type="application/ld+json">{ld}</script>', img_abs), encoding="utf-8")
             urls.append(f"articles/{a['id']}.html")
+
+    # ---- one page per Moroccan city (أخبار المدن)
+    for cname, cslug, cregion in cities.CITIES:
+        items = [a for a in data["ar_cities"] if a.get("city") == cname]
+        cards = ("".join(card(a, "", "ar_cities") for a in items)
+                 or '<div class="empty">لا توجد أخبار منشورة عن هذه المدينة بعد. سنغطيها في أقرب دورة نشر.</div>')
+        city_inner = (f'<div class="layout"><main>{city_panel(cname, cregion, len(items))}{city_chips("", cslug)}'
+                      f'<div class="grid">{cards}</div>'
+                      '<p class="city-note">تُجمع أخبار المدن من الصحف الوطنية ومن ما تتداوله Google News، ويُذكر المصدر '
+                      'في أسفل كل مقال. كل متهم بريء حتى تثبت إدانته، ولا تُنشر أسماء الضحايا أو القاصرين.</p>'
+                      f'</main>{sidebar("", data, poll)}</div>')
+        (ROOT / f"city-{cslug}.html").write_text(shell(
+            f"أخبار {cname} | حوادث وأمن وقضايا | نكسوس بريس",
+            f"آخر أخبار {cname} (جهة {cregion}): الحوادث والجرائم والقضايا والأمن، مع ذكر المصادر.",
+            "", f"{base}/city-{cslug}.html" if base else "", data, "ar_cities", city_inner, poll), encoding="utf-8")
+
+    # ---- AI academy (generated so the hourly quality gate never fails on a missing page)
+    (ROOT / "ai-academy.html").write_text(shell(
+        ai_hub.TITLE, ai_hub.DESC, "", f"{base}/ai-academy.html" if base else "", data, "ai",
+        ai_hub.body("chat.js"), poll), encoding="utf-8")
 
     # ---- weather & prayer page, search page
     wx = """<div class="page wx-page notranslate"><h1>🌦️ الطقس ومواقيت الصلاة</h1>
@@ -431,7 +498,8 @@ def build():
         "البحث | نكسوس بريس", "ابحث في أخبار نكسوس بريس.", "", f"{base}/search.html" if base else "", data, "",
         f'<div class="layout"><main>{sr}</main>{sidebar("", data, poll)}</div>', poll,
         '<meta name="robots" content="noindex,follow">'), encoding="utf-8")
-    index = [{"i": a["id"], "t": a["title"], "s": a.get("summary", ""), "c": CATEGORIES[k], "d": a["date"][:10], "m": cdn(a, 480) or thumb(a["image"])}
+    index = [{"i": a["id"], "t": a["title"], "s": a.get("summary", ""), "c": CATEGORIES[k], "d": a["date"][:10],
+              "ci": a.get("city", ""), "m": cdn(a, 480) or thumb(a["image"])}
              for k, a in allart]
     (ROOT / "search.json").write_text(json.dumps(index, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
